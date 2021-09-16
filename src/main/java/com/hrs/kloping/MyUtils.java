@@ -17,7 +17,7 @@ public class MyUtils {
             String line = null;
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
-                if (line.startsWith("#")) continue;
+                if (line.contains("#")||line.trim().isEmpty()) continue;
                 sb.append(line);
             }
             br.close();
@@ -41,7 +41,7 @@ public class MyUtils {
             String line = null;
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty() || line.startsWith("#")) continue;
+                if (line.trim().isEmpty() || line.contains("#")) continue;
                 list.add(line);
             }
             br.close();
