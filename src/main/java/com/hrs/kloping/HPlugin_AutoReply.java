@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 /**
  * @version 0.1
  * @Author HRS 3474006766@qq.com
- * @Date 21\\9\\16
+ * @Date 21/9/16
  */
 public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
@@ -34,11 +34,12 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static final ExecutorService threads = Executors.newFixedThreadPool(10);
     public static final Map<Number, entity> list2e = new ConcurrentHashMap<>();
     public static final Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
-    public static final String thisPath = System.getProperty("user.dir");
+    public static String thisPath = System.getProperty("user.dir");
     public static String OneComAddStr = "/添加";
     public static String OneComAddSplit = " ";
 
     private static void Init() {
+        thisPath = thisPath == null ? "." : thisPath;
         Initer.Init();
     }
 
@@ -55,7 +56,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         getLogger().info("HRS's SImg Plugin loaded!");
         Init();
         if (host == -1) {
-            System.err.println("请在\\conf\\auto_reply\\host设置您的QQ以控制你的机器人");
+            System.err.println("请在/conf/auto_reply/host设置您的QQ以控制你的机器人");
         }
         GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost() {
             @Override
@@ -81,7 +82,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
         String line = k + splitK + v;
-        MyUtils.appendStringInFile(thisPath + "\\conf\\auto_reply\\data.data", line, true);
+        MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/data.data", line, true);
         k2v.put(k, message);
     }
 
@@ -93,6 +94,6 @@ public final class HPlugin_AutoReply extends JavaPlugin {
             String line = k + splitK + v;
             list.add(line);
         }
-        MyUtils.putStringInFile(thisPath + "\\conf\\auto_reply\\data.data", list.toArray(new String[0]));
+        MyUtils.putStringInFile(thisPath + "/conf/auto_reply/data.data", list.toArray(new String[0]));
     }
 }
