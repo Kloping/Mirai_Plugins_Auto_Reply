@@ -43,7 +43,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     }
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.1")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.12")
                 .name("插件_3 Author => HRS")
                 .info("自定义回话插件")
                 .author("HRS")
