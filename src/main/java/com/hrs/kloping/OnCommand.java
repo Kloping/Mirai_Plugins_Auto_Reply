@@ -12,7 +12,6 @@ import static com.hrs.kloping.HPlugin_AutoReply.*;
 public class OnCommand {
     public static void onHandler(GroupMessageEvent event) {
         String text = event.getMessage().serializeToMiraiCode().trim();
-        System.err.println(text);
         long q = event.getSender().getId();
         if (list2e.containsKey(q)) {
             onAdding(q, event);
