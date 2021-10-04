@@ -41,8 +41,9 @@ public class OnCommand {
             }
         }
         String code = event.getMessage().serializeToMiraiCode().trim();
-        if (k2v.containsKey(code)) {
-            Message message = k2v.get(code);
+        String key = null;
+        if ((key = MyUtils.mather(code, k2v.keySet())) != null) {
+            Message message = k2v.get(key);
             event.getGroup().sendMessage(message);
         }
     }
@@ -50,7 +51,8 @@ public class OnCommand {
     private static boolean OneComAdd(String text) {
         try {
             String[] ss = text.split(OneComAddSplit);
-            if (k2v.containsKey(ss[0])) return false;
+            String key = null;
+            if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
             entity entity = new entity(0);
             entity.setK(ss[0]);
             entity.setV(MiraiCode.deserializeMiraiCode(ss[1]));
@@ -65,8 +67,8 @@ public class OnCommand {
     private static void onAdding(long q, GroupMessageEvent event) {
         entity entity = list2e.get(q);
         if (entity.getK() == null) {
-            String code = event.getMessage().serializeToMiraiCode().trim().replaceAll("\n", "");
-            if (k2v.containsKey(code)) {
+            String code = event.getMessage().serializeToMiraiCode().trim();
+            if (MyUtils.mather(code, k2v.keySet()) != null) {
                 event.getGroup().sendMessage("该触发词,已存在");
                 return;
             }
@@ -83,10 +85,11 @@ public class OnCommand {
     }
 
     private static Message selectOne(String code) {
-        String k = code.substring(selectKey.length(), code.length());
-        if (k2v.containsKey(k)) {
+        String k = code.substring(selectKey.length()).trim();
+        String key = null;
+        if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
-            builder.append("触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(k));
+            builder.append("触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(key));
             return builder.build();
         } else {
             return noFound;
@@ -94,11 +97,12 @@ public class OnCommand {
     }
 
     private static Message deleteOne(String code) {
-        String k = code.substring(deleteKey.length(), code.length());
-        if (k2v.containsKey(k)) {
+        String k = code.substring(deleteKey.length()).trim();
+        String key = null;
+        if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
-            builder.append("已删除\r\n触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(k));
-            k2v.remove(k);
+            builder.append("已删除\r\n触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(key));
+            k2v.remove(key);
             resourceMap();
             return builder.build();
         } else {

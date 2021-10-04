@@ -29,7 +29,7 @@ public class entity {
     }
 
     public void setK(String k) {
-        this.k = k;
+        this.k = k.replaceAll("%\\?", ".+").replaceAll("%", ".{1,1}");
     }
 
     public MessageChain getV() {
@@ -38,9 +38,5 @@ public class entity {
 
     public void setV(MessageChain v) {
         this.v = v;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
     }
 }

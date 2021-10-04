@@ -3,6 +3,9 @@ package com.hrs.kloping;
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MyUtils {
     public static synchronized final String getStringFromFile(String filepath) {
@@ -17,7 +20,7 @@ public class MyUtils {
             String line = null;
             StringBuilder sb = new StringBuilder();
             while ((line = br.readLine()) != null) {
-                if (line.contains("#")||line.trim().isEmpty()) continue;
+                if (line.contains("#") || line.trim().isEmpty()) continue;
                 sb.append(line);
             }
             br.close();
@@ -89,4 +92,24 @@ public class MyUtils {
         }
     }
 
+    public static final Map<String, String> his_temp = new ConcurrentHashMap<>();
+
+    public static final <T extends String> String mather(String key, Set<T> arr) {
+        if (arr.contains(key)) return key;
+        else {
+            if (his_temp.containsKey(key) && arr.contains(his_temp.get(key)))
+                return his_temp.get(key);
+            for (String s1 : arr) {
+                try {
+                    if (key.matches(s1)) {
+                        his_temp.put(key, s1);
+                        return s1;
+                    }
+                } catch (Exception e) {
+                    continue;
+                }
+            }
+        }
+        return null;
+    }
 }

@@ -81,7 +81,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         String k = entity.getK();
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
-        String line = k + splitK + v;
+        String line = k.replaceAll("%",".?") + splitK + v;
         MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/data.data", line, true);
         k2v.put(k, message);
     }
