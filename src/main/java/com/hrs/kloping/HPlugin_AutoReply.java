@@ -8,6 +8,7 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.StrangerMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,6 +39,8 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static String thisPath = System.getProperty("user.dir");
     public static String OneComAddStr = "/添加";
     public static String OneComAddSplit = " ";
+    public static boolean openPrivate = false;
+    public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
 
     private static void Init() {
         thisPath = thisPath == null ? "." : thisPath;
@@ -53,7 +57,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        getLogger().info("HRS's SImg Plugin loaded!");
+        getLogger().info("HRS's AutoReply Plugin loaded!");
         Init();
         if (host == -1) {
             System.err.println("请在/conf/auto_reply/host设置您的QQ以控制你的机器人");
@@ -73,6 +77,19 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(FriendMessageEvent event) {
+                if (openPrivate)
+                    threads.execute(() -> {
+                        OnCommand.onHandler(event);
+                    });
+
+            }
+
+            @EventHandler
+            public void handleMessage(StrangerMessageEvent event) {
+                if (openPrivate)
+                    threads.execute(() -> {
+                        OnCommand.onHandler(event);
+                    });
             }
         });
     }
@@ -81,7 +98,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         String k = entity.getK();
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
-        String line = k.replaceAll("%",".?") + splitK + v;
+        String line = k.replaceAll("%", ".?") + splitK + v;
         MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/data.data", line, true);
         k2v.put(k, message);
     }

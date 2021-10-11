@@ -1,6 +1,6 @@
 package com.hrs.kloping;
 
-import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -10,7 +10,7 @@ import net.mamoe.mirai.message.data.PlainText;
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class OnCommand {
-    public static void onHandler(GroupMessageEvent event) {
+    public static void onHandler(MessageEvent event) {
         String text = event.getMessage().serializeToMiraiCode().trim();
         long q = event.getSender().getId();
         if (list2e.containsKey(q)) {
@@ -20,23 +20,23 @@ public class OnCommand {
         if ((q == host.longValue() || followers.contains(q))) {
             if (text.equals(key)) {
                 if (list2e.containsKey(q)) {
-                    event.getGroup().sendMessage("请先完成当前添加");
+                    event.getSubject().sendMessage("请先完成当前添加");
                 } else {
                     list2e.put(q, new entity(q));
-                    event.getGroup().sendMessage("已添加到队列,请发送触发词");
+                    event.getSubject().sendMessage("已添加到队列,请发送触发词");
                     return;
                 }
             } else if (text.startsWith(selectKey)) {
-                event.getGroup().sendMessage(selectOne(text));
+                event.getSubject().sendMessage(selectOne(text));
                 return;
             } else if (text.startsWith(deleteKey) && q == host) {
-                event.getGroup().sendMessage(deleteOne(text));
+                event.getSubject().sendMessage(deleteOne(text));
                 return;
             } else if (text.startsWith(OneComAddStr)) {
                 if (OneComAdd(text.substring(OneComAddStr.length()).trim())) {
-                    event.getGroup().sendMessage(String.format("添加完成"));
+                    event.getSubject().sendMessage(String.format("添加完成"));
                 } else {
-                    event.getGroup().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s),或已存在该关键词", OneComAddSplit));
+                    event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", OneComAddSplit));
                 }
             }
         }
@@ -44,7 +44,7 @@ public class OnCommand {
         String key = null;
         if ((key = MyUtils.mather(code, k2v.keySet())) != null) {
             Message message = k2v.get(key);
-            event.getGroup().sendMessage(message);
+            event.getSubject().sendMessage(message);
         }
     }
 
@@ -53,6 +53,7 @@ public class OnCommand {
             String[] ss = text.split(OneComAddSplit);
             String key = null;
             if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
+            if (illegal(ss[0])) return false;
             entity entity = new entity(0);
             entity.setK(ss[0]);
             entity.setV(MiraiCode.deserializeMiraiCode(ss[1]));
@@ -64,22 +65,26 @@ public class OnCommand {
         }
     }
 
-    private static void onAdding(long q, GroupMessageEvent event) {
+    private static void onAdding(long q, MessageEvent event) {
         entity entity = list2e.get(q);
         if (entity.getK() == null) {
             String code = event.getMessage().serializeToMiraiCode().trim();
             if (MyUtils.mather(code, k2v.keySet()) != null) {
-                event.getGroup().sendMessage("该触发词,已存在");
+                event.getSubject().sendMessage("该触发词,已存在");
+                return;
+            }
+            if (illegal(code)) {
+                event.getSubject().sendMessage("敏感词汇!");
                 return;
             }
             entity.setK(code);
-            event.getGroup().sendMessage("触发词设置完成,请添加回复词!");
+            event.getSubject().sendMessage("触发词设置完成,请添加回复词!");
         } else {
             MessageChain message = event.getMessage();
             entity.setV(message);
             String code = entity.getK();
             flushMap(entity);
-            event.getGroup().sendMessage("添加完成");
+            event.getSubject().sendMessage("添加完成");
             list2e.remove(q);
         }
     }
@@ -111,4 +116,8 @@ public class OnCommand {
     }
 
     private static final PlainText noFound = new PlainText("未查询到该词");
+
+    private static boolean illegal(String k) {
+        return illegalKeys.contains(k.trim());
+    }
 }
