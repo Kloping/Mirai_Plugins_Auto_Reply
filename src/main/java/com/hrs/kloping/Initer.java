@@ -20,6 +20,7 @@ public class Initer {
             OneComAddSplit = init("#一次添加命令分割符,注意:不得使用以下字符:[]:英语,数字,=,>,", "OneComAddSplit", OneComAddSplit);
             OneComAddStr = init("#一次添加命令触发默认:/添加", "OneComAddStr", OneComAddStr);
             openPrivate = init("#写入布尔值,代表是否开启私聊", "openPrivate", openPrivate, boolean.class);
+            cd = init("#冷却 可为小数", "cd", cd, float.class);
             String[] sss = MyUtils.getStringsFromFile(thisPath + "/conf/auto_reply/followers");
             if (sss == null)
                 MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/followers", "#在这里添加所有能添加和查询消息的人的QQ号", false);
@@ -70,8 +71,10 @@ public class Initer {
             } else {
                 if (clas == Long.class)
                     return (T) Long.valueOf(str.trim());
-                if (clas == boolean.class || clas == Boolean.class)
+                else if (clas == boolean.class || clas == Boolean.class)
                     return (T) Boolean.valueOf(str.trim());
+                else if (clas == float.class || clas == Float.class)
+                    return (T) Float.valueOf(str.trim());
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -38,6 +38,12 @@ public class OnCommand {
                 } else {
                     event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", OneComAddSplit));
                 }
+                return;
+            } else if (text.startsWith("设置冷却") && q == host) {
+                Float cd = Float.valueOf(text.substring(4).trim());
+                setCD(cd);
+                event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.cd + "秒");
+                return;
             }
         }
         String code = event.getMessage().serializeToMiraiCode().trim();
@@ -119,5 +125,10 @@ public class OnCommand {
 
     private static boolean illegal(String k) {
         return illegalKeys.contains(k.trim());
+    }
+
+    public static void setCD(Float cd) {
+        HPlugin_AutoReply.cd = cd;
+        MyUtils.putStringInFile(thisPath + "/conf/auto_reply/cd", cd.toString());
     }
 }

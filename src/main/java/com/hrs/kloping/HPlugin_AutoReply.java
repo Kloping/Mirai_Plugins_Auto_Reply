@@ -40,7 +40,9 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static String OneComAddStr = "/添加";
     public static String OneComAddSplit = " ";
     public static boolean openPrivate = false;
+    public static float cd = 0;
     public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
+    public static boolean allK = true;
 
     private static void Init() {
         thisPath = thisPath == null ? "." : thisPath;
@@ -70,9 +72,20 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(GroupMessageEvent event) {
-                threads.execute(() -> {
-                    OnCommand.onHandler(event);
-                });
+                if (allK)
+                    threads.execute(() -> {
+                        OnCommand.onHandler(event);
+                        if (cd <= 0) return;
+                        else {
+                            allK = false;
+                            try {
+                                Thread.sleep((long) (cd * 1000));
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            allK = true;
+                        }
+                    });
             }
 
             @EventHandler
