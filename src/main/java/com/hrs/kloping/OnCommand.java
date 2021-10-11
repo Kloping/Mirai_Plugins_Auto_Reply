@@ -40,9 +40,13 @@ public class OnCommand {
                 }
                 return;
             } else if (text.startsWith("设置冷却") && q == host) {
-                Float cd = Float.valueOf(text.substring(4).trim());
-                setCD(cd);
-                event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.cd + "秒");
+                try {
+                    Float cd = Float.valueOf(text.substring(4).trim());
+                    setCD(cd);
+                    event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.cd + "秒");
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
         }
