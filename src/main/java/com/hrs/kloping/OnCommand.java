@@ -50,11 +50,25 @@ public class OnCommand {
                 return;
             }
         }
-        String code = event.getMessage().serializeToMiraiCode().trim();
-        String key = null;
-        if ((key = MyUtils.mather(code, k2v.keySet())) != null) {
-            Message message = k2v.get(key);
-            event.getSubject().sendMessage(message);
+        if (touchK) {
+            String code = event.getMessage().serializeToMiraiCode().trim();
+            String key = null;
+            if ((key = MyUtils.mather(code, k2v.keySet())) != null) {
+                Message message = k2v.get(key);
+                event.getSubject().sendMessage(message);
+            }
+            if (cd <= 0) return;
+            else {
+                touchK = false;
+                threads.execute(() -> {
+                    try {
+                        Thread.sleep((long) (cd * 1000));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    touchK = true;
+                });
+            }
         }
     }
 

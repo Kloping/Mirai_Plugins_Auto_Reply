@@ -42,7 +42,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static boolean openPrivate = false;
     public static float cd = 0;
     public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
-    public static boolean allK = true;
+    public static boolean touchK = true;
 
     private static void Init() {
         thisPath = thisPath == null ? "." : thisPath;
@@ -72,19 +72,8 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(GroupMessageEvent event) {
-                if (allK)
                     threads.execute(() -> {
                         OnCommand.onHandler(event);
-                        if (cd <= 0) return;
-                        else {
-                            allK = false;
-                            try {
-                                Thread.sleep((long) (cd * 1000));
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            allK = true;
-                        }
                     });
             }
 
