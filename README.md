@@ -59,3 +59,4 @@ _**illegalKeys: 不允许添加的词 (敏感词汇 )**_
 + 21/10/31
     - 当 followers 内容只存在 -1 的时候所有人都可添加和查询
     - host QQ 与 机器人私聊 autoReplyReloadConf 可重新加载配置
+
