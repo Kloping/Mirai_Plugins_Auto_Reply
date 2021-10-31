@@ -72,9 +72,9 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(GroupMessageEvent event) {
-                    threads.execute(() -> {
-                        OnCommand.onHandler(event);
-                    });
+                threads.execute(() -> {
+                    OnCommand.onHandler(event);
+                });
             }
 
             @EventHandler
@@ -82,6 +82,13 @@ public final class HPlugin_AutoReply extends JavaPlugin {
                 if (openPrivate)
                     threads.execute(() -> {
                         OnCommand.onHandler(event);
+                        if (event.getSender().getId() == host)
+                            if (event.getMessage().serializeToMiraiCode().trim().equals("autoReplyReloadConf")) {
+                                Initer.inited = false;
+                                Initer.Init();
+                                OnCommand.allis = null;
+                                event.getSubject().sendMessage("重新加载配置完成!");
+                            }
                     });
 
             }

@@ -10,14 +10,19 @@ import net.mamoe.mirai.message.data.PlainText;
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class OnCommand {
+    public static Boolean allis = null;
+
     public static void onHandler(MessageEvent event) {
+        if (allis == null) allis = ((!followers.isEmpty()) && followers.get(0).longValue() == -1);
+        System.out.println("followers=>" + followers);
+        if (allis) System.out.println("开放模式,所有人都可添加");
         String text = event.getMessage().serializeToMiraiCode().trim();
         long q = event.getSender().getId();
         if (list2e.containsKey(q)) {
             onAdding(q, event);
             return;
         }
-        if ((q == host.longValue() || followers.contains(q))) {
+        if (allis || (q == host.longValue() || followers.contains(q))) {
             if (text.equals(key)) {
                 if (list2e.containsKey(q)) {
                     event.getSubject().sendMessage("请先完成当前添加");

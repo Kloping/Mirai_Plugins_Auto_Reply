@@ -8,10 +8,11 @@ import java.util.Arrays;
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class Initer {
-    private static boolean inited = false;
+    public static boolean inited = false;
 
     public static final synchronized void Init() {
         if (!inited) {
+            clearAllConf();
             inited = true;
             key = init("#在这里写上触发添加的关键词,默认:开始添加", "key", key);
             host = init("#在这里写上你的的QQ号", "host", host, Long.class);
@@ -42,12 +43,17 @@ public class Initer {
                         continue;
                     }
                 }
-
             String lines = splitK;
             lines = init("#在这里写入敏感词 以空格分割", "illegalKeys", key);
             String[] ss = lines.split(" ");
             illegalKeys.addAll(Arrays.asList(ss));
         }
+    }
+
+    private static void clearAllConf() {
+        illegalKeys.clear();
+        k2v.clear();
+        followers.clear();
     }
 
     private static synchronized String init(String tips, String fileName, String defaultStr) {
