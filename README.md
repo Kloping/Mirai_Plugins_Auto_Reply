@@ -60,3 +60,7 @@ _**illegalKeys: 不允许添加的词 (敏感词汇 )**_
     - 当 followers 内容只存在 -1 的时候所有人都可添加和查询
     - host QQ 与 机器人私聊 autoReplyReloadConf 可重新加载配置
 
++ 21/11/10
+  - 此次更新将 处 data.data illegalKeys 文件 之外的配置
+  - 合并为 conf.json
+  - 添加指令 /autoReply ? #获取帮助

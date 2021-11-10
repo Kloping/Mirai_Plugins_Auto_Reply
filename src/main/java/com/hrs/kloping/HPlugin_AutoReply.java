@@ -1,6 +1,8 @@
 package com.hrs.kloping;
 
+import cn.kloping.initialize.FileInitializeValue;
 import kotlin.coroutines.CoroutineContext;
+import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.EventHandler;
@@ -21,36 +23,41 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @version 0.1
+ * @version 0.2
  * @Author HRS 3474006766@qq.com
  * @Date 21/9/16
  */
 public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
-    public static String key = "开始添加";
-    public static String selectKey = "查询词";
-    public static String deleteKey = "删除词";
-    public static Long host = -1L;
-    public static List<Long> followers = new LinkedList<>();
-    public static final String splitK = ":==>";
     public static final ExecutorService threads = Executors.newFixedThreadPool(10);
-    public static final Map<Number, entity> list2e = new ConcurrentHashMap<>();
-    public static final Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
     public static String thisPath = System.getProperty("user.dir");
-    public static String OneComAddStr = "/添加";
-    public static String OneComAddSplit = " ";
-    public static boolean openPrivate = false;
-    public static float cd = 0;
-    public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
     public static boolean touchK = true;
+    public static Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
+    public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
+
+//    public static String key = "开始添加";
+//    public static String selectKey = "查询词";
+//    public static String deleteKey = "删除词";
+//    public static Long host = -1L;
+//    public static List<Long> followers = new LinkedList<>();
+//    public static final String splitK = ":==>";
+//    public static final Map<Number, entity> list2e = new ConcurrentHashMap<>();
+//    public static final Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
+//    public static String OneComAddStr = "/添加";
+//    public static String OneComAddSplit = " ";
+//    public static boolean openPrivate = false;
+//    public static float cd = 0;
+
+    public static Conf conf = new Conf();
 
     private static void Init() {
         thisPath = thisPath == null ? "." : thisPath;
+        conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
         Initer.Init();
     }
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.15")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.2")
                 .name("插件_3 Author => HRS")
                 .info("自定义回话插件")
                 .author("HRS")
@@ -61,8 +68,9 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public void onEnable() {
         getLogger().info("HRS's AutoReply Plugin loaded!");
         Init();
-        if (host == -1) {
-            System.err.println("请在/conf/auto_reply/host设置您的QQ以控制你的机器人");
+        CommandManager.INSTANCE.registerCommand(CommandLine.INSTANCE, true);
+        if (conf.getHost() == -1) {
+            System.err.println("请在/conf/auto_reply/conf.json设置您的QQ以控制你的机器人");
         }
         GlobalEventChannel.INSTANCE.registerListenerHost(new SimpleListenerHost() {
             @Override
@@ -79,10 +87,10 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(FriendMessageEvent event) {
-                if (openPrivate)
+                if (conf.isOpenPrivate())
                     threads.execute(() -> {
                         OnCommand.onHandler(event);
-                        if (event.getSender().getId() == host)
+                        if (event.getSender().getId() == conf.getHost())
                             if (event.getMessage().serializeToMiraiCode().trim().equals("autoReplyReloadConf")) {
                                 Initer.inited = false;
                                 Initer.Init();
@@ -95,7 +103,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage(StrangerMessageEvent event) {
-                if (openPrivate)
+                if (conf.isOpenPrivate())
                     threads.execute(() -> {
                         OnCommand.onHandler(event);
                     });
@@ -107,7 +115,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         String k = entity.getK();
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
-        String line = k.replaceAll("%", ".?") + splitK + v;
+        String line = k.replaceAll("%", ".?") + conf.getSplitK() + v;
         MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/data.data", line, true);
         k2v.put(k, message);
     }
@@ -117,7 +125,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         for (String k : k2v.keySet()) {
             MessageChain message = k2v.get(k);
             String v = message.serializeToMiraiCode();
-            String line = k + splitK + v;
+            String line = k + conf.getSplitK() + v;
             list.add(line);
         }
         MyUtils.putStringInFile(thisPath + "/conf/auto_reply/data.data", list.toArray(new String[0]));

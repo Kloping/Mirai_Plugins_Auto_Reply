@@ -11,44 +11,47 @@ import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class OnCommand {
     public static Boolean allis = null;
+    public static boolean sohwed;
 
     public static void onHandler(MessageEvent event) {
-        if (allis == null) allis = ((!followers.isEmpty()) && followers.get(0).longValue() == -1);
-        System.out.println("followers=>" + followers);
-        if (allis) System.out.println("开放模式,所有人都可添加");
+        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().get(0).longValue() == -1);
+        if (allis || !sohwed) {
+            sohwed = true;
+            System.out.println("开放模式,所有人都可添加");
+        }
         String text = event.getMessage().serializeToMiraiCode().trim();
         long q = event.getSender().getId();
-        if (list2e.containsKey(q)) {
+        if (conf.getList2e().containsKey(q)) {
             onAdding(q, event);
             return;
         }
-        if (allis || (q == host.longValue() || followers.contains(q))) {
-            if (text.equals(key)) {
-                if (list2e.containsKey(q)) {
+        if (allis || (q == conf.getHost().longValue() || conf.getFollowers().contains(q))) {
+            if (text.equals(conf.getKey())) {
+                if (conf.getList2e().containsKey(q)) {
                     event.getSubject().sendMessage("请先完成当前添加");
                 } else {
-                    list2e.put(q, new entity(q));
+                    conf.getList2e().put(q, new entity(q));
                     event.getSubject().sendMessage("已添加到队列,请发送触发词");
                     return;
                 }
-            } else if (text.startsWith(selectKey)) {
+            } else if (text.startsWith(conf.getSelectKey())) {
                 event.getSubject().sendMessage(selectOne(text));
                 return;
-            } else if (text.startsWith(deleteKey) && q == host) {
+            } else if (text.startsWith(conf.getDeleteKey()) && q == conf.getHost()) {
                 event.getSubject().sendMessage(deleteOne(text));
                 return;
-            } else if (text.startsWith(OneComAddStr)) {
-                if (OneComAdd(text.substring(OneComAddStr.length()).trim())) {
+            } else if (text.startsWith(conf.getOneComAddStr())) {
+                if (OneComAdd(text.substring(conf.getOneComAddStr().length()).trim())) {
                     event.getSubject().sendMessage(String.format("添加完成"));
                 } else {
-                    event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", OneComAddSplit));
+                    event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", conf.OneComAddSplit));
                 }
                 return;
-            } else if (text.startsWith("设置冷却") && q == host) {
+            } else if (text.startsWith("设置冷却") && q == conf.getHost()) {
                 try {
                     Float cd = Float.valueOf(text.substring(4).trim());
                     setCD(cd);
-                    event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.cd + "秒");
+                    event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.conf.getCd() + "秒");
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
@@ -62,12 +65,12 @@ public class OnCommand {
                 Message message = k2v.get(key);
                 event.getSubject().sendMessage(message);
             }
-            if (cd <= 0) return;
+            if (conf.getCd() <= 0) return;
             else {
                 touchK = false;
                 threads.execute(() -> {
                     try {
-                        Thread.sleep((long) (cd * 1000));
+                        Thread.sleep((long) (conf.getCd() * 1000));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -79,7 +82,7 @@ public class OnCommand {
 
     private static boolean OneComAdd(String text) {
         try {
-            String[] ss = text.split(OneComAddSplit);
+            String[] ss = text.split(conf.OneComAddSplit);
             String key = null;
             if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
             if (illegal(ss[0])) return false;
@@ -95,7 +98,7 @@ public class OnCommand {
     }
 
     private static void onAdding(long q, MessageEvent event) {
-        entity entity = list2e.get(q);
+        entity entity = conf.getList2e().get(q);
         if (entity.getK() == null) {
             String code = event.getMessage().serializeToMiraiCode().trim();
             if (MyUtils.mather(code, k2v.keySet()) != null) {
@@ -114,12 +117,12 @@ public class OnCommand {
             String code = entity.getK();
             flushMap(entity);
             event.getSubject().sendMessage("添加完成");
-            list2e.remove(q);
+            conf.getList2e().remove(q);
         }
     }
 
     private static Message selectOne(String code) {
-        String k = code.substring(selectKey.length()).trim();
+        String k = code.substring(conf.getSelectKey().length()).trim();
         String key = null;
         if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
@@ -131,7 +134,7 @@ public class OnCommand {
     }
 
     private static Message deleteOne(String code) {
-        String k = code.substring(deleteKey.length()).trim();
+        String k = code.substring(conf.getDeleteKey().length()).trim();
         String key = null;
         if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
@@ -151,7 +154,7 @@ public class OnCommand {
     }
 
     public static void setCD(Float cd) {
-        HPlugin_AutoReply.cd = cd;
-        MyUtils.putStringInFile(thisPath + "/conf/auto_reply/cd", cd.toString());
+        HPlugin_AutoReply.conf.setCd(cd);
+        HPlugin_AutoReply.conf.apply();
     }
 }
