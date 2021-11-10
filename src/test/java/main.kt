@@ -13,7 +13,7 @@ suspend fun main() {
         enable()
     }
 
-    val bot = MiraiConsole.addBot(930204019, "Han_270362").alsoLogin() // 登录一个测试环境的 Bot
+    val bot = MiraiConsole.addBot(0,"").alsoLogin() // 登录一个测试环境的 Bot
 
     MiraiConsole.job.join()
 }
