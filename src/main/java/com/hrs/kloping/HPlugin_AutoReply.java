@@ -2,6 +2,7 @@ package com.hrs.kloping;
 
 import cn.kloping.initialize.FileInitializeValue;
 import kotlin.coroutines.CoroutineContext;
+import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -14,6 +15,8 @@ import net.mamoe.mirai.event.events.StrangerMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +33,7 @@ import java.util.concurrent.Executors;
 public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
     public static final ExecutorService threads = Executors.newFixedThreadPool(10);
-    public static String thisPath = System.getProperty("user.dir");
+    public static String thisPath = MiraiConsoleImplementation.getInstance().getRootPath().toFile().getAbsolutePath();
     public static boolean touchK = true;
     public static Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
     public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
@@ -51,9 +54,22 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static Conf conf = new Conf();
 
     private static void Init() {
+        createFile();
         thisPath = thisPath == null ? "." : thisPath;
         conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
         Initer.Init();
+    }
+
+    private static void createFile() {
+        try {
+            File ff = new File(thisPath);
+            new File(ff,"/conf/auto_reply/conf.json").getParentFile().mkdirs();
+            new File(ff,"/conf/auto_reply/conf.json").createNewFile();
+            new File(ff,"/conf/auto_reply/data.data").getParentFile().mkdirs();
+            new File(ff,"/conf/auto_reply/data.data").createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private HPlugin_AutoReply() {
