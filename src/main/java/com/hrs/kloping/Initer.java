@@ -1,9 +1,11 @@
 package com.hrs.kloping;
 
 import io.github.kloping.initialize.FileInitializeValue;
+import io.github.kloping.map.MapUtils;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.MessageChain;
 
+import java.io.File;
 import java.util.Arrays;
 
 import static com.hrs.kloping.HPlugin_AutoReply.*;
@@ -15,20 +17,29 @@ public class Initer {
         if (!inited) {
             inited = true;
             conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
-            String[] sss = MyUtils.getStringsFromFile(thisPath + "/conf/auto_reply/data.data");
-            if (sss != null)
-                for (String ss : sss) {
-                    try {
-                        String[] ss2 = ss.split(conf.getSplitK());
-                        if (ss2[0].trim().isEmpty()) continue;
-                        if (ss2[1].trim().isEmpty()) continue;
-                        MessageChain chain = MiraiCode.deserializeMiraiCode(ss2[1]);
-                        k2v.put(ss2[0], chain);
-                    } catch (Exception e) {
-                        continue;
+            if (new File(thisPath + "/conf/auto_reply/data.data").exists()) {
+                String[] sss = MyUtils.getStringsFromFile(thisPath + "/conf/auto_reply/data.data");
+                if (sss != null)
+                    for (String ss : sss) {
+                        try {
+                            String[] ss2 = ss.split(conf.getSplitK());
+                            if (ss2[0].trim().isEmpty()) continue;
+                            if (ss2[1].trim().isEmpty()) continue;
+                            MapUtils.append(k2vs, ss2[0], ss2[1]);
+                        } catch (Exception e) {
+                            continue;
+                        }
                     }
+                new File(thisPath + "/conf/auto_reply/data.data").delete();
+            }
+            k2vs.putAll(FileInitializeValue.getValue(thisPath + "/conf/auto_reply/data.json", k2vs, true));
+            resourceMap();
+            k2vs.forEach((k, v) -> {
+                for (String m1 : v) {
+                    MessageChain chain = MiraiCode.deserializeMiraiCode(m1);
+                    MapUtils.append(k2v, k, chain);
                 }
-            k2v.putAll(FileInitializeValue.getValue(thisPath + "/conf/auto_reply/data.json", k2v, true));
+            });
             String lines = conf.getSplitK();
             lines = init("#在这里写入敏感词 以空格分割", "illegalKeys", conf.getKey());
             String[] ss = lines.trim().split("\\s+");

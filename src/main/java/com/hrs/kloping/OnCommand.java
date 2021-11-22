@@ -7,6 +7,9 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import net.mamoe.mirai.message.data.PlainText;
 
+import java.util.List;
+import java.util.Random;
+
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class OnCommand {
@@ -62,8 +65,8 @@ public class OnCommand {
             String code = event.getMessage().serializeToMiraiCode().trim();
             String key = null;
             if ((key = MyUtils.mather(code, k2v.keySet())) != null) {
-                Message message = k2v.get(key);
-                event.getSubject().sendMessage(message);
+                List<MessageChain> message = k2v.get(key);
+                event.getSubject().sendMessage(rand(message));
             }
             if (conf.getCd() <= 0) return;
             else {
@@ -78,6 +81,12 @@ public class OnCommand {
                 });
             }
         }
+    }
+
+    public static final Random random = new Random();
+
+    private static MessageChain rand(List<MessageChain> message) {
+        return message.get(random.nextInt(message.size()));
     }
 
     private static boolean OneComAdd(String text) {
@@ -103,10 +112,10 @@ public class OnCommand {
         entity entity = conf.getList2e().get(q);
         if (entity.getK() == null) {
             String code = event.getMessage().serializeToMiraiCode().trim();
-            if (MyUtils.mather(code, k2v.keySet()) != null) {
+            /*if (MyUtils.mather(code, k2v.keySet()) != null) {
                 event.getSubject().sendMessage("该触发词,已存在");
                 return;
-            }
+            }*/
             if (illegal(code)) {
                 event.getSubject().sendMessage("敏感词汇!");
                 return;
@@ -128,7 +137,12 @@ public class OnCommand {
         String key = null;
         if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
-            builder.append("触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(key));
+            builder.append("已删除\r\n触发词:").append(k).append("\r\n");
+            for (MessageChain chain : k2v.get(key)) {
+                builder.append("回复词:");
+                builder.append(chain);
+                builder.append("\n");
+            }
             return builder.build();
         } else {
             return noFound;
@@ -140,7 +154,12 @@ public class OnCommand {
         String key = null;
         if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
-            builder.append("已删除\r\n触发词:").append(k).append("\r\n").append("回复词:").append(k2v.get(key));
+            builder.append("已删除\r\n触发词:").append(k).append("\r\n");
+            for (MessageChain chain : k2v.get(key)) {
+                builder.append("回复词:");
+                builder.append(chain);
+                builder.append("\n");
+            }
             k2v.remove(key);
             resourceMap();
             return builder.build();

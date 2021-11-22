@@ -29,7 +29,7 @@ public class entity {
     }
 
     public void setK(String k) {
-        this.k = k.replaceAll("%\\?", ".{0,}").replaceAll("%+", ".+").replaceAll("%", ".{1,1}");
+        this.k = k.replaceAll("%\\?", ".{0,}").replaceAll("%\\+", ".+").replaceAll("%", ".{1,1}");
     }
 
     public MessageChain getV() {

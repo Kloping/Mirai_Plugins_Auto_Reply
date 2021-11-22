@@ -1,6 +1,7 @@
 package com.hrs.kloping;
 
 import io.github.kloping.initialize.FileInitializeValue;
+import io.github.kloping.map.MapUtils;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.console.command.CommandManager;
@@ -17,7 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +35,8 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static final ExecutorService threads = Executors.newFixedThreadPool(10);
     public static String thisPath = MiraiConsoleImplementation.getInstance().getRootPath().toFile().getAbsolutePath();
     public static boolean touchK = true;
-    public static Map<String, MessageChain> k2v = new ConcurrentHashMap<>();
+    public static Map<String, List<MessageChain>> k2v = new ConcurrentHashMap<>();
+    public static Map<String, List<String>> k2vs = new ConcurrentHashMap<>();
     public static List<String> illegalKeys = new CopyOnWriteArrayList<>();
 
 //    public static String key = "开始添加";
@@ -65,8 +66,8 @@ public final class HPlugin_AutoReply extends JavaPlugin {
             File ff = new File(thisPath);
             new File(ff, "/conf/auto_reply/conf.json").getParentFile().mkdirs();
             new File(ff, "/conf/auto_reply/conf.json").createNewFile();
-            new File(ff, "/conf/auto_reply/data.data").getParentFile().mkdirs();
-            new File(ff, "/conf/auto_reply/data.data").createNewFile();
+            new File(ff, "/conf/auto_reply/data.json").getParentFile().mkdirs();
+            new File(ff, "/conf/auto_reply/data.json").createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,9 +132,9 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         String k = entity.getK();
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
-        String line = k.replaceAll("%", ".?") + conf.getSplitK() + v;
-        k2v.put(k, message);
-        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2v, true);
+        MapUtils.append(k2v, k, message);
+        MapUtils.append(k2vs, k, v);
+        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2vs, true);
     }
 
     public static synchronized void resourceMap() {
@@ -147,6 +148,6 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         }
         MyUtils.putStringInFile(thisPath + "/conf/auto_reply/data.data", list.toArray(new String[0]));
 */
-        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2v, true);
+        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2vs, true);
     }
 }
