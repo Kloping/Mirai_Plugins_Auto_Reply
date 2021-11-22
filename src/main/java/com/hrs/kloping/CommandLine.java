@@ -36,6 +36,7 @@ public class CommandLine extends JSimpleCommand {
             System.out.println("添加follower:" + q);
             return "添加follower:" + q;
         }
+        System.err.println(tips);
         return tips;
     }
 
