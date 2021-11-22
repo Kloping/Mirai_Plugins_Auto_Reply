@@ -132,9 +132,11 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         String k = entity.getK();
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
-        MapUtils.append(k2v, k, message);
-        MapUtils.append(k2vs, k, v);
-        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2vs, true);
+        if (k2vs.get(k) == null || !k2vs.get(k).contains(v)) {
+            MapUtils.append(k2v, k, message);
+            MapUtils.append(k2vs, k, v);
+            FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2vs, true);
+        }
     }
 
     public static synchronized void resourceMap() {
