@@ -1,6 +1,6 @@
 package com.hrs.kloping;
 
-import cn.kloping.initialize.FileInitializeValue;
+import io.github.kloping.initialize.FileInitializeValue;
 import net.mamoe.mirai.console.command.java.JSimpleCommand;
 
 import static com.hrs.kloping.HPlugin_AutoReply.conf;
@@ -15,29 +15,31 @@ public class CommandLine extends JSimpleCommand {
     }
 
     @Handler
-    public void onCommand(String arg) {
+    public String onCommand(String arg) {
         switch (arg) {
             case "reload":
                 conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
                 System.out.println("已重新加载配置");
-                return;
+                return "已重新加载配置";
         }
         if (arg.startsWith("setHost=")) {
             long q = Long.parseLong(arg.substring("setHost=".length()).trim());
             conf.host = q;
             conf.apply();
             System.out.println("设置主人为:" + q);
-            return;
+            return "设置主人为:" + q;
         }
         if (arg.startsWith("addFollower:")) {
             long q = Long.parseLong(arg.substring("addFollower:".length()).trim());
             conf.followers.add(q);
             conf.apply();
             System.out.println("添加follower:" + q);
-            return;
+            return "添加follower:" + q;
         }
-        System.err.println("reload\t#重新加载配置");
-        System.err.println("setHost=1\t#设置主人qq");
-        System.err.println("addFollower:1\t#添加 follower");
+        return tips;
     }
+
+    private static final String tips = "reload\t#重新加载配置\n" +
+            "setHost=1\t#设置主人qq\n" +
+            "addFollower:1\t#添加 follower";
 }

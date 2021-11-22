@@ -1,6 +1,6 @@
 package com.hrs.kloping;
 
-import cn.kloping.initialize.FileInitializeValue;
+import io.github.kloping.initialize.FileInitializeValue;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.MessageChain;
 
@@ -20,15 +20,18 @@ public class Initer {
                 for (String ss : sss) {
                     try {
                         String[] ss2 = ss.split(conf.getSplitK());
+                        if (ss2[0].trim().isEmpty()) continue;
+                        if (ss2[1].trim().isEmpty()) continue;
                         MessageChain chain = MiraiCode.deserializeMiraiCode(ss2[1]);
                         k2v.put(ss2[0], chain);
                     } catch (Exception e) {
                         continue;
                     }
                 }
+            k2v.putAll(FileInitializeValue.getValue(thisPath + "/conf/auto_reply/data.json", k2v, true));
             String lines = conf.getSplitK();
             lines = init("#在这里写入敏感词 以空格分割", "illegalKeys", conf.getKey());
-            String[] ss = lines.split(" ");
+            String[] ss = lines.trim().split("\\s+");
             illegalKeys.addAll(Arrays.asList(ss));
         }
     }

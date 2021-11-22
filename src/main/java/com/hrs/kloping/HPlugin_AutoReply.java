@@ -1,6 +1,6 @@
 package com.hrs.kloping;
 
-import cn.kloping.initialize.FileInitializeValue;
+import io.github.kloping.initialize.FileInitializeValue;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.console.command.CommandManager;
@@ -63,17 +63,17 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     private static void createFile() {
         try {
             File ff = new File(thisPath);
-            new File(ff,"/conf/auto_reply/conf.json").getParentFile().mkdirs();
-            new File(ff,"/conf/auto_reply/conf.json").createNewFile();
-            new File(ff,"/conf/auto_reply/data.data").getParentFile().mkdirs();
-            new File(ff,"/conf/auto_reply/data.data").createNewFile();
+            new File(ff, "/conf/auto_reply/conf.json").getParentFile().mkdirs();
+            new File(ff, "/conf/auto_reply/conf.json").createNewFile();
+            new File(ff, "/conf/auto_reply/data.data").getParentFile().mkdirs();
+            new File(ff, "/conf/auto_reply/data.data").createNewFile();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.2.1")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.2.5")
                 .name("插件_3 Author => HRS")
                 .info("自定义回话插件")
                 .author("HRS")
@@ -132,11 +132,12 @@ public final class HPlugin_AutoReply extends JavaPlugin {
         MessageChain message = entity.getV();
         String v = message.serializeToMiraiCode();
         String line = k.replaceAll("%", ".?") + conf.getSplitK() + v;
-        MyUtils.appendStringInFile(thisPath + "/conf/auto_reply/data.data", line, true);
         k2v.put(k, message);
+        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2v, true);
     }
 
     public static synchronized void resourceMap() {
+/*
         List<String> list = new LinkedList<>();
         for (String k : k2v.keySet()) {
             MessageChain message = k2v.get(k);
@@ -145,5 +146,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
             list.add(line);
         }
         MyUtils.putStringInFile(thisPath + "/conf/auto_reply/data.data", list.toArray(new String[0]));
+*/
+        FileInitializeValue.putValues(thisPath + "/conf/auto_reply/data.json", k2v, true);
     }
 }

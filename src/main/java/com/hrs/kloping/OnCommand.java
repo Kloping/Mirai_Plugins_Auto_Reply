@@ -86,6 +86,8 @@ public class OnCommand {
             String key = null;
             if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
             if (illegal(ss[0])) return false;
+            if (ss[0].trim().isEmpty()) return false;
+            if (ss[1].trim().isEmpty()) return false;
             entity entity = new entity(0);
             entity.setK(ss[0]);
             entity.setV(MiraiCode.deserializeMiraiCode(ss[1]));

@@ -64,3 +64,7 @@ _**illegalKeys: 不允许添加的词 (敏感词汇 )**_
   - 此次更新将 处 data.data illegalKeys 文件 之外的配置
   - 合并为 conf.json
   - 添加指令 /autoReply ? #获取帮助
+
++ 21/11/22 -v 0.2.5
+  - 数据储存 转为 JSON 格式
+  - 修复部分bug
