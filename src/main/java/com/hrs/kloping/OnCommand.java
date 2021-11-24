@@ -18,9 +18,10 @@ public class OnCommand {
 
     public static void onHandler(MessageEvent event) {
         if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().get(0).longValue() == -1);
-        if (allis || !sohwed) {
+        if (!sohwed) {
             sohwed = true;
-            System.out.println("开放模式,所有人都可添加");
+            if (allis)
+                System.out.println("开放模式,所有人都可添加");
         }
         String text = event.getMessage().serializeToMiraiCode().trim();
         long q = event.getSender().getId();
