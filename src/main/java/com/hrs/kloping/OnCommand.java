@@ -17,7 +17,7 @@ public class OnCommand {
     public static boolean sohwed;
 
     public static void onHandler(MessageEvent event) {
-        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().contains(-1));
+        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().contains(-1L));
         if (!sohwed) {
             sohwed = true;
             if (allis)
@@ -60,7 +60,7 @@ public class OnCommand {
             }
         }
         if (text.startsWith(conf.getDeleteKey())) {
-            if (conf.getCanDeletes().contains(-1) || q == conf.getHost() || conf.getCanDeletes().contains(q)) {
+            if (conf.getCanDeletes().contains(-1L) || q == conf.getHost() || conf.getCanDeletes().contains(q)) {
                 event.getSubject().sendMessage(deleteOne(text));
             }
             return;
