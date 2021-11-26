@@ -61,14 +61,18 @@ _**illegalKeys: 不允许添加的词 (敏感词汇 )**_
     - host QQ 与 机器人私聊 autoReplyReloadConf 可重新加载配置
 
 + 21/11/10
-  - 此次更新将 处 data.data illegalKeys 文件 之外的配置
-  - 合并为 conf.json
-  - 添加指令 /autoReply ? #获取帮助
+    - 此次更新将 处 data.data illegalKeys 文件 之外的配置
+    - 合并为 conf.json
+    - 添加指令 /autoReply ? #获取帮助
 
 + 21/11/22 -v 0.2.5
-  - 数据储存 转为 JSON 格式
-  - 修复部分bug
-  - 同时支持了 一对 多的随机回复
+    - 数据储存 转为 JSON 格式
+    - 修复部分bug
+    - 同时支持了 一对 多的随机回复
 + 21/11/24
-  - 修复显示开放模式的显示bug
-  - 兼容了中文符号的？
+    - 修复显示开放模式的显示bug
+    - 兼容了中文符号的？
++ 21/11/26
+    - 修复已知bug
+    - 并添加 配置 canDeletes
+        - 可以删除词的人员,存在-1时所有人都可以

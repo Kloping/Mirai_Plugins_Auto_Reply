@@ -1,10 +1,8 @@
 package com.hrs.kloping;
 
-import io.github.kloping.initialize.FileInitializeValue;
 import net.mamoe.mirai.console.command.java.JSimpleCommand;
 
 import static com.hrs.kloping.HPlugin_AutoReply.conf;
-import static com.hrs.kloping.HPlugin_AutoReply.thisPath;
 
 public class CommandLine extends JSimpleCommand {
     public static final CommandLine INSTANCE = new CommandLine();
@@ -18,7 +16,7 @@ public class CommandLine extends JSimpleCommand {
     public String onCommand(String arg) {
         switch (arg) {
             case "reload":
-                conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
+                Initer.Init();
                 System.out.println("已重新加载配置");
                 return "已重新加载配置";
         }

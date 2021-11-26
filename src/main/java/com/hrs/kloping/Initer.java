@@ -11,40 +11,37 @@ import java.util.Arrays;
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class Initer {
-    public static boolean inited = false;
-
     public static final synchronized void Init() {
-        if (!inited) {
-            inited = true;
-            conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
-            if (new File(thisPath + "/conf/auto_reply/data.data").exists()) {
-                String[] sss = MyUtils.getStringsFromFile(thisPath + "/conf/auto_reply/data.data");
-                if (sss != null)
-                    for (String ss : sss) {
-                        try {
-                            String[] ss2 = ss.split(conf.getSplitK());
-                            if (ss2[0].trim().isEmpty()) continue;
-                            if (ss2[1].trim().isEmpty()) continue;
-                            MapUtils.append(k2vs, ss2[0], ss2[1]);
-                        } catch (Exception e) {
-                            continue;
-                        }
+        conf = FileInitializeValue.getValue(thisPath + "/conf/auto_reply/conf.json", conf, true);
+        if (new File(thisPath + "/conf/auto_reply/data.data").exists()) {
+            String[] sss = MyUtils.getStringsFromFile(thisPath + "/conf/auto_reply/data.data");
+            if (sss != null)
+                for (String ss : sss) {
+                    try {
+                        String[] ss2 = ss.split(conf.getSplitK());
+                        if (ss2[0].trim().isEmpty()) continue;
+                        if (ss2[1].trim().isEmpty()) continue;
+                        MapUtils.append(k2vs, ss2[0], ss2[1]);
+                    } catch (Exception e) {
+                        continue;
                     }
-                new File(thisPath + "/conf/auto_reply/data.data").delete();
-            }
-            k2vs.putAll(FileInitializeValue.getValue(thisPath + "/conf/auto_reply/data.json", k2vs, true));
-            resourceMap();
-            k2vs.forEach((k, v) -> {
-                for (String m1 : v) {
-                    MessageChain chain = MiraiCode.deserializeMiraiCode(m1);
-                    MapUtils.append(k2v, k, chain);
                 }
-            });
-            String lines = conf.getSplitK();
-            lines = init("#在这里写入敏感词 以空格分割", "illegalKeys", conf.getKey());
-            String[] ss = lines.trim().split("\\s+");
-            illegalKeys.addAll(Arrays.asList(ss));
+            new File(thisPath + "/conf/auto_reply/data.data").delete();
         }
+        k2vs.clear();
+        k2vs.putAll(FileInitializeValue.getValue(thisPath + "/conf/auto_reply/data.json", k2vs, true));
+        resourceMap();
+        k2vs.forEach((k, v) -> {
+            for (String m1 : v) {
+                MessageChain chain = MiraiCode.deserializeMiraiCode(m1);
+                MapUtils.append(k2v, k, chain);
+            }
+        });
+        String lines = conf.getSplitK();
+        lines = init("#在这里写入敏感词 以空格分割", "illegalKeys", conf.getKey());
+        String[] ss = lines.trim().split("\\s+");
+        illegalKeys.clear();
+        illegalKeys.addAll(Arrays.asList(ss));
     }
 
     private static synchronized String init(String tips, String fileName, String defaultStr) {

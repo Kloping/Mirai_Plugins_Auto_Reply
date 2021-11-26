@@ -26,9 +26,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @version 0.2
- * @Author HRS 3474006766@qq.com
- * @Date 21/9/16
+ * @version 0.2.6
+ * @Author HRS 3474006766@qq.com github.com/kloping
+ * @Create_Date 21/9/17
+ * @Update 21/11/26
  */
 public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
@@ -74,7 +75,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     }
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.2.6-M1")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.2.6")
                 .name("插件_3 Author => HRS")
                 .info("自定义回话插件")
                 .author("HRS")
@@ -109,7 +110,6 @@ public final class HPlugin_AutoReply extends JavaPlugin {
                         OnCommand.onHandler(event);
                         if (event.getSender().getId() == conf.getHost())
                             if (event.getMessage().serializeToMiraiCode().trim().equals("autoReplyReloadConf")) {
-                                Initer.inited = false;
                                 Initer.Init();
                                 OnCommand.allis = null;
                                 event.getSubject().sendMessage("重新加载配置完成!");

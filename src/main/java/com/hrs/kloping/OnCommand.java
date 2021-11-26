@@ -17,7 +17,7 @@ public class OnCommand {
     public static boolean sohwed;
 
     public static void onHandler(MessageEvent event) {
-        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().get(0).longValue() == -1);
+        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().contains(-1));
         if (!sohwed) {
             sohwed = true;
             if (allis)
@@ -41,14 +41,11 @@ public class OnCommand {
             } else if (text.startsWith(conf.getSelectKey())) {
                 event.getSubject().sendMessage(selectOne(text));
                 return;
-            } else if (text.startsWith(conf.getDeleteKey()) && q == conf.getHost()) {
-                event.getSubject().sendMessage(deleteOne(text));
-                return;
             } else if (text.startsWith(conf.getOneComAddStr())) {
                 if (OneComAdd(text.substring(conf.getOneComAddStr().length()).trim())) {
                     event.getSubject().sendMessage(String.format("添加完成"));
                 } else {
-                    event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", conf.OneComAddSplit));
+                    event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", conf.oneComAddSplit));
                 }
                 return;
             } else if (text.startsWith("设置冷却") && q == conf.getHost()) {
@@ -61,6 +58,12 @@ public class OnCommand {
                 }
                 return;
             }
+        }
+        if (text.startsWith(conf.getDeleteKey())) {
+            if (conf.getCanDeletes().contains(-1) || q == conf.getHost() || conf.getCanDeletes().contains(q)) {
+                event.getSubject().sendMessage(deleteOne(text));
+            }
+            return;
         }
         if (touchK) {
             String code = event.getMessage().serializeToMiraiCode().trim();
@@ -92,9 +95,9 @@ public class OnCommand {
 
     private static boolean OneComAdd(String text) {
         try {
-            String[] ss = text.split(conf.OneComAddSplit);
+            String[] ss = text.split(conf.oneComAddSplit);
             String key = null;
-            if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
+//            if ((key = MyUtils.mather(ss[0], k2v.keySet())) != null) return false;
             if (illegal(ss[0])) return false;
             if (ss[0].trim().isEmpty()) return false;
             if (ss[1].trim().isEmpty()) return false;
@@ -138,7 +141,7 @@ public class OnCommand {
         String key = null;
         if ((key = MyUtils.mather(k, k2v.keySet())) != null) {
             MessageChainBuilder builder = new MessageChainBuilder();
-            builder.append("已删除\r\n触发词:").append(k).append("\r\n");
+            builder.append("触发词:").append(k).append("\r\n");
             for (MessageChain chain : k2v.get(key)) {
                 builder.append("回复词:");
                 builder.append(chain);
@@ -162,6 +165,7 @@ public class OnCommand {
                 builder.append("\n");
             }
             k2v.remove(key);
+            k2vs.remove(key);
             resourceMap();
             return builder.build();
         } else {

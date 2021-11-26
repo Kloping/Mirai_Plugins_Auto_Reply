@@ -1,11 +1,12 @@
 package com.hrs.kloping;
 
 
+import com.alibaba.fastjson.annotation.JSONField;
 import io.github.kloping.initialize.FileInitializeValue;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hrs.kloping.HPlugin_AutoReply.thisPath;
@@ -15,12 +16,15 @@ public class Conf {
     public String selectKey = "查询词";
     public String deleteKey = "删除词";
     public Long host = -1L;
-    public List<Long> followers = new LinkedList<>();
+    public Set<Long> followers = new LinkedHashSet<>();
+    //兼容旧的
     public String splitK = ":==>";
+    @JSONField(serialize = false)
     public Map<Number, entity> list2e = new ConcurrentHashMap<>();
-    public String OneComAddStr = "/添加";
-    public String OneComAddSplit = " ";
+    public String oneComAddStr = "/添加";
+    public String oneComAddSplit = " ";
     public boolean openPrivate = false;
+    public Set<Long> canDeletes = new LinkedHashSet<>();
     public float cd = 0;
 
     public Conf() {
@@ -50,12 +54,28 @@ public class Conf {
         this.host = host;
     }
 
-    public List<Long> getFollowers() {
+    public Set<Long> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<Long> followers) {
+    public void setFollowers(Set<Long> followers) {
         this.followers = followers;
+    }
+
+    public void setSplitK(String splitK) {
+        this.splitK = splitK;
+    }
+
+    public void setList2e(Map<Number, entity> list2e) {
+        this.list2e = list2e;
+    }
+
+    public Set<Long> getCanDeletes() {
+        return canDeletes;
+    }
+
+    public void setCanDeletes(Set<Long> canDeletes) {
+        this.canDeletes = canDeletes;
     }
 
     public String getSplitK() {
@@ -67,19 +87,19 @@ public class Conf {
     }
 
     public String getOneComAddStr() {
-        return OneComAddStr;
+        return oneComAddStr;
     }
 
     public void setOneComAddStr(String oneComAddStr) {
-        OneComAddStr = oneComAddStr;
+        this.oneComAddStr = oneComAddStr;
     }
 
     public String getOneComAddSplit() {
-        return OneComAddSplit;
+        return oneComAddSplit;
     }
 
     public void setOneComAddSplit(String oneComAddSplit) {
-        OneComAddSplit = oneComAddSplit;
+        this.oneComAddSplit = oneComAddSplit;
     }
 
     public boolean isOpenPrivate() {
