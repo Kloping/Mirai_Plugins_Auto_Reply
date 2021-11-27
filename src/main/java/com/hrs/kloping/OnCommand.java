@@ -13,57 +13,49 @@ import java.util.Random;
 import static com.hrs.kloping.HPlugin_AutoReply.*;
 
 public class OnCommand {
-    public static Boolean allis = null;
     public static boolean sohwed;
 
     public static void onHandler(MessageEvent event) {
-        if (allis == null) allis = ((!conf.getFollowers().isEmpty()) && conf.getFollowers().contains(-1L));
         if (!sohwed) {
             sohwed = true;
-            if (allis)
+            if (conf.getFollowers().contains(-1L))
                 System.out.println("开放模式,所有人都可添加");
         }
         String text = event.getMessage().serializeToMiraiCode().trim();
-        long q = event.getSender().getId();
-        if (conf.getList2e().containsKey(q)) {
-            onAdding(q, event);
+        long qid = event.getSender().getId();
+        if (conf.getList2e().containsKey(qid)) {
+            onAdding(qid, event);
             return;
         }
-        if (allis || (q == conf.getHost().longValue() || conf.getFollowers().contains(q))) {
-            if (text.equals(conf.getKey())) {
-                if (conf.getList2e().containsKey(q)) {
+        if (text.equals(conf.getKey())) {
+            if (conf.getFollowers().contains(-1L) || conf.getFollowers().contains(qid) || conf.host.longValue() == qid)
+                if (conf.getList2e().containsKey(qid))
                     event.getSubject().sendMessage("请先完成当前添加");
-                } else {
-                    conf.getList2e().put(q, new entity(q));
+                else {
+                    conf.getList2e().put(qid, new entity(qid));
                     event.getSubject().sendMessage("已添加到队列,请发送触发词");
-                    return;
                 }
-            } else if (text.startsWith(conf.getSelectKey())) {
+        } else if (text.startsWith(conf.getSelectKey())) {
+            if (conf.getFollowers().contains(-1L) || conf.getFollowers().contains(qid) || conf.host.longValue() == qid)
                 event.getSubject().sendMessage(selectOne(text));
-                return;
-            } else if (text.startsWith(conf.getOneComAddStr())) {
+        } else if (text.startsWith(conf.getDeleteKey())) {
+            if (conf.getCanDeletes().contains(-1L) || qid == conf.getHost().longValue() || conf.getCanDeletes().contains(qid))
+                event.getSubject().sendMessage(deleteOne(text));
+        } else if (text.startsWith(conf.getOneComAddStr())) {
+            if (conf.getFollowers().contains(-1L) || conf.getFollowers().contains(qid) || conf.host.longValue() == qid)
                 if (OneComAdd(text.substring(conf.getOneComAddStr().length()).trim())) {
                     event.getSubject().sendMessage(String.format("添加完成"));
                 } else {
                     event.getSubject().sendMessage(String.format("添加失败,可能字符中,没有分割关键字(%s)\n或存在敏感词\n或已存在该关键词", conf.oneComAddSplit));
                 }
-                return;
-            } else if (text.startsWith("设置冷却") && q == conf.getHost()) {
-                try {
-                    Float cd = Float.valueOf(text.substring(4).trim());
-                    setCD(cd);
-                    event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.conf.getCd() + "秒");
-                } catch (NumberFormatException e) {
-                    e.printStackTrace();
-                }
-                return;
+        } else if (text.startsWith("设置冷却") && qid == conf.getHost()) {
+            try {
+                Float cd = Float.valueOf(text.substring(4).trim());
+                setCD(cd);
+                event.getSubject().sendMessage("当前冷却:" + HPlugin_AutoReply.conf.getCd() + "秒");
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
-        }
-        if (text.startsWith(conf.getDeleteKey())) {
-            if (conf.getCanDeletes().contains(-1L) || q == conf.getHost() || conf.getCanDeletes().contains(q)) {
-                event.getSubject().sendMessage(deleteOne(text));
-            }
-            return;
         }
         if (touchK) {
             String code = event.getMessage().serializeToMiraiCode().trim();

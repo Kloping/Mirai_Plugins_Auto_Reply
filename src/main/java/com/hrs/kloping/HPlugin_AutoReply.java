@@ -111,7 +111,6 @@ public final class HPlugin_AutoReply extends JavaPlugin {
                         if (event.getSender().getId() == conf.getHost())
                             if (event.getMessage().serializeToMiraiCode().trim().equals("autoReplyReloadConf")) {
                                 Initer.Init();
-                                OnCommand.allis = null;
                                 event.getSubject().sendMessage("重新加载配置完成!");
                             }
                     });
