@@ -68,6 +68,6 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 目前仅可 搜索 与 修改 示例:
 ![img_1.png](img_1.png)
-    #权重: 权重越大触发概率也就越大 [算法](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/src/main/java/com/hrs/kloping/MyUtils.java#L45)
+    #权重: 权重越大触发概率也就越大 [算法](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/src/main/java/com/hrs/kloping/MyUtils.java#L49)
 
 当存在大量数据时 可能会出现未知异常
