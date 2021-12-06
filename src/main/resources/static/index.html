@@ -62,7 +62,7 @@
     let vm1 = new Vue({
         el: "#main",
         created: function () {
-            axios.get("/getAll").then(function (response) {
+            axios.get("/get_all").then(function (response) {
                 vm1.data = response.data
             }).catch(function (err) {
                 alert(err);

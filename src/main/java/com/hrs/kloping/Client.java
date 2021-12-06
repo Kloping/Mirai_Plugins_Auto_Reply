@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -39,17 +40,17 @@ public class Client implements Runnable {
         String line = null;
         String[] sss = null;
         boolean can = false;
-        while ((line = br.readLine()) != null) {
+        while ((line = br.readLine().toLowerCase()) != null) {
             if (sss == null) sss = line.split("\\s+");
             if (line.trim().isEmpty()) break;
             sb.append(line).append("\n");
             if (line.startsWith("cookie")) {
-                can = line.equals("cookie: key=" + uuid);
+                can = line.contains("key=" + uuid.toLowerCase());
             }
         }
         String url = sss[1];
         if (url.equals(uuidW)) {
-            source("/index.html");
+            source("/index.html", can);
             return;
         } else if (can && url.startsWith("/modify")) {
             url = url.substring("/modify?".length());
@@ -78,11 +79,11 @@ public class Client implements Runnable {
             case "/favicon.ico":
                 favicon();
                 return;
-            case "/getAll":
+            case "/get_all":
                 allData();
                 return;
             default:
-                source(sss[1]);
+                source(sss[1], true);
                 return;
         }
     }
@@ -128,19 +129,18 @@ public class Client implements Runnable {
         pw.close();
     }
 
-    private void source(String name) throws Exception {
+    private void source(String name, boolean k) throws Exception {
         OutputStream os = socket.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("static" + name);
         String type = getContentType(name);
         byte[] bytes = is.readAllBytes();
-        pw.println("HTTP/1.1 200 OK\n" +
-                "vary: Origin, Access-Control-Request-Method, Access-Control-Request-Headers\n" +
-                "content-type: " + type + "\n" +
-                "content-length: " + bytes.length + "\n" +
+        pw.println(String.format("HTTP/1.1 200 OK\n" +
+                "content-type: %s\n" +
+                "content-length: %s\n" +
                 "keep-alive: timeout=60\n" +
-                "connection: keep-alive");
-        if (name.equals("/index.html"))
+                "connection: keep-alive", type, bytes.length, new Date()));
+        if (!k && name.equals("/index.html"))
             pw.println("set-cookie: key=" + uuid + "\n");
         pw.println();
         pw.flush();
