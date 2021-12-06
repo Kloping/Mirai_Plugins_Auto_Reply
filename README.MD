@@ -1,6 +1,6 @@
 # Mirai_Plugins_Auto_Reply V 0.3
 
-## 不兼容旧的数据
+## [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
 
 **自动回复插件**
 
