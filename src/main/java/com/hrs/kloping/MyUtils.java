@@ -27,9 +27,13 @@ public class MyUtils {
         Entity entity = (Entity) entityMap.get(key);
         if (entity == null) {
             for (String s : entityMap.keySet()) {
-                if (key.matches(s)) {
-                    tempMap.put(key, entity);
-                    return (Entity) entityMap.get(s);
+                try {
+                    if (key.matches(s)) {
+                        tempMap.put(key, entity);
+                        return (Entity) entityMap.get(s);
+                    }
+                } catch (Exception e) {
+                    continue;
                 }
             }
         }
