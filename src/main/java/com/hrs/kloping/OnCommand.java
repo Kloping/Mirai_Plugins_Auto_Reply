@@ -27,7 +27,7 @@ public class OnCommand {
             if (filter(event)) return;
 
         long gid = event.getSubject().getId();
-        if (cds.get(gid) > System.currentTimeMillis()) return;
+        if (cds.containsKey(gid) && cds.get(gid) > System.currentTimeMillis()) return;
         String codeKey = event.getMessage().serializeToMiraiCode();
         Message message = MyUtils.getMessageByKey(codeKey);
         if (message != null)
