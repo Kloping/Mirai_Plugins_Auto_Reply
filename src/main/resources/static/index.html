@@ -88,9 +88,7 @@
         if (v === "") return;
         let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
-            if (response.data === "ok")
-                location.reload()
-            else alert(response.data)
+            vm1.data = response.data
         }).catch(function (err) {
             alert(err);
         })

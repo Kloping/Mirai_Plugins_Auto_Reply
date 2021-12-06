@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSON;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -44,9 +42,10 @@ public class Client implements Runnable {
             if (sss == null) sss = line.split("\\s+");
             if (line.trim().isEmpty()) break;
             sb.append(line).append("\n");
-            if (line.startsWith("cookie")) {
+            if (line.trim().startsWith("cookie")) {
                 can = line.contains("key=" + uuid.toLowerCase());
             }
+            System.err.println(line);
         }
         String url = sss[1];
         if (url.equals(uuidW)) {
@@ -94,21 +93,25 @@ public class Client implements Runnable {
     }
 
     private void ok() throws Exception {
-        data("ok");
+        data(JSON.toJSONString(entityMap));
     }
+
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
 
     private void data(String data) throws Exception {
         OutputStream os = socket.getOutputStream();
-        String jsonStr = data;
-        byte[] dataBytes = jsonStr.getBytes(StandardCharsets.UTF_8);
-        String sss = ("HTTP/1.1 200 OK\n" +
-                "content-type: application/json\n" +
-                "content-length: " + dataBytes.length + "\n" +
-                "keep-alive: timeout=60\n" +
-                "connection: keep-alive\r\n\r\n");
+        byte[] dataBytes = data.getBytes(StandardCharsets.UTF_8);
+        String time = sdf.format(new Date());
+        String sss = ("HTTP/1.1 200 OK\r\n" +
+                "content-type: application/json\r\n" +
+                "content-length: " + dataBytes.length + "\r\n" +
+                "date: " + time + "\r\n" +
+                "keep-alive: timeout=60\r\n" +
+                "connection: keep-alive\r\n");
         os.write(sss.getBytes(StandardCharsets.UTF_8));
-        os.write(dataBytes);
         os.write("\r\n".getBytes(StandardCharsets.UTF_8));
+        os.flush();
+        os.write(dataBytes);
         os.flush();
         os.close();
     }
@@ -117,11 +120,12 @@ public class Client implements Runnable {
         OutputStream os = socket.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
         byte[] bytes = this.getClass().getClassLoader().getResourceAsStream("static/index.html").readAllBytes();
+        String time = sdf.format(new Date());
         pw.println("HTTP/1.1 302 Found\n" +
                 "location: http://q1.qlogo.cn/g?b=qq&nk=3474006766&s=640\n" +
                 "content-language: zh-CN\n" +
                 "content-length: 0\n" +
-                "date: Mon, 06 Dec 2021 02:35:41 GMT\n" +
+                "date: " + time + "\r\n" +
                 "keep-alive: timeout=60\n" +
                 "connection: keep-alive");
         pw.println();
@@ -135,9 +139,11 @@ public class Client implements Runnable {
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("static" + name);
         String type = getContentType(name);
         byte[] bytes = is.readAllBytes();
+        String time = sdf.format(new Date());
         pw.println(String.format("HTTP/1.1 200 OK\n" +
                 "content-type: %s\n" +
                 "content-length: %s\n" +
+                "date: " + time + "\r\n" +
                 "keep-alive: timeout=60\n" +
                 "connection: keep-alive", type, bytes.length, new Date()));
         if (!k && name.equals("/index.html"))
