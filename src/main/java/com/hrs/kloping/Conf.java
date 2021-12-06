@@ -21,6 +21,7 @@ public class Conf {
     private int port = 20044;
     private String root = ".";
     private String dataPath = "conf/auto_reply/data.json";
+    private String password = "";
 
     private Conf() {
     }
@@ -60,6 +61,14 @@ public class Conf {
     public Conf addC(long q) {
         deletes.add(q);
         return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public long getHost() {

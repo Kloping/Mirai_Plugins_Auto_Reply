@@ -2,6 +2,7 @@ package com.hrs.kloping;
 
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
@@ -93,12 +94,18 @@ public class OnCommand {
         String str = getPlantText(event);
         try {
             int i = Integer.parseInt(str.trim());
-            Object[] os = entity.getVs().toArray();
-            Entity.Response response = entity.getVs(i);
-            response.setState(1);
+            if (i == -1) {
+                for (Entity.Response v : entity.getVs()) {
+                    v.setState(1);
+                }
+            } else {
+                Object[] os = entity.getVs().toArray();
+                Entity.Response response = entity.getVs(i);
+                response.setState(1);
+            }
             entity.apply();
             sourceMap();
-            event.getSubject().sendMessage(response.toString("删除词:\n"));
+            event.getSubject().sendMessage(entity.toString("删除词:\n", 99));
         } catch (Exception e) {
             event.getSubject().sendMessage("取消删除");
         }
@@ -124,9 +131,10 @@ public class OnCommand {
 
     private static String ss(String v, MessageChain message, Contact contact) {
         Entity.Response response = new Entity.Response();
-        response.setData(message);
+        response.setData(MiraiCode.deserializeMiraiCode(message.serializeToMiraiCode()));
         response.setWeight(1);
-        Entity entity = (Entity) entityMap.get(v);
+        response.setState(0);
+        Entity entity = (Entity) entityMap.get(s(v));
         if (entity == null) entity = new Entity(contact.getId());
         entity.setK_(v);
         entity.getVs().add(response);
@@ -134,6 +142,15 @@ public class OnCommand {
         sourceMap();
         contact.sendMessage("添加完成");
         return "添加完成";
+    }
+
+    private static String s(String k) {
+        return k
+                .replaceAll("%", "%")
+                .replaceAll("？", "?")
+                .replaceAll("%\\?", ".{0,}")
+                .replaceAll("%\\+", ".+")
+                .replaceAll("%", ".{1,1}");
     }
 
     private static String ss(String v, String message, Contact contact) {

@@ -15,7 +15,7 @@ import static com.hrs.kloping.Resource.*;
 
 public class Client implements Runnable {
     public static ExecutorService threads = Executors.newFixedThreadPool(10);
-    public static final String uuid = UUID.randomUUID().toString();
+    public static final String uuid = conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : conf.getPassword();
     private static final String uuidW = "/?key=" + uuid;
     public Socket socket;
 

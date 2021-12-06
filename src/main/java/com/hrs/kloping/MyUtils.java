@@ -41,7 +41,7 @@ public class MyUtils {
     }
 
     public static Entity getMessageByWord(String key) {
-        Entity entity = (Entity) entityMap.get(key);
+        Entity entity = getEntity(key);
         if (entity != null && entity.getState() == 0) return entity;
         return null;
     }

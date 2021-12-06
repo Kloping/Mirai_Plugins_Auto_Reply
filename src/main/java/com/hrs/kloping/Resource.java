@@ -104,7 +104,6 @@ public class Resource {
             try {
                 JSONObject v = (JSONObject) entityMap.get(k);
                 Entity entity = v.toJavaObject(Entity.class);
-                if (entity.getState() != 0) continue;
                 map.put(k, entity.deApply());
             } catch (Exception exception) {
                 exception.printStackTrace();
