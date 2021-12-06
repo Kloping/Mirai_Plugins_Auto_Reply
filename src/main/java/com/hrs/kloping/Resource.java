@@ -4,14 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kloping.file.FileUtils;
 import io.github.kloping.initialize.FileInitializeValue;
+import io.github.kloping.judge.Judge;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.message.data.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +24,7 @@ import java.util.concurrent.Executors;
 
 import static com.hrs.kloping.Client.uuid;
 import static com.hrs.kloping.MyUtils.tempMap;
+import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
 public class Resource {
@@ -37,9 +43,28 @@ public class Resource {
 
     public static void loadIllegals() {
         illegalKeys.clear();
-        String ss = FileUtils.getStringFromFile(new File(conf.getRoot(), "conf/auto_reply/illegalKeys").getAbsolutePath());
-        illegalKeys.addAll(Arrays.asList(ss.split("\\s+")));
-        illegalKeys.remove("");
+        String ss = getStringFromFile(new File(conf.getRoot(), "conf/auto_reply/illegalKeys").getAbsolutePath());
+        String[] sss = ss.split("\\s+");
+        for (String s : sss) {
+            if (s.trim().isEmpty()) continue;
+            illegalKeys.add(s);
+        }
+        System.out.println(illegalKeys);
+    }
+
+    public static String getStringFromFile(String path) {
+        try {
+            if (!Judge.isNotNull(path)) return null;
+            testFile(path);
+            FileInputStream fis = new FileInputStream(path);
+            byte[] bytes = new byte[fis.available()];
+            fis.read(bytes);
+            fis.close();
+            return new String(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static boolean isIllegal(String v) {
