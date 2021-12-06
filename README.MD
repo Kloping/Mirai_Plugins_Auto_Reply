@@ -62,8 +62,8 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
     /autoReply addD <q>    # 添加deleter
     /autoReply reload    # 重新加载配置
 
-第一次启动应看到此字样
-![img.png](img.png)
+第一次启动应看到此字样 <br>
+![img.png](img.png)  <br>
 点击网址可访问管理页面
 
 目前仅可 搜索 与 修改 示例:
