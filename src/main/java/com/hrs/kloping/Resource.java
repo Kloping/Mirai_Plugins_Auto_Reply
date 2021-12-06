@@ -17,6 +17,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static com.hrs.kloping.Client.uuid;
 import static com.hrs.kloping.MyUtils.tempMap;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -85,7 +86,7 @@ public class Resource {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(conf.getPort());
-                System.out.println("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort());
+                System.out.println("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
                 while (true)
                     new Client(serverSocket.accept());
             } catch (Exception e) {

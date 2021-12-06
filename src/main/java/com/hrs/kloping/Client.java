@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,7 +15,8 @@ import static com.hrs.kloping.Resource.*;
 
 public class Client implements Runnable {
     public static ExecutorService threads = Executors.newFixedThreadPool(10);
-
+    public static final String uuid = UUID.randomUUID().toString();
+    private static final String uuidW = "/?key=" + uuid;
     public Socket socket;
 
     public Client(Socket socket) {
@@ -36,13 +38,20 @@ public class Client implements Runnable {
         StringBuilder sb = new StringBuilder();
         String line = null;
         String[] sss = null;
+        boolean can = false;
         while ((line = br.readLine()) != null) {
             if (sss == null) sss = line.split("\\s+");
             if (line.trim().isEmpty()) break;
             sb.append(line).append("\n");
+            if (line.startsWith("cookie")) {
+                can = line.equals("cookie: key=" + uuid);
+            }
         }
         String url = sss[1];
-        if (url.startsWith("/modify")) {
+        if (url.equals(uuidW)) {
+            source("/index.html");
+            return;
+        } else if (can && url.startsWith("/modify")) {
             url = url.substring("/modify?".length());
             String[] ss = url.split("&");
             Map<String, String> map = new HashMap<>();
@@ -54,7 +63,7 @@ public class Client implements Runnable {
                 ok();
             else data("error");
             return;
-        } else if (url.startsWith("/search")) {
+        } else if (can && url.startsWith("/search")) {
             url = url.substring("/search?".length());
             String[] ss = url.split("&");
             Map<String, String> map = new HashMap<>();
@@ -66,11 +75,6 @@ public class Client implements Runnable {
             return;
         }
         switch (url) {
-            case "/":
-            case "/index":
-            case "/index.html":
-                source("/index.html");
-                return;
             case "/favicon.ico":
                 favicon();
                 return;
@@ -135,7 +139,9 @@ public class Client implements Runnable {
                 "content-type: " + type + "\n" +
                 "content-length: " + bytes.length + "\n" +
                 "keep-alive: timeout=60\n" +
-                "connection: keep-alive\n");
+                "connection: keep-alive");
+        if (name.equals("/index.html"))
+            pw.println("set-cookie: key=" + uuid + "\n");
         pw.println();
         pw.flush();
         os.write(bytes);
