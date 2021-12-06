@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>AutoReply管理界面</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <style>
+    </style>
+    <script src="index.js"></script>
+</head>
+<body>
+<center>
+    <h1 style="color: aliceblue">作者QQ: 3474006766</h1> <br>
+    <h5 style="color: aliceblue">遇到bug请及时反馈</h5>
+    <h5 style="color: aliceblue">单击选择要修改的对象</h5>
+</center>
+<div class="input-group mb-3">
+    <input id="main_input" type="text" class="form-control" placeholder="内容" aria-label="内容"
+           aria-describedby="button-addon2">
+    <div class="input-group-append">
+        <button onclick="m2()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon1">
+            编制索引并搜索
+        </button>
+        <button onclick="m1()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon2">
+            修改
+        </button>
+    </div>
+</div>
+<center>
+    <table style="opacity:0.8; color: black" id="main" class="table table-sm table-dark">
+        <thead>
+        <tr class="table-primary">
+            <th scope="col">触发词</th>
+            <th scope="col">回复词</th>
+            <th scope="col">权重</th>
+            <th scope="col">状态(1表示为 被删除</th>
+        </tr>
+        </thead>
+        <tbody v-for="(value, key) in data" :key="key">
+        <tr class="table-info " v-for="(v1,index) in value.vss">
+            <td v-text="key"
+                :rowspan="value.vss.length"
+                v-show="index===0"
+                @click="mSelect(key,0,2)"
+            ></td>
+            <td @click="mSelect(key,index,0)" v-text="v1.data"></td>
+            <td @click="mSelect(key,index,1)" v-text="v1.weight"></td>
+            <td @click="mSelect(key,index,3)" v-text="v1.state"></td>
+        </tr>
+        </tbody>
+    </table>
+</center>
+<script>
+    let a1 = null
+    let a2 = 0
+    let type = 0
+    let vm1 = new Vue({
+        el: "#main",
+        created: function () {
+            axios.get("/getAll").then(function (response) {
+                vm1.data = response.data
+            }).catch(function (err) {
+                alert(err);
+            })
+        }, data: {
+            data: {}
+        }, methods: {
+            mSelect: function (k, k2, k3) {
+                a1 = k
+                a2 = k2
+                type = k3
+                tips("选择")
+            }
+        }
+    });
+
+    function m1() {
+        if (a1 == null) {
+            alert("未选择任何,单击元素以选择")
+            return
+        }
+        let v = $("#main_input").val()
+        if (v === "") return;
+        let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
+        axios.get(url).then(function (response) {
+            if (response.data === "ok")
+                location.reload()
+            else alert(response.data)
+        }).catch(function (err) {
+            alert(err);
+        })
+    }
+
+    function m2() {
+        let v = $("#main_input").val()
+        if (v === "") return;
+        let url = "/search?value=" + v
+        axios.get(url).then(function (response) {
+            vm1.data = response.data
+        }).catch(function (err) {
+            alert(err);
+        })
+    }
+
+    function tips(mess) {
+        let hidvalue_str = mess;
+        let divWidth = 100;
+        let divHeight = 100;
+        let iLeft = ($(window).width() - divWidth) / 2;
+        let iTop = ($(window).height() - divHeight) / 2 + $(document).scrollTop();
+        let divhtml = $("<h1>" + hidvalue_str + "</h1>").css({
+            position: 'absolute',
+            top: iTop + 'px',
+            left: iLeft + 'px',
+            display: 'none',
+            width: divWidth + 'px',
+            height: divHeight + 'px',
+            color: 'red',
+        });
+        divhtml.appendTo('body').fadeIn();
+        divhtml.appendTo('body').fadeOut(1500);
+    }
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-# Mirai_Plugins_Auto_Reply
+# Mirai_Plugins_Auto_Reply (已过时 v0.2.7)
 
 #### Mirai控制台插件
 

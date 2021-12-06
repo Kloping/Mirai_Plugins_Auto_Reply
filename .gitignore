@@ -122,7 +122,6 @@ src/test/kotlin/RunTerminal.kt
 # 项目排除路径
 /target/
 **/test
-*.kt
 conf
 config
 data

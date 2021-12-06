@@ -1,115 +1,73 @@
 package com.hrs.kloping;
 
-import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
+import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.message.data.Message;
+import net.mamoe.mirai.message.data.PlainText;
+import net.mamoe.mirai.message.data.SingleMessage;
+
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static com.hrs.kloping.Resource.entityMap;
 
 public class MyUtils {
-    public static synchronized final String getStringFromFile(String filepath) {
-        try {
-            File file = new File(filepath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                return null;
-            }
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                if (line.contains("#") || line.trim().isEmpty()) continue;
-                sb.append(line);
-            }
-            br.close();
-            return sb.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public static final Random rand = new Random();
+
+    public static Message getMessageByKey(String key) {
+        Entity entity = getEntity(key);
+        if (entity != null && entity.getState() == 0) return get(entity.getVs());
+        return null;
     }
 
-    public static synchronized final String[] getStringsFromFile(String filepath) {
-        try {
-            File file = new File(filepath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-                return null;
-            }
-            List<String> list = new LinkedList<>();
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "utf-8"));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty() || line.contains("#")) continue;
-                list.add(line);
-            }
-            br.close();
-            return list.toArray(new String[0]);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    public static final Map<String, Entity> tempMap = new HashMap<>();
 
-    public static synchronized final boolean appendStringInFile(String filepath, String line, boolean newline) {
-        try {
-            File file = new File(filepath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), "utf-8"), true);
-            if (newline)
-                pw.println();
-            pw.println(line);
-            pw.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static synchronized final boolean putStringInFile(String filepath, String... lines) {
-        try {
-            File file = new File(filepath);
-            if (!file.exists()) {
-                file.getParentFile().mkdirs();
-                file.createNewFile();
-            }
-            PrintWriter pw = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"), true);
-            for (String line : lines)
-                pw.println(line);
-            pw.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static final Map<String, String> his_temp = new ConcurrentHashMap<>();
-
-    public static final <T extends String> String mather(String key, Set<T> arr) {
-        if (arr.contains(key)) return key;
-        else {
-            if (his_temp.containsKey(key) && arr.contains(his_temp.get(key)))
-                return his_temp.get(key);
-            for (String s1 : arr) {
-                try {
-                    if (key.matches(s1)) {
-                        his_temp.put(key, s1);
-                        return s1;
-                    }
-                } catch (Exception e) {
-                    continue;
+    private static Entity getEntity(String key) {
+        Entity entity = (Entity) entityMap.get(key);
+        if (entity == null) {
+            for (String s : entityMap.keySet()) {
+                if (key.matches(s)) {
+                    tempMap.put(key, entity);
+                    return (Entity) entityMap.get(s);
                 }
             }
         }
+        return entity;
+    }
+
+    public static Entity getMessageByWord(String key) {
+        Entity entity = (Entity) entityMap.get(key);
+        if (entity != null && entity.getState() == 0) return entity;
         return null;
+    }
+
+    private static Message get(Set<Entity.Response> vs) {
+        try {
+            Map<Integer, Entity.Response> m = new HashMap<>();
+            int n = 0;
+            for (Entity.Response v : vs) {
+                if (v.getState() != 0) continue;
+                for (int i = 0; i < v.getWeight(); i++)
+                    m.put(n++, v);
+            }
+            if (n <= 0) return null;
+            int r = rand.nextInt(n);
+            return m.get(r).getData();
+        } finally {
+            System.gc();
+        }
+    }
+
+    public static String getPlantText(MessageEvent event) {
+        PlainText plainText = null;
+        for (SingleMessage singleMessage : event.getMessage()) {
+            if (singleMessage instanceof PlainText) {
+                plainText = (PlainText) singleMessage;
+                break;
+            }
+        }
+        if (plainText == null) return null;
+        return plainText.getContent().toString().trim();
     }
 }
