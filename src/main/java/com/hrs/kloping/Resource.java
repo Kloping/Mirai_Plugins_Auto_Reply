@@ -39,6 +39,7 @@ public class Resource {
         illegalKeys.clear();
         String ss = FileUtils.getStringFromFile(new File(conf.getRoot(), "conf/auto_reply/illegalKeys").getAbsolutePath());
         illegalKeys.addAll(Arrays.asList(ss.split("\\s+")));
+        illegalKeys.remove("");
     }
 
     public static boolean isIllegal(String v) {
