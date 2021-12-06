@@ -60,6 +60,15 @@ public class Entity {
         return vs;
     }
 
+    public int getVSize() {
+        int i = 0;
+        for (Response v : vs) {
+            if (v.state != 0) continue;
+            i++;
+        }
+        return i;
+    }
+
     public Set<Response0> getVss() {
         return vss;
     }
@@ -227,13 +236,14 @@ public class Entity {
     public Message toString(String s, int n) {
         MessageChainBuilder sb = new MessageChainBuilder();
         sb.append(s);
-        sb.append("触发词:").append(touchKey);
+        sb.append("触发词:").append(MiraiCode.deserializeMiraiCode(touchKey));
         int i = 0;
         for (Response v : vs) {
             if (v.state != 0) continue;
             if (i++ == n) break;
             sb.append("\n").append(String.valueOf(i)).
-                    append(".回复词:\"").append(v.getData()).append("\"\n    权重:").append(String.valueOf(v.getWeight()));
+                    append(".回复词:\"").append(MiraiCode.deserializeMiraiCode(v.getData().serializeToMiraiCode()))
+                    .append("\"\n    权重:").append(String.valueOf(v.getWeight()));
         }
         return sb.build();
     }

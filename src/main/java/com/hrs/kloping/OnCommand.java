@@ -47,7 +47,7 @@ public class OnCommand {
                 onDeleting(event);
                 return true;
             }
-            String str = getPlantText(event);
+            String str = event.getMessage().serializeToMiraiCode();
             if (str == null) return false;
             if (conf.getInsertKey().equals(str)) {
                 if (cantInsert(q)) return false;
@@ -68,9 +68,12 @@ public class OnCommand {
                 if (cantDelete(q)) return false;
                 String word = str.substring(conf.getDeleteKey().length());
                 Entity entity = getMessageByWord(word);
-                if (entity.getVs().size() == 1) {
-                    entity.setState(1);
+                if (entity.getVSize() <= 0) return false;
+                if (entity.getVSize() == 1) {
                     event.getSubject().sendMessage(entity.toString("已删除:\n", 1));
+                    entity.getVs(1).setState(1);
+                    entity.apply();
+                    sourceMap();
                 } else {
                     deleting.put(q, entity);
                     event.getSubject().sendMessage(entity.toString("回复数字\n删除对应的回复词\n-1表示全部:\n", 99));
@@ -100,12 +103,11 @@ public class OnCommand {
                 }
             } else {
                 Object[] os = entity.getVs().toArray();
-                Entity.Response response = entity.getVs(i);
-                response.setState(1);
+                entity.getVs(i).setState(1);
             }
             entity.apply();
             sourceMap();
-            event.getSubject().sendMessage(entity.toString("删除词:\n", 99));
+            event.getSubject().sendMessage(entity.toString("剩余词:\n", 99));
         } catch (Exception e) {
             event.getSubject().sendMessage("取消删除");
         }
@@ -131,7 +133,7 @@ public class OnCommand {
 
     private static String ss(String v, MessageChain message, Contact contact) {
         Entity.Response response = new Entity.Response();
-        response.setData(MiraiCode.deserializeMiraiCode(message.serializeToMiraiCode()));
+        response.setData(message);
         response.setWeight(1);
         response.setState(0);
         Entity entity = (Entity) entityMap.get(s(v));
@@ -154,7 +156,7 @@ public class OnCommand {
     }
 
     private static String ss(String v, String message, Contact contact) {
-        return ss(v, new MessageChainBuilder().append(message).build(), contact);
+        return ss(v, new MessageChainBuilder().append(MiraiCode.deserializeMiraiCode(message)).build(), contact);
     }
 
     //=====================================

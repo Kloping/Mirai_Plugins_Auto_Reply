@@ -2,6 +2,7 @@ package com.hrs.kloping
 
 import com.hrs.kloping.Resource.conf
 import com.hrs.kloping.Resource.loadIllegals
+import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
 
@@ -15,14 +16,16 @@ class CommandLine private constructor() : JCompositeCommand(HPlugin_AutoReply.IN
 
     @Description("添加follower")
     @SubCommand("addF")
-    suspend fun CommandSender.autoReplyM2(q: Long) {
+    suspend fun CommandSender.autoReplyM2(qs: String) {
+        val q = java.lang.Long.parseLong(NumberUtils.findNumberFromString(qs))
         conf.addF(q).apply()
         sendMessage("当前 follower=\n" + conf.followers)
     }
 
     @Description("添加deleter")
     @SubCommand("addD")
-    suspend fun CommandSender.autoReplyM3(q: Long) {
+    suspend fun CommandSender.autoReplyM3(qs: String) {
+        val q = java.lang.Long.parseLong(NumberUtils.findNumberFromString(qs))
         conf.addC(q).apply()
         sendMessage("当前 delete=\n" + (conf.deletes))
     }
