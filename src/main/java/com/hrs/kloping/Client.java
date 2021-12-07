@@ -45,7 +45,6 @@ public class Client implements Runnable {
             if (line.trim().startsWith("cookie")) {
                 can = line.contains("key=" + uuid.toLowerCase());
             }
-            System.err.println(line);
         }
         String url = sss[1];
         if (url.equals(uuidW)) {
