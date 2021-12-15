@@ -25,8 +25,8 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.3.6")
-                .name("自定义回话插件 Author => HRS")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.3.7-M1")
+                .name("自定义回话插件 Author HRS")
                 .info("自定义回话插件")
                 .author("HRS")
                 .build());
