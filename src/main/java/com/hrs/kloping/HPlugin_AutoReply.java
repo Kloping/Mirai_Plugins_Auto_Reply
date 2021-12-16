@@ -19,13 +19,13 @@ import static com.hrs.kloping.Resource.conf;
  *
  * @Author HRS 3474006766@qq.com github.com/kloping
  * @Create_Date 21/9/17
- * @Update 21/12/6
+ * @Update 21/12/16
  */
 public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.3.7-M1")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.3.7")
                 .name("自定义回话插件 Author HRS")
                 .info("自定义回话插件")
                 .author("HRS")

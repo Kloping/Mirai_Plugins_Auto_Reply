@@ -48,9 +48,9 @@
                 v-show="index===0"
                 @click="mSelect(key,0,2)"
             ></td>
-            <td @click="mSelect(key,index,0)" v-text="v1.data"></td>
             <td @click="mSelect(key,index,1)" v-text="v1.weight"></td>
             <td @click="mSelect(key,index,3)" v-text="v1.state"></td>
+            <td @click="mSelect(key,index,0)" v-text="getData(v1.data)"></td>
         </tr>
         </tbody>
     </table>
@@ -59,6 +59,7 @@
     let a1 = null
     let a2 = 0
     let type = 0
+    let maxLength = 40;
     let vm1 = new Vue({
         el: "#main",
         created: function () {
@@ -75,6 +76,20 @@
                 a2 = k2
                 type = k3
                 tips("选择")
+            },
+            getData: function (data) {
+                let dataNow = "";
+                if (data.length > maxLength) {
+                    while (data.length > maxLength) {
+                        dataNow = dataNow + data.substr(0,maxLength) + "\r\n";
+                        data = data.substr(maxLength)
+                    }
+                }
+                dataNow = dataNow + data + "\r\n";
+
+                return dataNow
+                // 并无卵用
+                // return data
             }
         }
     });

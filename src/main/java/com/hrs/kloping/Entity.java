@@ -134,7 +134,10 @@ public class Entity {
         public Response0 asResponse0() {
             Response0 response0 = new Response0();
             response0.setWeight(weight);
-            response0.setData(data.serializeToMiraiCode());
+            String code = data.serializeToMiraiCode();
+            if (code.isEmpty())
+                code = MessageChain.serializeToJsonString(data);
+            response0.setData(code);
             response0.setState(state);
             return response0;
         }
@@ -210,7 +213,12 @@ public class Entity {
         public Response asResponse() {
             Response response = new Response();
             response.setWeight(weight);
-            response.setData(MiraiCode.deserializeMiraiCode(data));
+            MessageChain chain = null;
+            if (data.trim().startsWith("[{"))
+                chain = MessageChain.deserializeFromJsonString(data);
+            else
+                chain = MiraiCode.deserializeMiraiCode(data);
+            response.setData(chain);
             response.setState(state);
             return response;
         }
