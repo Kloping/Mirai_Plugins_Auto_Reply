@@ -11,7 +11,6 @@ import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.NotNull;
 
-import static com.hrs.kloping.OnCommand.onEvent;
 import static com.hrs.kloping.Resource.conf;
 
 /**
@@ -25,16 +24,16 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.h_plugin_AutoReply", "0.3.7")
-                .name("自定义回话插件 Author HRS")
-                .info("自定义回话插件")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.3.8")
+                .name("Custom Reply")
+                .info("Custom Reply")
                 .author("HRS")
                 .build());
     }
 
     @Override
     public void onEnable() {
-        getLogger().info("HRS's AutoReply Plugin loaded!");
+        getLogger().info("HRS-AutoReply-Plugin-loaded");
         CommandManager.INSTANCE.registerCommand(CommandLine.INSTANCE, true);
         if (conf.getHost() == -1) {
             System.err.println("请在/conf/auto_reply/conf.json设置您的QQ以控制你的机器人");
@@ -47,13 +46,13 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage1(GroupMessageEvent event) {
-                onEvent(event);
+                OnCommand.onEvent(event);
             }
 
             @EventHandler
             public void handleMessage0(FriendMessageEvent event) {
-                if (conf.isPrivateK())
-                    onEvent(event);
+                if (Resource.conf.isPrivateK())
+                    OnCommand.onEvent(event);
             }
         });
     }

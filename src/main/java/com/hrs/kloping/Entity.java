@@ -85,6 +85,10 @@ public class Entity {
         return this;
     }
 
+    /**
+     * 转为可发送
+     * @return
+     */
     public synchronized Entity deApply() {
         vs.clear();
         for (Response0 v : vss) {
@@ -131,6 +135,10 @@ public class Entity {
             this.data = data;
         }
 
+        /**
+         * 转为可储存
+         * @return
+         */
         public Response0 asResponse0() {
             Response0 response0 = new Response0();
             response0.setWeight(weight);

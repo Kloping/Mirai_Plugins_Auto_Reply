@@ -2,7 +2,6 @@ package com.hrs.kloping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import io.github.kloping.file.FileUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
@@ -226,6 +225,45 @@ public class Resource {
             }
         }
         return em.isEmpty() ? "{}" : JSON.toJSONString(em);
+    }
+
+    public static boolean tryDelete(Map<String, String> map) throws Exception {
+        try {
+            String key = URLDecoder.decode(map.get("key"));
+            Integer index = Integer.valueOf(map.get("index"));
+            Integer type = Integer.valueOf(map.get("type"));
+            String v = URLDecoder.decode(map.get("value"));
+            switch (type) {
+                case 0:
+                    return deleteData(key, index, v);
+                case 1:
+                case 2:
+                case 3:
+                    return deleteM(key,v);
+            }
+        } finally {
+            sourceMap();
+        }
+        return false;
+    }
+
+    private static boolean deleteM(String key,String v) {
+        if (entityMap.containsKey(key))
+            entityMap.remove(key);
+        return true;
+    }
+
+    private static boolean deleteData(String key, Integer index, String v) {
+        Entity entity = (Entity) entityMap.get(key);
+        int i = 0;
+        Entity.Response0 response0 = null;
+        for (Entity.Response0 r0 : entity.getVss()) {
+            response0 = r0;
+            if (i++ == index) break;
+        }
+        entity.getVss().remove(response0);
+        entity.deApply();
+        return true;
     }
 
 

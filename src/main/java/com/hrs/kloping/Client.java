@@ -59,7 +59,7 @@ public class Client implements Runnable {
                 map.put(s2[0], s2[1]);
             }
             if (tryModify(map))
-                ok();
+                allData();
             else data("error");
             return;
         } else if (can && url.startsWith("/search")) {
@@ -71,6 +71,18 @@ public class Client implements Runnable {
                 map.put(s2[0], s2[1]);
             }
             data(trySearch(map));
+            return;
+        }else if (can && url.startsWith("/delete")) {
+            url = url.substring("/delete?".length());
+            String[] ss = url.split("&");
+            Map<String, String> map = new HashMap<>();
+            for (String s : ss) {
+                String[] s2 = s.split("=");
+                map.put(s2[0], s2[1]);
+            }
+            if(tryDelete(map))
+                allData();
+            else  data("{}");
             return;
         }
         switch (url) {
@@ -88,10 +100,6 @@ public class Client implements Runnable {
 
 
     private void allData() throws Exception {
-        data(JSON.toJSONString(entityMap));
-    }
-
-    private void ok() throws Exception {
         data(JSON.toJSONString(entityMap));
     }
 

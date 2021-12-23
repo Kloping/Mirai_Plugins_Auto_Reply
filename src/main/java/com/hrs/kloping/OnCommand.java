@@ -15,6 +15,12 @@ import static com.hrs.kloping.MyUtils.getPlantText;
 import static com.hrs.kloping.Resource.*;
 
 public class OnCommand {
+    static {
+        if (conf.getHost() == -1) {
+            System.err.println("请在/conf/auto_reply/conf.json设置您的QQ以控制你的机器人");
+        }
+    }
+
     //所有消息都会执行到这里
     public static void onEvent(MessageEvent event) {
         threads.execute(() -> work(event));
@@ -23,6 +29,7 @@ public class OnCommand {
     private static Map<Long, String> adding = new ConcurrentHashMap<>();
     private static Map<Long, Entity> deleting = new ConcurrentHashMap<>();
     private static Map<Long, Long> cds = new ConcurrentHashMap<>();
+
     //处理
     private static void work(MessageEvent event) {
         //如果是命令

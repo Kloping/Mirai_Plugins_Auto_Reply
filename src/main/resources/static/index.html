@@ -29,6 +29,9 @@
         <button onclick="m1()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon2">
             修改
         </button>
+        <button onclick="m3()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon3">
+            彻底删除
+        </button>
     </div>
 </div>
 <center>
@@ -36,9 +39,9 @@
         <thead>
         <tr class="table-primary">
             <th scope="col">触发词</th>
-            <th scope="col">回复词</th>
+            <th scope="col">状态</th>
             <th scope="col">权重</th>
-            <th scope="col">状态(1表示为 被删除</th>
+            <th scope="col">回复词</th>
         </tr>
         </thead>
         <tbody v-for="(value, key) in data" :key="key">
@@ -46,11 +49,11 @@
             <td v-text="key"
                 :rowspan="value.vss.length"
                 v-show="index===0"
-                @click="mSelect(key,0,2)"
+                @click="mSelect(key,0,2,key)"
             ></td>
-            <td @click="mSelect(key,index,1)" v-text="v1.weight"></td>
-            <td @click="mSelect(key,index,3)" v-text="v1.state"></td>
-            <td @click="mSelect(key,index,0)" v-text="getData(v1.data)"></td>
+            <td @click="mSelect(key,index,1,v1.weight)" v-text="v1.weight"></td>
+            <td @click="mSelect(key,index,3,v1.state)" v-text="v1.state"></td>
+            <td @click="mSelect(key,index,0,getData(v1.data))" v-text="getData(v1.data)"></td>
         </tr>
         </tbody>
     </table>
@@ -71,17 +74,18 @@
         }, data: {
             data: {}
         }, methods: {
-            mSelect: function (k, k2, k3) {
+            mSelect: function (k, k2, k3, str) {
                 a1 = k
                 a2 = k2
                 type = k3
                 tips("选择")
+                $("#main_input").val(str)
             },
             getData: function (data) {
                 let dataNow = "";
                 if (data.length > maxLength) {
                     while (data.length > maxLength) {
-                        dataNow = dataNow + data.substr(0,maxLength) + "\r\n";
+                        dataNow = dataNow + data.substr(0, maxLength) + "\r\n";
                         data = data.substr(maxLength)
                     }
                 }
@@ -102,6 +106,21 @@
         let v = $("#main_input").val()
         if (v === "") return;
         let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
+        axios.get(url).then(function (response) {
+            vm1.data = response.data
+        }).catch(function (err) {
+            alert(err);
+        })
+    }
+
+    function m3() {
+        if (a1 == null) {
+            alert("未选择任何,单击元素以选择")
+            return
+        }
+        let v = $("#main_input").val()
+        if (v === "") return;
+        let url = "/delete?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
             vm1.data = response.data
         }).catch(function (err) {
