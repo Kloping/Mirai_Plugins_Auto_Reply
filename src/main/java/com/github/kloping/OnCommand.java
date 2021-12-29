@@ -1,4 +1,4 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.MessageEvent;
@@ -10,20 +10,16 @@ import net.mamoe.mirai.message.data.MessageChainBuilder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.hrs.kloping.MyUtils.getMessageByWord;
-import static com.hrs.kloping.MyUtils.getPlantText;
-import static com.hrs.kloping.Resource.*;
-
 public class OnCommand {
     static {
-        if (conf.getHost() == -1) {
+        if (Resource.conf.getHost() == -1) {
             System.err.println("请在/conf/auto_reply/conf.json设置您的QQ以控制你的机器人");
         }
     }
 
     //所有消息都会执行到这里
     public static void onEvent(MessageEvent event) {
-        threads.execute(() -> work(event));
+        Resource.threads.execute(() -> work(event));
     }
 
     private static Map<Long, String> adding = new ConcurrentHashMap<>();
@@ -49,8 +45,8 @@ public class OnCommand {
             event.getSubject().sendMessage(message);
         }
         // cd++
-        if (conf.getCd() > 0f)
-            cds.put(gid, (long) (System.currentTimeMillis() + conf.getCd() * 1000L));
+        if (Resource.conf.getCd() > 0f)
+            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000L));
     }
 
     private static boolean filter(MessageEvent event) {
@@ -65,40 +61,40 @@ public class OnCommand {
             }
             String str = event.getMessage().serializeToMiraiCode();
             if (str == null) return false;
-            if (conf.getInsertKey().equals(str)) {
+            if (Resource.conf.getInsertKey().equals(str)) {
                 if (cantInsert(q)) return false;
                 adding.put(q, "");
                 event.getSubject().sendMessage("已添加至队列,请发送触发词");
                 return true;
-            } else if (str.startsWith(conf.getOneComInsert())) {
+            } else if (str.startsWith(Resource.conf.getOneComInsert())) {
                 if (cantInsert(q)) return false;
-                String[] sss = str.split(conf.getOneComSplit());
+                String[] sss = str.split(Resource.conf.getOneComSplit());
                 if (sss.length == 3) {
-                    if (isIllegal(sss[1]) || isIllegal(sss[2])) {
+                    if (Resource.isIllegal(sss[1]) || Resource.isIllegal(sss[2])) {
                         event.getSubject().sendMessage("敏感词汇 ");
                     } else ss(sss[1], sss[2], event.getSubject());
                     return true;
                 }
                 return false;
-            } else if (str.startsWith(conf.getDeleteKey())) {
+            } else if (str.startsWith(Resource.conf.getDeleteKey())) {
                 if (cantDelete(q)) return false;
-                String word = str.substring(conf.getDeleteKey().length());
-                Entity entity = getMessageByWord(word);
+                String word = str.substring(Resource.conf.getDeleteKey().length());
+                Entity entity = MyUtils.getMessageByWord(word);
                 if (entity.getVSize() <= 0) return false;
                 if (entity.getVSize() == 1) {
                     event.getSubject().sendMessage(entity.toString("已删除:\n", 1));
                     entity.getVs(1).setState(1);
                     entity.apply();
-                    sourceMap();
+                    Resource.sourceMap();
                 } else {
                     deleting.put(q, entity);
                     event.getSubject().sendMessage(entity.toString("回复数字\n删除对应的回复词\n-1表示全部:\n", 99));
                 }
                 return true;
-            } else if (str.startsWith(conf.getSelectKey())) {
+            } else if (str.startsWith(Resource.conf.getSelectKey())) {
                 if (cantInsert(q)) return false;
-                String word = str.substring(conf.getDeleteKey().length());
-                Entity entity = getMessageByWord(word);
+                String word = str.substring(Resource.conf.getDeleteKey().length());
+                Entity entity = MyUtils.getMessageByWord(word);
                 event.getSubject().sendMessage(entity.toString(99));
                 return true;
             }
@@ -110,7 +106,7 @@ public class OnCommand {
     private static void onDeleting(MessageEvent event) {
         long q = event.getSender().getId();
         Entity entity = deleting.get(q);
-        String str = getPlantText(event);
+        String str = MyUtils.getPlantText(event);
         try {
             int i = Integer.parseInt(str.trim());
             if (i == -1) {
@@ -122,7 +118,7 @@ public class OnCommand {
                 entity.getVs(i).setState(1);
             }
             entity.apply();
-            sourceMap();
+            Resource.sourceMap();
             event.getSubject().sendMessage(entity.toString("剩余词:\n", 99));
         } catch (Exception e) {
             event.getSubject().sendMessage("取消删除");
@@ -133,7 +129,7 @@ public class OnCommand {
     private static void onAdding(MessageEvent event) {
         long q = event.getSender().getId();
         String v = adding.get(q);
-        if (isIllegal(v) || isIllegal(event.getMessage())) {
+        if (Resource.isIllegal(v) || Resource.isIllegal(event.getMessage())) {
             event.getSubject().sendMessage("敏感词汇 ");
             return;
         }
@@ -152,12 +148,12 @@ public class OnCommand {
         response.setData(message);
         response.setWeight(1);
         response.setState(0);
-        Entity entity = (Entity) entityMap.get(s(v));
+        Entity entity = (Entity) Resource.entityMap.get(s(v));
         if (entity == null) entity = new Entity(contact.getId());
         entity.setK_(v);
         entity.getVs().add(response);
-        entityMap.put(entity.getTouchKey(), entity.apply());
-        sourceMap();
+        Resource.entityMap.put(entity.getTouchKey(), entity.apply());
+        Resource.sourceMap();
         contact.sendMessage("添加完成");
         return "添加完成";
     }
@@ -171,33 +167,33 @@ public class OnCommand {
                 .replaceAll("%", ".{1,1}");
     }
 
-    private static String ss(String v, String message, Contact contact) {
+    public static String ss(String v, String message, Contact contact) {
         return ss(v, new MessageChainBuilder().append(MiraiCode.deserializeMiraiCode(message)).build(), contact);
     }
 
     //=====================================
 
     private static boolean maybe(long id) {
-        if (conf.getFollowers().contains(-1L)) return true;
-        if (conf.getDeletes().contains(-1L)) return true;
-        if (conf.getHost() == id) return true;
-        if (conf.getFollowers().contains(id)) return true;
-        if (conf.getDeletes().contains(id)) return true;
+        if (Resource.conf.getFollowers().contains(-1L)) return true;
+        if (Resource.conf.getDeletes().contains(-1L)) return true;
+        if (Resource.conf.getHost() == id) return true;
+        if (Resource.conf.getFollowers().contains(id)) return true;
+        if (Resource.conf.getDeletes().contains(id)) return true;
         return false;
     }
 
     private static boolean cantDelete(long q) {
-        if (!conf.getDeletes().contains(-1L)
-                && !conf.getDeletes().contains(q)
-                && conf.getHost() != q)
+        if (!Resource.conf.getDeletes().contains(-1L)
+                && !Resource.conf.getDeletes().contains(q)
+                && Resource.conf.getHost() != q)
             return true;
         return false;
     }
 
     private static boolean cantInsert(long q) {
-        if (!conf.getFollowers().contains(-1L)
-                && !conf.getFollowers().contains(q)
-                && conf.getHost() != q)
+        if (!Resource.conf.getFollowers().contains(-1L)
+                && !Resource.conf.getFollowers().contains(q)
+                && Resource.conf.getHost() != q)
             return true;
         return false;
     }

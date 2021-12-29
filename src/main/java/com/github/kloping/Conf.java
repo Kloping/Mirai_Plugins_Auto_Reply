@@ -1,4 +1,4 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 
 import io.github.kloping.initialize.FileInitializeValue;

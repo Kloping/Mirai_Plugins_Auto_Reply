@@ -9,6 +9,15 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
           integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
     <style>
     </style>
     <script src="index.js"></script>
@@ -19,6 +28,46 @@
     <h5 style="color: aliceblue">遇到bug请及时反馈</h5>
     <h5 style="color: aliceblue">单击选择要修改的对象</h5>
 </center>
+<center>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+        添加一个
+    </button>
+</center>
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="dialog_c">添加一个</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>此方式不会通过正则转换</p>
+                <div class="input-group input-group-lg">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-lg">触发词</span>
+                    </div>
+                    <textarea id="touchKey" placeholder="触发词" class="form-control" aria-label="Large"
+                              aria-describedby="inputGroup-sizing-sm"></textarea>
+                </div>
+                <br><br>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroup-sizing-default">回复词</span>
+                    </div>
+                    <textarea id="vs" placeholder="回复词" class="form-control" aria-label="Large"
+                              aria-describedby="inputGroup-sizing-sm"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="append_but" type="button" class="btn btn-primary" data-dismiss="modal">添加</button>
+                <button type="button" class="btn btn-secondary">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="input-group mb-3">
     <input id="main_input" type="text" class="form-control" placeholder="内容" aria-label="内容"
            aria-describedby="button-addon2">
@@ -39,8 +88,8 @@
         <thead>
         <tr class="table-primary">
             <th scope="col">触发词</th>
-            <th scope="col">状态</th>
             <th scope="col">权重</th>
+            <th scope="col">状态</th>
             <th scope="col">回复词</th>
         </tr>
         </thead>
@@ -157,6 +206,43 @@
         divhtml.appendTo('body').fadeIn();
         divhtml.appendTo('body').fadeOut(1500);
     }
+
+    function tips(mess, t) {
+        let hidvalue_str = mess;
+        let divWidth = 100;
+        let divHeight = 100;
+        let iLeft = ($(window).width() - divWidth) / 2;
+        let iTop = ($(window).height() - divHeight) / 2 + $(document).scrollTop();
+        let divhtml = $("<h1>" + hidvalue_str + "</h1>").css({
+            position: 'absolute',
+            top: iTop + 'px',
+            left: iLeft + 'px',
+            display: 'none',
+            width: divWidth + 'px',
+            height: divHeight + 'px',
+            color: 'red',
+        });
+        divhtml.appendTo('body').fadeIn();
+        divhtml.appendTo('body').fadeOut(t);
+    }
+
+    $(document).ready(function () {
+        let k0 = $("#touchKey")
+        let v0 = $("#vs")
+        $("#append_but").click(function () {
+            let key = k0.val()
+            let value = v0.val()
+            let url = "/append?k=" + key + "&v=" + value
+            axios.get(url).then(function (response) {
+                vm1.data = response.data
+                tips("添加成功", 1600)
+                k0.val("")
+                v0.val("")
+            }).catch(function (err) {
+                alert(err);
+            })
+        })
+    })
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import net.mamoe.mirai.message.code.MiraiCode;
@@ -8,6 +8,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * @author github-kloping
+ */
 public class Entity {
     private Number gid = -1;
     private String touchKey;
@@ -46,7 +49,6 @@ public class Entity {
     public void setK_(String k) {
         this.touchKey = k
                 .replaceAll("%", "%")
-                .replaceAll("？", "?")
                 .replaceAll("%\\?", ".{0,}")
                 .replaceAll("%\\+", ".+")
                 .replaceAll("%", ".{1,1}");

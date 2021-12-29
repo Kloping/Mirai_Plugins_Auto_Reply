@@ -1,4 +1,4 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.Message;
@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-
-import static com.hrs.kloping.Resource.entityMap;
 
 public class MyUtils {
     public static final Random rand = new Random();
@@ -24,13 +22,13 @@ public class MyUtils {
     public static final Map<String, Entity> tempMap = new HashMap<>();
 
     private static Entity getEntity(String key) {
-        Entity entity = (Entity) entityMap.get(key);
+        Entity entity = (Entity) Resource.entityMap.get(key);
         if (entity == null) {
-            for (String s : entityMap.keySet()) {
+            for (String s : Resource.entityMap.keySet()) {
                 try {
                     if (key.matches(s)) {
                         tempMap.put(key, entity);
-                        return (Entity) entityMap.get(s);
+                        return (Entity) Resource.entityMap.get(s);
                     }
                 } catch (Exception e) {
                     continue;

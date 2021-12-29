@@ -1,7 +1,7 @@
-package com.hrs.kloping
+package com.github.kloping
 
-import com.hrs.kloping.Resource.conf
-import com.hrs.kloping.Resource.loadIllegals
+import com.github.kloping.Resource.conf
+import com.github.kloping.Resource.loadIllegals
 import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand

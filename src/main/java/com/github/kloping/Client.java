@@ -1,4 +1,4 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 import com.alibaba.fastjson.JSON;
 
@@ -10,11 +10,9 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.hrs.kloping.Resource.*;
-
 public class Client implements Runnable {
     public static ExecutorService threads = Executors.newFixedThreadPool(10);
-    public static final String uuid = conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : conf.getPassword();
+    public static final String uuid = Resource.conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : Resource.conf.getPassword();
     private static final String uuidW = "/?key=" + uuid;
     public Socket socket;
 
@@ -58,7 +56,7 @@ public class Client implements Runnable {
                 String[] s2 = s.split("=");
                 map.put(s2[0], s2[1]);
             }
-            if (tryModify(map))
+            if (Resource.tryModify(map))
                 allData();
             else data("error");
             return;
@@ -70,9 +68,9 @@ public class Client implements Runnable {
                 String[] s2 = s.split("=");
                 map.put(s2[0], s2[1]);
             }
-            data(trySearch(map));
+            data(Resource.trySearch(map));
             return;
-        }else if (can && url.startsWith("/delete")) {
+        } else if (can && url.startsWith("/delete")) {
             url = url.substring("/delete?".length());
             String[] ss = url.split("&");
             Map<String, String> map = new HashMap<>();
@@ -80,9 +78,20 @@ public class Client implements Runnable {
                 String[] s2 = s.split("=");
                 map.put(s2[0], s2[1]);
             }
-            if(tryDelete(map))
+            if (Resource.tryDelete(map))
                 allData();
-            else  data("{}");
+            else data("{}");
+            return;
+        } else if (can && url.startsWith("/append")) {
+            url = url.substring("/append?".length());
+            String[] ss = url.split("&");
+            Map<String, String> map = new HashMap<>();
+            for (String s : ss) {
+                String[] s2 = s.split("=");
+                map.put(s2[0], s2[1]);
+            }
+            Resource.append(map);
+            allData();
             return;
         }
         switch (url) {
@@ -100,7 +109,7 @@ public class Client implements Runnable {
 
 
     private void allData() throws Exception {
-        data(JSON.toJSONString(entityMap));
+        data(JSON.toJSONString(Resource.entityMap));
     }
 
     private static final SimpleDateFormat sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);

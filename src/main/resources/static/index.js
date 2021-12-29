@@ -89,8 +89,10 @@ window.onload = function () {
     }
 
     function connectDots() {
-        for (i = 0; i < dots.nb; i++) {
-            for (j = i; j < dots.nb; j++) {
+        let i_dot;
+        let j_dot;
+        for (let i = 0; i < dots.nb; i++) {
+            for (let j = i; j < dots.nb; j++) {
                 i_dot = dots.array[i];
                 j_dot = dots.array[j];
 

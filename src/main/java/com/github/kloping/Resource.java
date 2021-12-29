@@ -1,11 +1,19 @@
-package com.hrs.kloping;
+package com.github.kloping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
+import net.mamoe.mirai.contact.Contact;
+import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.utils.ExternalResource;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,8 +29,8 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.hrs.kloping.Client.uuid;
-import static com.hrs.kloping.MyUtils.tempMap;
+import static com.github.kloping.Client.uuid;
+import static com.github.kloping.MyUtils.tempMap;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -239,7 +247,7 @@ public class Resource {
                 case 1:
                 case 2:
                 case 3:
-                    return deleteM(key,v);
+                    return deleteM(key, v);
             }
         } finally {
             sourceMap();
@@ -247,7 +255,7 @@ public class Resource {
         return false;
     }
 
-    private static boolean deleteM(String key,String v) {
+    private static boolean deleteM(String key, String v) {
         if (entityMap.containsKey(key))
             entityMap.remove(key);
         return true;
@@ -290,5 +298,49 @@ public class Resource {
         if (list == null) list = new LinkedHashSet<>();
         list.add(v);
         map.put(k, list);
+    }
+
+    public static Contact contact = new Contact() {
+        @NotNull
+        @Override
+        public Bot getBot() {
+            return null;
+        }
+
+        @Override
+        public long getId() {
+            return -1L;
+        }
+
+        @Nullable
+        @Override
+        public Object sendMessage(@NotNull Message message, @NotNull Continuation<? super MessageReceipt<? extends Contact>> continuation) {
+            return null;
+        }
+
+        @Nullable
+        @Override
+        public Object uploadImage(@NotNull ExternalResource externalResource, @NotNull Continuation<? super Image> continuation) {
+            return null;
+        }
+
+        @NotNull
+        @Override
+        public CoroutineContext getCoroutineContext() {
+            return null;
+        }
+    };
+
+    public static String append(Map<String, String> map) {
+        if (map.containsKey("k")) {
+            if (map.containsKey("v")) {
+                String key = map.get("k");
+                String value = map.get("v");
+                key = URLDecoder.decode(key);
+                value = URLDecoder.decode(value);
+                return OnCommand.ss(key, value, contact);
+            }
+        }
+        return "参数不全";
     }
 }
