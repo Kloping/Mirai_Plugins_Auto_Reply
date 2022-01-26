@@ -142,7 +142,6 @@ public class OnCommand {
         }
     }
 
-
     private static String ss(String v, MessageChain message, Contact contact) {
         Entity.Response response = new Entity.Response();
         response.setData(message);

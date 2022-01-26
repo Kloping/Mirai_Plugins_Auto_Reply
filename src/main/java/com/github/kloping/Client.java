@@ -37,8 +37,12 @@ public class Client implements Runnable {
         String[] sss = null;
         boolean can = false;
         while ((line = br.readLine().toLowerCase()) != null) {
-            if (sss == null) sss = line.split("\\s+");
-            if (line.trim().isEmpty()) break;
+            if (sss == null) {
+                sss = line.split("\\s+");
+            }
+            if (line.trim().isEmpty()) {
+                break;
+            }
             sb.append(line).append("\n");
             if (line.trim().startsWith("cookie")) {
                 can = line.contains("key=" + uuid.toLowerCase());
