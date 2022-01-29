@@ -10,6 +10,9 @@ import net.mamoe.mirai.message.data.MessageChainBuilder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @author github-kloping
+ */
 public class OnCommand {
     static {
         if (Resource.conf.getHost() == -1) {
