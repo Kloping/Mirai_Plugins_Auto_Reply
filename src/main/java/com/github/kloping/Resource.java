@@ -119,7 +119,7 @@ public class Resource {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(conf.getPort());
-                System.out.println("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
+                HPlugin_AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
                 while (true)
                     new Client(serverSocket.accept());
             } catch (Exception e) {
@@ -153,10 +153,10 @@ public class Resource {
 
     public static boolean tryModify(Map<String, String> map) throws Exception {
         try {
-            String key = URLDecoder.decode(map.get("key"));
+            String key = URLDecoder.decode(map.get("key"),"UTF-8");
             Integer index = Integer.valueOf(map.get("index"));
             Integer type = Integer.valueOf(map.get("type"));
-            String v = URLDecoder.decode(map.get("value"));
+            String v = URLDecoder.decode(map.get("value"),"UTF-8");
             switch (type) {
                 case 0:
                     return modifyData(key, index, v);

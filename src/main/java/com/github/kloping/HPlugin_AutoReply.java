@@ -22,7 +22,7 @@ public final class HPlugin_AutoReply extends JavaPlugin {
     public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
 
     private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.3.9")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.3.9.1")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")

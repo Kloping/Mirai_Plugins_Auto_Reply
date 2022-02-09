@@ -26,6 +26,7 @@ public class Client implements Runnable {
         try {
             start();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -60,9 +61,11 @@ public class Client implements Runnable {
                 String[] s2 = s.split("=");
                 map.put(s2[0], s2[1]);
             }
-            if (Resource.tryModify(map))
+            if (Resource.tryModify(map)) {
                 allData();
-            else data("error");
+            } else {
+                data("error");
+            }
             return;
         } else if (can && url.startsWith("/search")) {
             url = url.substring("/search?".length());
@@ -166,7 +169,7 @@ public class Client implements Runnable {
                 "date: " + time + "\r\n" +
                 "keep-alive: timeout=60\n" +
                 "connection: keep-alive", type, bytes.length, new Date()));
-        if (!k && name.equals("/index.html"))
+        if (!k && "/index.html".equals(name))
             pw.println("set-cookie: key=" + uuid + "\n");
         pw.println();
         pw.flush();
