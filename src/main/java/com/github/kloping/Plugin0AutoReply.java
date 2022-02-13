@@ -1,5 +1,6 @@
 package com.github.kloping;
 
+import io.github.kloping.file.FileUtils;
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
@@ -10,6 +11,9 @@ import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  * this plugin make on mirai make in idea make by [@Author]
@@ -27,6 +31,7 @@ public final class Plugin0AutoReply extends JavaPlugin {
                 .info("Custom Reply")
                 .author("HRS")
                 .build());
+        System.getProperties().setProperty("file.encoding", "utf-8");
     }
 
     @Override
