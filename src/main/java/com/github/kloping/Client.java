@@ -160,6 +160,9 @@ public class Client implements Runnable {
         OutputStream os = socket.getOutputStream();
         PrintWriter pw = new PrintWriter(os);
         InputStream is = this.getClass().getClassLoader().getResourceAsStream("static" + name);
+        if (is == null) {
+            throw new RuntimeException("not found : " + name);
+        }
         String type = getContentType(name);
         byte[] bytes = is.readAllBytes();
         String time = sdf.format(new Date());

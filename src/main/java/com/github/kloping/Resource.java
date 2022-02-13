@@ -119,7 +119,7 @@ public class Resource {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(conf.getPort());
-                HPlugin_AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
+                Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
                 while (true)
                     new Client(serverSocket.accept());
             } catch (Exception e) {

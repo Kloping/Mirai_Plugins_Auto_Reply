@@ -18,11 +18,11 @@ import org.jetbrains.annotations.NotNull;
  * @Create_Date 21/9/17
  * @Update 21/12/16
  */
-public final class HPlugin_AutoReply extends JavaPlugin {
-    public static final HPlugin_AutoReply INSTANCE = new HPlugin_AutoReply();
+public final class Plugin0AutoReply extends JavaPlugin {
+    public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
-    private HPlugin_AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.3.9.1")
+    private Plugin0AutoReply() {
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.4-bate1")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")
@@ -49,8 +49,9 @@ public final class HPlugin_AutoReply extends JavaPlugin {
 
             @EventHandler
             public void handleMessage0(FriendMessageEvent event) {
-                if (Resource.conf.isPrivateK())
+                if (Resource.conf.isPrivateK()) {
                     OnCommand.onEvent(event);
+                }
             }
         });
     }

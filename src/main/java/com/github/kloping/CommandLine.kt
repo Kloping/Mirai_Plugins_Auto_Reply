@@ -6,7 +6,7 @@ import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
 
-class CommandLine private constructor() : JCompositeCommand(HPlugin_AutoReply.INSTANCE, "autoReply") {
+class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INSTANCE, "autoReply") {
     @Description("设置主人")
     @SubCommand("setHost")
     suspend fun CommandSender.autoReplyM1(q: Long) {
