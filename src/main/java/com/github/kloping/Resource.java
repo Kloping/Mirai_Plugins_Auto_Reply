@@ -2,49 +2,35 @@ package com.github.kloping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.kloping.sp.Client;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
-import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.message.MessageReceipt;
 import net.mamoe.mirai.message.data.*;
-import net.mamoe.mirai.utils.ExternalResource;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.URLDecoder;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.*;
+import java.util.concurrent.*;
 
-import static com.github.kloping.Client.uuid;
 import static com.github.kloping.MyUtils.tempMap;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
+/**
+ * @author github-kloping
+ */
 public class Resource {
-    public static final ExecutorService threads = Executors.newFixedThreadPool(10);
+    public static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(10, 10, 20, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
     public static String rootPath = MiraiConsoleImplementation.getInstance().getRootPath().toFile().getAbsolutePath();
     public static Conf conf = Conf.getInstance(rootPath);
     public static Map<String, Object> entityMap = new ConcurrentHashMap<>();
     public static Set<String> illegalKeys = new CopyOnWriteArraySet<>();
-    private static ServerSocket serverSocket;
 
     static {
         loadData(conf.getDataPath());
         loadIllegals();
+        initUuid();
         startHtml();
     }
 
@@ -53,7 +39,9 @@ public class Resource {
         String ss = getStringFromFile(new File(conf.getRoot(), "conf/auto_reply/illegalKeys").getAbsolutePath());
         String[] sss = ss.split("\\s+");
         for (String s : sss) {
-            if (s.trim().isEmpty()) continue;
+            if (s.trim().isEmpty()) {
+                continue;
+            }
             illegalKeys.add(s);
         }
         System.out.println(illegalKeys);
@@ -76,8 +64,9 @@ public class Resource {
 
     public static boolean isIllegal(String v) {
         for (String illegalKey : illegalKeys) {
-            if (v.contains(illegalKey))
+            if (v.contains(illegalKey)) {
                 return true;
+            }
         }
         return false;
     }
@@ -91,45 +80,39 @@ public class Resource {
         return false;
     }
 
-    private static String getString(MessageChain c) {
+    public static String getString(MessageChain c) {
         StringBuilder sb = new StringBuilder();
         for (SingleMessage datum : c) {
-            if (datum instanceof PlainText)
+            if (datum instanceof PlainText) {
                 sb.append(((PlainText) datum).getContent());
-            else if (datum instanceof Image)
+            } else if (datum instanceof Image) {
                 sb.append("[图片]");
-            else if (datum instanceof At)
+            } else if (datum instanceof At) {
                 sb.append("[At:").append(((At) datum).getTarget()).append("]");
-            else
+            } else {
                 sb.append("[其他类型消息]");
+            }
         }
         return sb.toString();
     }
 
-    private static void startHtml() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            if (serverSocket != null) {
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }));
-        new Thread(() -> {
-            try {
-                serverSocket = new ServerSocket(conf.getPort());
-                Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
-                while (true)
-                    new Client(serverSocket.accept());
-            } catch (Exception e) {
-                System.err.println("AutoReply 服务启动 异常 请检查 端口是否被占用");
-                e.printStackTrace();
-            }
-        }).start();
+    public static String uuid;
+
+    public static void initUuid() {
+        uuid = conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : conf.getPassword();
     }
 
-    private static void loadData(String dataPath) {
+    public static void startHtml() {
+        try {
+            Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
+            Client.main(new String[]{});
+        } catch (Exception e) {
+            System.err.println("AutoReply 服务启动 异常 请检查 端口是否被占用");
+            e.printStackTrace();
+        }
+    }
+
+    public static void loadData(String dataPath) {
         entityMap = FileInitializeValue.getValue(dataPath, entityMap, true);
         Map<String, Entity> map = new ConcurrentHashMap<>();
         for (String k : entityMap.keySet()) {
@@ -151,29 +134,7 @@ public class Resource {
         FileInitializeValue.putValues(conf.getDataPath(), entityMap, true);
     }
 
-    public static boolean tryModify(Map<String, String> map) throws Exception {
-        try {
-            String key = URLDecoder.decode(map.get("key"),"UTF-8");
-            Integer index = Integer.valueOf(map.get("index"));
-            Integer type = Integer.valueOf(map.get("type"));
-            String v = URLDecoder.decode(map.get("value"),"UTF-8");
-            switch (type) {
-                case 0:
-                    return modifyData(key, index, v);
-                case 1:
-                    return modifyWeight(key, index, Integer.valueOf(v));
-                case 2:
-                    return modifyKey(key, index, v);
-                case 3:
-                    return modifyState(key, index, Integer.valueOf(v));
-            }
-        } finally {
-            sourceMap();
-        }
-        return false;
-    }
-
-    private static boolean modifyKey(String key, Integer index, String v) {
+    public static boolean modifyKey(String key, Integer index, String v) {
         Entity entity = (Entity) entityMap.get(key);
         entity.setTouchKey(v);
         entityMap.remove(key);
@@ -182,7 +143,7 @@ public class Resource {
         return true;
     }
 
-    private static boolean modifyWeight(String key, Integer index, Integer v) {
+    public static boolean modifyWeight(String key, Integer index, Integer v) {
         Entity entity = (Entity) entityMap.get(key);
         int i = 0;
         Entity.Response0 response0 = null;
@@ -195,7 +156,7 @@ public class Resource {
         return true;
     }
 
-    private static boolean modifyState(String key, Integer index, Integer v) {
+    public static boolean modifyState(String key, Integer index, Integer v) {
         Entity entity = (Entity) entityMap.get(key);
         int i = 0;
         Entity.Response0 response0 = null;
@@ -208,7 +169,7 @@ public class Resource {
         return true;
     }
 
-    private static boolean modifyData(String key, int index, String value) {
+    public static boolean modifyData(String key, int index, String value) {
         Entity entity = (Entity) entityMap.get(key);
         int i = 0;
         Entity.Response0 response0 = null;
@@ -223,9 +184,8 @@ public class Resource {
 
     public static boolean indexed = false;
 
-    public static String trySearch(Map<String, String> map) throws Exception {
+    public static String trySearch(String v) throws Exception {
         if (!indexed) makeIndex();
-        String v = URLDecoder.decode(map.get("value"));
         Map<String, Entity> em = new HashMap<>();
         for (char c : v.toCharArray()) {
             for (Entity entity : indexMap.get(c)) {
@@ -235,33 +195,13 @@ public class Resource {
         return em.isEmpty() ? "{}" : JSON.toJSONString(em);
     }
 
-    public static boolean tryDelete(Map<String, String> map) throws Exception {
-        try {
-            String key = URLDecoder.decode(map.get("key"));
-            Integer index = Integer.valueOf(map.get("index"));
-            Integer type = Integer.valueOf(map.get("type"));
-            String v = URLDecoder.decode(map.get("value"));
-            switch (type) {
-                case 0:
-                    return deleteData(key, index, v);
-                case 1:
-                case 2:
-                case 3:
-                    return deleteM(key, v);
-            }
-        } finally {
-            sourceMap();
-        }
-        return false;
-    }
-
-    private static boolean deleteM(String key, String v) {
+    public static boolean deleteM(String key, String v) {
         if (entityMap.containsKey(key))
             entityMap.remove(key);
         return true;
     }
 
-    private static boolean deleteData(String key, Integer index, String v) {
+    public static boolean deleteData(String key, Integer index, String v) {
         Entity entity = (Entity) entityMap.get(key);
         int i = 0;
         Entity.Response0 response0 = null;
@@ -274,10 +214,9 @@ public class Resource {
         return true;
     }
 
-
     public static final Map<Character, Set<Entity>> indexMap = new HashMap<>();
 
-    private synchronized static void makeIndex() {
+    public synchronized static void makeIndex() {
         indexMap.clear();
         entityMap.forEach((k, v) -> {
             Entity entity = (Entity) v;
@@ -292,7 +231,7 @@ public class Resource {
         });
     }
 
-    private static <K, V> void append(Map<K, Set<V>> map, K k, V v) {
+    public static <K, V> void append(Map<K, Set<V>> map, K k, V v) {
         if (!isNotNull(map, k, v)) return;
         Set<V> list = map.get(k);
         if (list == null) list = new LinkedHashSet<>();
@@ -300,47 +239,8 @@ public class Resource {
         map.put(k, list);
     }
 
-    public static Contact contact = new Contact() {
-        @NotNull
-        @Override
-        public Bot getBot() {
-            return null;
-        }
 
-        @Override
-        public long getId() {
-            return -1L;
-        }
-
-        @Nullable
-        @Override
-        public Object sendMessage(@NotNull Message message, @NotNull Continuation<? super MessageReceipt<? extends Contact>> continuation) {
-            return null;
-        }
-
-        @Nullable
-        @Override
-        public Object uploadImage(@NotNull ExternalResource externalResource, @NotNull Continuation<? super Image> continuation) {
-            return null;
-        }
-
-        @NotNull
-        @Override
-        public CoroutineContext getCoroutineContext() {
-            return null;
-        }
-    };
-
-    public static String append(Map<String, String> map) {
-        if (map.containsKey("k")) {
-            if (map.containsKey("v")) {
-                String key = map.get("k");
-                String value = map.get("v");
-                key = URLDecoder.decode(key);
-                value = URLDecoder.decode(value);
-                return OnCommand.ss(key, value, contact);
-            }
-        }
-        return "参数不全";
+    public static String append(String key, String value) {
+        return OnCommand.ss(key, value, null);
     }
 }

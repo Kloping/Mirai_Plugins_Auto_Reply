@@ -22,7 +22,7 @@ public class OnCommand {
 
     //所有消息都会执行到这里
     public static void onEvent(MessageEvent event) {
-        Resource.threads.execute(() -> work(event));
+        Resource.EXECUTOR_SERVICE.execute(() -> work(event));
     }
 
     private static Map<Long, String> adding = new ConcurrentHashMap<>();
@@ -35,8 +35,6 @@ public class OnCommand {
         if (maybe(event.getSender().getId()))
             //是否可执行 如果 是 执行 否则 继续
             if (filter(event)) return;
-
-
         long gid = event.getSubject().getId();
         //判断cd
         if (cds.containsKey(gid) && cds.get(gid) > System.currentTimeMillis()) return;
@@ -151,12 +149,14 @@ public class OnCommand {
         response.setWeight(1);
         response.setState(0);
         Entity entity = (Entity) Resource.entityMap.get(s(v));
-        if (entity == null) entity = new Entity(contact.getId());
+        if (entity == null) entity = new Entity(contact == null ? 0 : contact.getId());
         entity.setK_(v);
         entity.getVs().add(response);
         Resource.entityMap.put(entity.getTouchKey(), entity.apply());
         Resource.sourceMap();
-        contact.sendMessage("添加完成");
+        if (contact != null) {
+            contact.sendMessage("添加完成");
+        }
         return "添加完成";
     }
 
