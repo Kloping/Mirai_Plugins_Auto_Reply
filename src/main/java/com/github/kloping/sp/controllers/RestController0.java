@@ -2,9 +2,9 @@ package com.github.kloping.sp.controllers;
 
 import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import io.github.kloping.little_web.annotations.RequestMethod;
+import io.github.kloping.little_web.annotations.RequestParm;
+import io.github.kloping.little_web.annotations.WebRestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +17,9 @@ import static com.github.kloping.Resource.*;
 /**
  * @author github.kloping
  */
-@RestController
+@WebRestController
 public class RestController0 {
+
     private boolean verify(HttpServletRequest request) {
         if (request.getCookies() == null) {
             return false;
@@ -33,11 +34,9 @@ public class RestController0 {
         return false;
     }
 
-    @RequestMapping("/modify")
-    public Map<String, Object> modify(@RequestParam("key") String key,
-                                      @RequestParam("index") Integer index,
-                                      @RequestParam("type") Integer type,
-                                      @RequestParam("value") String value,
+    @RequestMethod("/modify")
+    public Map<String, Object> modify(@RequestParm("key") String key, @RequestParm("index") Integer index,
+                                      @RequestParm("type") Integer type, @RequestParm("value") String value,
                                       HttpServletRequest request) {
         if (verify(request)) {
             boolean k = false;
@@ -68,11 +67,11 @@ public class RestController0 {
         return null;
     }
 
-    @RequestMapping("/delete")
-    public Map<String, Object> delete(@RequestParam("key") String key,
-                                      @RequestParam("index") Integer index,
-                                      @RequestParam("type") Integer type,
-                                      @RequestParam("value") String value,
+    @RequestMethod("/delete")
+    public Map<String, Object> delete(@RequestParm("key") String key,
+                                      @RequestParm("index") Integer index,
+                                      @RequestParm("type") Integer type,
+                                      @RequestParm("value") String value,
                                       HttpServletRequest request) {
         if (verify(request)) {
             boolean k = false;
@@ -99,8 +98,8 @@ public class RestController0 {
         return null;
     }
 
-    @RequestMapping("/search")
-    public Object search(@RequestParam("value") String value, HttpServletRequest request) {
+    @RequestMethod("/search")
+    public Object search(@RequestParm("value") String value, HttpServletRequest request) {
         if (verify(request)) {
             try {
                 return trySearch(value);
@@ -111,8 +110,8 @@ public class RestController0 {
         return null;
     }
 
-    @RequestMapping("/append")
-    public Object append(@RequestParam("k") String k, @RequestParam("v") String v, HttpServletRequest request) {
+    @RequestMethod("/append")
+    public Object append(@RequestParm("k") String k, @RequestParm("v") String v, HttpServletRequest request) {
         if (verify(request)) {
             if ("添加成功".equals(Resource.append(k, v))) {
                 return entityMap;
@@ -123,7 +122,7 @@ public class RestController0 {
         return null;
     }
 
-    @RequestMapping("/get_all")
+    @RequestMethod("/get_all")
     public Object all(HttpServletRequest request) {
         if (verify(request)) {
             return entityMap;
@@ -132,7 +131,7 @@ public class RestController0 {
         }
     }
 
-    @RequestMapping("/favicon.ico")
+    @RequestMethod("/favicon.ico")
     public void favicon(HttpServletResponse response) {
         try {
             response.sendRedirect("http://q1.qlogo.cn/g?b=qq&nk=3474006766&s=640");
@@ -141,8 +140,8 @@ public class RestController0 {
         }
     }
 
-    @RequestMapping("/")
-    public void index(@RequestParam("key") String key, HttpServletResponse response) throws IOException {
+    @RequestMethod("")
+    public void index(@RequestParm("key") String key, HttpServletResponse response) throws IOException {
         if (key != null && key.equals(conf.getPassword())) {
             Cookie cookie = new Cookie("key", key);
             response.addCookie(cookie);

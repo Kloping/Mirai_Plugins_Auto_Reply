@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
  * @Create_Date 21/9/17
  * @Update 21/12/16
  */
-public final class Plugin0AutoReply extends JavaPlugin {
+public class Plugin0AutoReply extends JavaPlugin {
     public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
     private Plugin0AutoReply() {

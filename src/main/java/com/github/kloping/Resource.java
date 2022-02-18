@@ -2,7 +2,7 @@ package com.github.kloping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.kloping.sp.Client;
+import com.github.kloping.sp.Starter;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
@@ -31,7 +31,7 @@ public class Resource {
         loadData(conf.getDataPath());
         loadIllegals();
         initUuid();
-        startHtml();
+        Starter.main(new String[]{});
     }
 
     public static void loadIllegals() {
@@ -100,16 +100,6 @@ public class Resource {
 
     public static void initUuid() {
         uuid = conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : conf.getPassword();
-    }
-
-    public static void startHtml() {
-        try {
-            Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + conf.getPort() + "?key=" + uuid);
-            Client.main(new String[]{});
-        } catch (Exception e) {
-            System.err.println("AutoReply 服务启动 异常 请检查 端口是否被占用");
-            e.printStackTrace();
-        }
     }
 
     public static void loadData(String dataPath) {
