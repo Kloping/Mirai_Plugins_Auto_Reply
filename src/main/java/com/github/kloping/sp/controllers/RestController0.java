@@ -19,7 +19,6 @@ import static com.github.kloping.Resource.*;
  */
 @WebRestController
 public class RestController0 {
-
     private boolean verify(HttpServletRequest request) {
         if (request.getCookies() == null) {
             return false;
@@ -113,7 +112,7 @@ public class RestController0 {
     @RequestMethod("/append")
     public Object append(@RequestParm("k") String k, @RequestParm("v") String v, HttpServletRequest request) {
         if (verify(request)) {
-            if ("添加成功".equals(Resource.append(k, v))) {
+            if ("添加完成".equals(Resource.append(k, v))) {
                 return entityMap;
             } else {
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("failed in append one(%s,%s)", k, v));
@@ -140,9 +139,9 @@ public class RestController0 {
         }
     }
 
-    @RequestMethod("")
+    @RequestMethod("/")
     public void index(@RequestParm("key") String key, HttpServletResponse response) throws IOException {
-        if (key != null && key.equals(conf.getPassword())) {
+        if (key != null && key.equals(uuid)) {
             Cookie cookie = new Cookie("key", key);
             response.addCookie(cookie);
             response.sendRedirect("/index.html");
