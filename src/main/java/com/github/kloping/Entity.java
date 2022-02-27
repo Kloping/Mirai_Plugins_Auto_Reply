@@ -8,6 +8,8 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import static com.github.kloping.MyUtils.filterMatcher;
+
 /**
  * @author github-kloping
  */
@@ -147,9 +149,7 @@ public class Entity {
             Response0 response0 = new Response0();
             response0.setWeight(weight);
             String code = data.serializeToMiraiCode();
-            //==
-            code = code.replaceAll("\\[mirai:", "\\\\[mirai:");
-            //==
+            code = filterMatcher(code);
             if (code.isEmpty())
                 code = MessageChain.serializeToJsonString(data);
             response0.setData(code);

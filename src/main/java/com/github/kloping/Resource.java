@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.github.kloping.MyUtils.tempMap;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -120,7 +119,6 @@ public class Resource {
 
     public static void sourceMap() {
         indexed = false;
-        tempMap.clear();
         FileInitializeValue.putValues(conf.getDataPath(), entityMap, true);
     }
 

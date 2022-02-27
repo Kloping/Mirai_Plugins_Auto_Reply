@@ -10,6 +10,8 @@ import net.mamoe.mirai.message.data.MessageChainBuilder;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.github.kloping.MyUtils.filterMatcher;
+
 /**
  * @author github-kloping
  */
@@ -61,6 +63,7 @@ public class OnCommand {
                 return true;
             }
             String str = event.getMessage().serializeToMiraiCode();
+            str = filterMatcher(str);
             if (str == null) return false;
             if (Resource.conf.getInsertKey().equals(str)) {
                 if (cantInsert(q)) return false;

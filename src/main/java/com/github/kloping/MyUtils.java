@@ -10,8 +10,16 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * @author github-kloping
+ */
 public class MyUtils {
-    public static final Random rand = new Random();
+    public static String filterMatcher(String str) {
+        str = str.replaceAll("\\[mirai:", "\\\\[mirai:");
+        return str;
+    }
+
+    public static final Random RAND = new Random();
 
     public static Message getMessageByKey(String key) {
         Entity entity = getEntity(key);
@@ -19,9 +27,8 @@ public class MyUtils {
         return null;
     }
 
-    public static final Map<String, Entity> tempMap = new HashMap<>();
-
     private static Entity getEntity(String key) {
+        Map<String, Entity> tempMap = new HashMap<>();
         Entity entity = (Entity) Resource.entityMap.get(key);
         if (entity == null) {
             for (String s : Resource.entityMap.keySet()) {
@@ -54,7 +61,7 @@ public class MyUtils {
                     m.put(n++, v);
             }
             if (n <= 0) return null;
-            int r = rand.nextInt(n);
+            int r = RAND.nextInt(n);
             return m.get(r).getData();
         } finally {
             System.gc();
