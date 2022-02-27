@@ -123,9 +123,9 @@
             data: {}
         }, methods: {
             mSelect: function (k, k2, k3, str) {
-                a1 = k
-                a2 = k2
-                type = k3
+                a1 = encodeURI(k)
+                a2 = encodeURI(k2)
+                type = encodeURI(k3)
                 tips("选择")
                 $("#main_input").val(str)
             },
@@ -151,6 +151,7 @@
             return
         }
         let v = $("#main_input").val()
+        v=encodeURI(v)
         if (v === "") return;
         let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
@@ -167,6 +168,7 @@
         }
         let v = $("#main_input").val()
         if (v === "") return;
+        v=encodeURI(v)
         let url = "/delete?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
             vm1.data = response.data
@@ -178,6 +180,7 @@
     function m2() {
         let v = $("#main_input").val()
         if (v === "") return;
+        v=encodeURI(v)
         let url = "/search?value=" + v
         axios.get(url).then(function (response) {
             vm1.data = response.data

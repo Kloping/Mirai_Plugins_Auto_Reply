@@ -89,6 +89,7 @@ public class Entity {
 
     /**
      * 转为可发送
+     *
      * @return
      */
     public synchronized Entity deApply() {
@@ -139,12 +140,16 @@ public class Entity {
 
         /**
          * 转为可储存
+         *
          * @return
          */
         public Response0 asResponse0() {
             Response0 response0 = new Response0();
             response0.setWeight(weight);
             String code = data.serializeToMiraiCode();
+            //==
+            code = code.replaceAll("\\[mirai:", "\\\\[mirai:");
+            //==
             if (code.isEmpty())
                 code = MessageChain.serializeToJsonString(data);
             response0.setData(code);
@@ -224,10 +229,11 @@ public class Entity {
             Response response = new Response();
             response.setWeight(weight);
             MessageChain chain = null;
-            if (data.trim().startsWith("[{"))
+            if (data.trim().startsWith("[{")) {
                 chain = MessageChain.deserializeFromJsonString(data);
-            else
+            } else {
                 chain = MiraiCode.deserializeMiraiCode(data);
+            }
             response.setData(chain);
             response.setState(state);
             return response;
