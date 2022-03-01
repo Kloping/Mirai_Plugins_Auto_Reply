@@ -149,7 +149,7 @@ public class Entity {
             Response0 response0 = new Response0();
             response0.setWeight(weight);
             String code = data.serializeToMiraiCode();
-            code = filterMatcher(code);
+//            code = filterMatcher(code);
             if (code.isEmpty())
                 code = MessageChain.serializeToJsonString(data);
             response0.setData(code);
