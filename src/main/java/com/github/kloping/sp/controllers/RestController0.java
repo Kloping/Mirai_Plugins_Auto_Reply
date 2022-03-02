@@ -1,10 +1,13 @@
 package com.github.kloping.sp.controllers;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
 import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
 import io.github.kloping.little_web.annotations.WebRestController;
+import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.BotFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -148,5 +151,18 @@ public class RestController0 {
         } else {
             response.sendRedirect("https://www.baidu.com");
         }
+    }
+
+    @RequestMethod("/getBotId")
+    public String getBotId() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", "-1");
+        for (Bot instance : Bot.getInstances()) {
+            jsonObject.put("id", instance.getId());
+            jsonObject.put("name", instance.getNick());
+            jsonObject.put("icon", instance.getAvatarUrl());
+            return jsonObject.toJSONString();
+        }
+        return jsonObject.toJSONString();
     }
 }

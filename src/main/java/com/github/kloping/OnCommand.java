@@ -63,7 +63,6 @@ public class OnCommand {
                 return true;
             }
             String str = event.getMessage().serializeToMiraiCode();
-            str = filterMatcher(str);
             if (str == null) return false;
             if (Resource.conf.getInsertKey().equals(str)) {
                 if (cantInsert(q)) return false;
@@ -76,7 +75,9 @@ public class OnCommand {
                 if (sss.length == 3) {
                     if (Resource.isIllegal(sss[1]) || Resource.isIllegal(sss[2])) {
                         event.getSubject().sendMessage("敏感词汇 ");
-                    } else ss(sss[1], sss[2], event.getSubject());
+                    } else {
+                        ss(sss[1], sss[2], event.getSubject());
+                    }
                     return true;
                 }
                 return false;
@@ -151,6 +152,7 @@ public class OnCommand {
         response.setData(message);
         response.setWeight(1);
         response.setState(0);
+        v = filterMatcher(v);
         Entity entity = (Entity) Resource.entityMap.get(s(v));
         if (entity == null) entity = new Entity(contact == null ? 0 : contact.getId());
         entity.setK_(v);

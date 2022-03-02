@@ -12,7 +12,7 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * this plugin make on mirai make in idea make by [@Author]
+ * this plugin make on mirai make in jetbrains-idea make by [@Author]
  *
  * @Author HRS 3474006766@qq.com github.com/kloping
  * @Create_Date 21/9/17
@@ -22,7 +22,7 @@ public class Plugin0AutoReply extends JavaPlugin {
     public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
     private Plugin0AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.4.2")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.4.3")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")

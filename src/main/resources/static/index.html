@@ -22,6 +22,13 @@
     <script src="index.js"></script>
 </head>
 <body>
+<div style="color: white;float: left " id="bot-show" v-for="" class="media" v-show="data.id>0">
+    <img :src="'https://q1.qlogo.cn/g?b=qq&nk='+data.id+'&s=2'" class="mr-3" :alt="data.id">
+    <div class="media-body">
+        <h5 v-text="data.name" class="mt-0"></h5>
+        <p v-text="data.id"></p>
+    </div>
+</div>
 <center>
     <h1 style="color: aliceblue">作者QQ: 3474006766</h1> <br>
     <h5 style="color: aliceblue">遇到bug请及时反馈</h5>
@@ -145,13 +152,26 @@
         }
     });
 
+    let vm2 = new Vue({
+        el: "#bot-show",
+        created: function () {
+            axios.get("/getBotId").then(function (response) {
+                vm2.data = response.data
+            }).catch(function (err) {
+                alert(err);
+            })
+        }, data: {
+            data: {}
+        }, methods: {}
+    });
+
     function m1() {
         if (a1 == null) {
             alert("未选择任何,单击元素以选择")
             return
         }
         let v = $("#main_input").val()
-        v=encodeURI(v)
+        v = encodeURI(v)
         if (v === "") return;
         let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
@@ -168,7 +188,7 @@
         }
         let v = $("#main_input").val()
         if (v === "") return;
-        v=encodeURI(v)
+        v = encodeURI(v)
         let url = "/delete?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
         axios.get(url).then(function (response) {
             vm1.data = response.data
@@ -180,7 +200,7 @@
     function m2() {
         let v = $("#main_input").val()
         if (v === "") return;
-        v=encodeURI(v)
+        v = encodeURI(v)
         let url = "/search?value=" + v
         axios.get(url).then(function (response) {
             vm1.data = response.data
