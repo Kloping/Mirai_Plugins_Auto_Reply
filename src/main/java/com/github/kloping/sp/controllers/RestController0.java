@@ -7,7 +7,6 @@ import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
 import io.github.kloping.little_web.annotations.WebRestController;
 import net.mamoe.mirai.Bot;
-import net.mamoe.mirai.BotFactory;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -136,7 +135,8 @@ public class RestController0 {
     @RequestMethod("/favicon.ico")
     public void favicon(HttpServletResponse response) {
         try {
-            response.sendRedirect("http://q1.qlogo.cn/g?b=qq&nk=3474006766&s=640");
+            response.sendRedirect("http://q1.qlogo.cn/g?b=qq&nk=" + (Bot.getInstances().size() > 0 ?
+                    Bot.getInstances().get(0).getId() : "") + "&s=640");
         } catch (IOException e) {
             e.printStackTrace();
         }
