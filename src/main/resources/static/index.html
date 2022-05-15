@@ -17,11 +17,17 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
             integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
             crossorigin="anonymous"></script>
-    <style>
-    </style>
     <script src="index.js"></script>
 </head>
 <body>
+
+<button onclick="function taskHtml() {
+    location.href='/clock.html';
+}
+taskHtml()" style="float: right" type="button" class="btn btn-primary">
+    定时任务
+</button>
+
 <div style="color: white;float: left " id="bot-show" v-for="" class="media" v-show="data.id>0">
     <img :src="'https://q1.qlogo.cn/g?b=qq&nk='+data.id+'&s=2'" class="mr-3" :alt="data.id">
     <div class="media-body">

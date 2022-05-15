@@ -7,6 +7,9 @@ import java.io.File;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * @author github-kloping
+ */
 public class Conf {
     private long host = -1;
     private Set<Long> followers = new LinkedHashSet<>();

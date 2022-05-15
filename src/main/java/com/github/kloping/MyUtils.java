@@ -5,10 +5,8 @@ import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.SingleMessage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author github-kloping
@@ -78,5 +76,49 @@ public class MyUtils {
         }
         if (plainText == null) return null;
         return plainText.getContent().toString().trim();
+    }
+
+
+    /**
+     * 将指定数字转为指定位数字符
+     * (2,9)  => 09
+     *
+     * @param i
+     * @param value
+     * @return
+     */
+    public static String toStr(int i, int value) {
+        String s0 = Integer.toString(value);
+        while (s0.length() < i) {
+            s0 = "0" + s0;
+        }
+        return s0;
+    }
+
+    public static final SimpleDateFormat F0 = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+
+    public static int getYear() {
+        String s = F0.format(new Date());
+        return Integer.parseInt(s.substring(0, 4));
+    }
+
+    public static int getMon() {
+        String s = F0.format(new Date());
+        return Integer.parseInt(s.substring(5, 7));
+    }
+
+    public static int getDay() {
+        String s = F0.format(new Date());
+        return Integer.parseInt(s.substring(8, 10));
+    }
+
+    public static int getHour() {
+        String s = F0.format(new Date());
+        return Integer.parseInt(s.substring(11, 13));
+    }
+
+    public static int getMinutes() {
+        String s = F0.format(new Date());
+        return Integer.parseInt(s.substring(14, 16));
     }
 }

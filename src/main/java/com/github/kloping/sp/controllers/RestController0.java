@@ -3,6 +3,7 @@ package com.github.kloping.sp.controllers;
 import com.alibaba.fastjson.JSONObject;
 import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
+import com.github.kloping.e0.AlarmClock;
 import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
 import io.github.kloping.little_web.annotations.WebRestController;
@@ -12,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static com.github.kloping.Resource.*;
@@ -164,5 +166,28 @@ public class RestController0 {
             return jsonObject.toJSONString();
         }
         return jsonObject.toJSONString();
+    }
+
+    @RequestMethod("/getAlarms")
+    public List<AlarmClock> getAlarmClocks(HttpServletRequest request) {
+        if (verify(request)) {
+            return ALARM_CLOCKS;
+        } else {
+            return null;
+        }
+    }
+
+    @RequestMethod("/changeStateAlarmClock")
+    public List<AlarmClock> changeStateAlarmClock(HttpServletRequest request, @RequestParm("uuid") String uuid) {
+        if (verify(request)) {
+            for (AlarmClock alarmClock : ALARM_CLOCKS) {
+                if (uuid.equals(alarmClock.getUuid())) {
+                    alarmClock.setEnable(!alarmClock.isEnable());
+                }
+            }
+            return ALARM_CLOCKS;
+        } else {
+            return null;
+        }
     }
 }

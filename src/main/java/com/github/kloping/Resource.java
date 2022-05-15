@@ -2,9 +2,12 @@ package com.github.kloping;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.kloping.e0.AlarmClock;
 import com.github.kloping.sp.Starter;
+import io.github.kloping.date.FrameUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
+import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.message.data.*;
 
@@ -13,6 +16,8 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.github.kloping.MyUtils.getHour;
+import static com.github.kloping.MyUtils.getMinutes;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -25,17 +30,62 @@ public class Resource {
     public static Conf conf = Conf.getInstance(rootPath);
     public static Map<String, Object> entityMap = new ConcurrentHashMap<>();
     public static Set<String> illegalKeys = new CopyOnWriteArraySet<>();
+    public static String uuid;
+    public static boolean indexed = false;
+    public static final List<AlarmClock> ALARM_CLOCKS = new ArrayList<>();
+    public static final int EVE = 60000;
 
     static {
         loadData(conf.getDataPath());
+        loadAlarmClocks();
         loadIllegals();
         initUuid();
         Starter.main(new String[]{});
     }
 
+    private static void loadAlarmClocks() {
+        List<AlarmClock> als = new ArrayList<AlarmClock>();
+        String p0 = new File(new File(conf.getDataPath()).getParentFile().getAbsolutePath(), "alarms.json").getAbsolutePath();
+        als = FileInitializeValue.getValue(p0, als, true);
+        for (Object o : als) {
+            AlarmClock ac = null;
+            if (o instanceof AlarmClock) {
+                ac = (AlarmClock) o;
+            } else if (o instanceof JSONObject) {
+                ac = ((JSONObject) o).toJavaObject(AlarmClock.class);
+            }
+            if (ac != null)
+                ALARM_CLOCKS.add(ac);
+        }
+    }
+
+    public static void saveAlarmClocks() {
+        String p0 = new File(new File(conf.getDataPath()).getParentFile().getAbsolutePath(), "alarms.json").getAbsolutePath();
+        FileInitializeValue.putValues(p0, ALARM_CLOCKS, true);
+    }
+
+
+    public static String addA(String t, String qid, String content) {
+        try {
+            String[] ss = t.split(":");
+            Integer t0 = Integer.valueOf(ss[0]);
+            Integer t1 = Integer.valueOf(ss[1]);
+            String type = qid.substring(0, 1);
+            AlarmClock c0 = new AlarmClock().setContent(content).setTargetId(Long.parseLong(qid.substring(1)))
+                    .setType(type).setHour(t0).setMinutes(t1).setUuid(UUID.randomUUID().toString());
+            ALARM_CLOCKS.add(c0);
+            saveAlarmClocks();
+        } catch (NumberFormatException e) {
+            return e.getMessage();
+        }
+        return "ok";
+    }
+
+
     public static void loadIllegals() {
         illegalKeys.clear();
         String ss = getStringFromFile(new File(conf.getRoot(), "conf/auto_reply/illegalKeys").getAbsolutePath());
+        if (ss == null || ss.isEmpty()) return;
         String[] sss = ss.split("\\s+");
         for (String s : sss) {
             if (s.trim().isEmpty()) {
@@ -94,8 +144,6 @@ public class Resource {
         }
         return sb.toString();
     }
-
-    public static String uuid;
 
     public static void initUuid() {
         uuid = conf.getPassword().trim().isEmpty() ? UUID.randomUUID().toString() : conf.getPassword();
@@ -170,8 +218,6 @@ public class Resource {
         return true;
     }
 
-    public static boolean indexed = false;
-
     public static String trySearch(String v) throws Exception {
         if (!indexed) makeIndex();
         Map<String, Entity> em = new HashMap<>();
@@ -227,8 +273,42 @@ public class Resource {
         map.put(k, list);
     }
 
-
     public static String append(String key, String value) {
         return OnCommand.ss(key, value, null);
+    }
+
+    static {
+        new Thread() {
+            @Override
+            public void run() {
+                FrameUtils.SERVICE.scheduleAtFixedRate(() -> {
+                    for (AlarmClock c0 : ALARM_CLOCKS) {
+                        if (!c0.isEnable()) continue;
+                        if (c0.getHour() == getHour() && c0.getMinutes() == getMinutes()) {
+                            if (c0.getBotId() > 0) {
+                                if (Bot.getInstances().contains(c0.getBotId())) {
+                                    send(Bot.getInstance(c0.getBotId()), c0);
+                                }
+                            } else if (Bot.getInstances().size() > 0) {
+                                send(Bot.getInstances().iterator().next(), c0);
+                            }
+                        }
+                    }
+                }, EVE, EVE, TimeUnit.MILLISECONDS);
+            }
+        }.start();
+    }
+
+    private static void send(Bot bot, AlarmClock c0) {
+        switch (c0.getType()) {
+            case "g":
+                bot.getGroup(c0.getTargetId()).sendMessage(c0.getContent());
+                break;
+            case "u":
+                bot.getFriend(c0.getTargetId()).sendMessage(c0.getContent());
+                break;
+            default:
+                break;
+        }
     }
 }

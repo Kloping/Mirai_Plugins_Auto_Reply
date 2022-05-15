@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="./js/axios.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/jq3.6.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="./js/poper.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css"
+          rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js"></script>
+    <script src="index.js"></script>
+    <title>定时任务</title>
+</head>
+<body>
+<center>
+    <h1 style="color: aliceblue">作者QQ: 3474006766</h1> <br>
+    <h5 style="color: aliceblue">定时任务管理面板</h5>
+</center>
+<br>
+<br>
+<div id="div0" class="row">
+    <div class="col-2"></div>
+    <div id="ac0" style="background-color: white" class="col-8">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">BotId</th>
+                <th scope="col">时间</th>
+                <th scope="col">TargetId</th>
+                <th scope="col">内容</th>
+                <th scope="col">状态</th>
+            </tr>
+            </thead>
+            <tbody v-for="(e,i) in data">
+            <tr>
+                <th scope="row" v-html="i"></th>
+                <td v-text="e.botId"></td>
+                <td v-text="e.hour+':'+e.minutes"></td>
+                <td v-text="e.type+e.targetId"></td>
+                <td v-html="e.content"></td>
+                <td>
+                    <button type="button" :class="'btn '+(e.enable ? 'btn-success' : 'btn-danger')"
+                            v-text="e.enable?'开启':'关闭'" v-on:click="changeState(e.uuid)"></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<script>
+
+    let vm1 = new Vue({
+        el: "#div0",
+        created: function () {
+            axios.get("/getAlarms").then(function (response) {
+                vm1.data = response.data
+            }).catch(function (err) {
+                alert(err);
+            })
+        }, data: {
+            data: []
+        }, methods: {
+            changeState: function (uuid) {
+                axios.get("/changeStateAlarmClock?uuid=" + uuid).then(function (response) {
+                    vm1.data = response.data
+                }).catch(function (err) {
+                    alert(err);
+                })
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

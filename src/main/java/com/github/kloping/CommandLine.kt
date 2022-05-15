@@ -7,6 +7,7 @@ import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
 
 class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INSTANCE, "autoReply") {
+
     @Description("设置主人")
     @SubCommand("setHost")
     suspend fun CommandSender.autoReplyM1(q: Long) {
@@ -43,6 +44,12 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         val INSTANCE = CommandLine()
     }
 
+    @Description("添加一个定时任务")
+    @SubCommand("addA")
+    suspend fun CommandSender.addA(@Name("时间") t: String, @Name("ID") qid: String, @Name("内容") content: String) {
+        sendMessage(Resource.addA(t, qid, content))
+    }
+//    /autoReply addA 10:12 u3474006766 内容
     init {
         description = "AutoReply 命令"
     }
