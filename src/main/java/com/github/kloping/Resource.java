@@ -291,8 +291,10 @@ public class Resource {
                                 if (Bot.getInstances().contains(c0.getBotId())) {
                                     send(Bot.getInstance(c0.getBotId()), c0);
                                 }
-                            } else if (Bot.getInstances().size() > 0) {
-                                send(Bot.getInstances().iterator().next(), c0);
+                            } else {
+                                if (Bot.getInstances().size() > 0) {
+                                    send(Bot.getInstances().iterator().next(), c0);
+                                }
                             }
                         }
                     }
@@ -323,6 +325,8 @@ public class Resource {
                     .append("给").append(alarmClock.getType()).append(alarmClock.getTargetId()).append("发送:").append(alarmClock.getContent())
                     .append("\n");
         }
+        if (sb.length() == 0)
+            return "暂无";
         return sb.toString().trim();
     }
 
