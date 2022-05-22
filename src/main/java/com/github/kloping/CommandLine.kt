@@ -49,7 +49,20 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     suspend fun CommandSender.addA(@Name("时间") t: String, @Name("ID") qid: String, @Name("内容") content: String) {
         sendMessage(Resource.addA(t, qid, content))
     }
-//    /autoReply addA 10:12 u3474006766 内容
+
+    @Description("列出所有定时任务")
+    @SubCommand("listA")
+    suspend fun CommandSender.listA() {
+        sendMessage(Resource.listA())
+    }
+
+    @Description("删除一个定时任务")
+    @SubCommand("deleteA")
+    suspend fun CommandSender.deleteA(@Name("序号") s: Int) {
+        sendMessage(Resource.deleteA(s))
+    }
+
+
     init {
         description = "AutoReply 命令"
     }

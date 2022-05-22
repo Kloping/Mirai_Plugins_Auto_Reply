@@ -95,6 +95,32 @@ public class MyUtils {
         return s0;
     }
 
+    public static final String[] WEEK_DAYS = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
+
+    /**
+     * 获取当前日期是星期几
+     *
+     * @return 当前日期是星期几
+     */
+    public static String getWeekOfDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        return WEEK_DAYS[w];
+    }
+
+    /**
+     * 获取当前日期是星期几
+     *
+     * @return
+     */
+    public static Integer getWeekOfDateSt() {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+        int w = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        return w;
+    }
+
     public static final SimpleDateFormat F0 = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 
     public static int getYear() {

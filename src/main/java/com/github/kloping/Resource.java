@@ -10,6 +10,7 @@ import io.github.kloping.judge.Judge;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
 import net.mamoe.mirai.message.data.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -284,6 +285,7 @@ public class Resource {
                 FrameUtils.SERVICE.scheduleAtFixedRate(() -> {
                     for (AlarmClock c0 : ALARM_CLOCKS) {
                         if (!c0.isEnable()) continue;
+                        if (!c0.enableToday()) continue;
                         if (c0.getHour() == getHour() && c0.getMinutes() == getMinutes()) {
                             if (c0.getBotId() > 0) {
                                 if (Bot.getInstances().contains(c0.getBotId())) {
@@ -310,5 +312,22 @@ public class Resource {
             default:
                 break;
         }
+    }
+
+    @NotNull
+    public static String listA() {
+        StringBuilder sb = new StringBuilder();
+        int i = 1;
+        for (AlarmClock alarmClock : ALARM_CLOCKS) {
+            sb.append(i).append(",").append(alarmClock.getHourStr()).append(":").append(alarmClock.getMinutesStr())
+                    .append("给").append(alarmClock.getType()).append(alarmClock.getTargetId()).append("发送:").append(alarmClock.getContent())
+                    .append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    @NotNull
+    public static String deleteA(int s) {
+        return ALARM_CLOCKS.remove(s) == null ? "not found" : "ok";
     }
 }

@@ -13,6 +13,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -185,9 +186,43 @@ public class RestController0 {
                     alarmClock.setEnable(!alarmClock.isEnable());
                 }
             }
+            saveAlarmClocks();
             return ALARM_CLOCKS;
         } else {
             return null;
         }
+    }
+
+    @RequestMethod("/changeWeekStateAlarmClock")
+    public List<AlarmClock> changeWeekStateAlarmClock(HttpServletRequest request,
+                                                      @RequestParm("uuid") String uuid,
+                                                      @RequestParm("st") Integer st
+    ) {
+        if (verify(request)) {
+            for (AlarmClock alarmClock : ALARM_CLOCKS) {
+                if (uuid.equals(alarmClock.getUuid())) {
+                    List<Integer> list = asList(alarmClock.getWeeks());
+                    if (list.contains(st)) {
+                        list.remove((Object) st);
+                    } else {
+                        list.add(st);
+                    }
+                    alarmClock.setWeeks(list.toArray(new Integer[0]));
+                    System.out.println(list);
+                }
+            }
+            saveAlarmClocks();
+            return ALARM_CLOCKS;
+        } else {
+            return null;
+        }
+    }
+
+    private List<Integer> asList(Integer[] weeks) {
+        List<Integer> integers = new ArrayList<>();
+        for (Integer week : weeks) {
+            integers.add(week);
+        }
+        return integers;
     }
 }
