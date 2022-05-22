@@ -332,6 +332,10 @@ public class Resource {
 
     @NotNull
     public static String deleteA(int s) {
-        return s >= ALARM_CLOCKS.size() ? "IndexOutOfBoundsException" : ALARM_CLOCKS.remove(s) == null ? "not found" : "ok";
+        try {
+            return s >= ALARM_CLOCKS.size() ? "IndexOutOfBoundsException" : ALARM_CLOCKS.remove(s) == null ? "not found" : "ok";
+        } finally {
+            saveAlarmClocks();
+        }
     }
 }
