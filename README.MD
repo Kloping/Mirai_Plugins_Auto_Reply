@@ -71,3 +71,5 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
     #权重: 权重越大触发概率也就越大 [算法](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/src/main/java/com/github/kloping/MyUtils.java#L47)
 
 当存在大量数据时 可能会出现未知异常
+
+

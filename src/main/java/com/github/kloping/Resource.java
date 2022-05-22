@@ -321,7 +321,7 @@ public class Resource {
         StringBuilder sb = new StringBuilder();
         int i = 1;
         for (AlarmClock alarmClock : ALARM_CLOCKS) {
-            sb.append(i).append(",").append(alarmClock.getHourStr()).append(":").append(alarmClock.getMinutesStr())
+            sb.append(i++).append(",").append(alarmClock.getHourStr()).append(":").append(alarmClock.getMinutesStr())
                     .append("给").append(alarmClock.getType()).append(alarmClock.getTargetId()).append("发送:").append(alarmClock.getContent())
                     .append("\n");
         }
@@ -332,6 +332,6 @@ public class Resource {
 
     @NotNull
     public static String deleteA(int s) {
-        return ALARM_CLOCKS.remove(s) == null ? "not found" : "ok";
+        return s >= ALARM_CLOCKS.size() ? "IndexOutOfBoundsException" : ALARM_CLOCKS.remove(s) == null ? "not found" : "ok";
     }
 }

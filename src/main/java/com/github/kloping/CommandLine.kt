@@ -59,7 +59,7 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     @Description("删除一个定时任务")
     @SubCommand("deleteA")
     suspend fun CommandSender.deleteA(@Name("序号") s: Int) {
-        sendMessage(Resource.deleteA(s))
+        sendMessage(Resource.deleteA(s-1))
     }
 
 
