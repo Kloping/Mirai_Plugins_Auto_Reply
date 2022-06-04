@@ -2,6 +2,7 @@ package com.github.kloping.e0;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.github.kloping.MyUtils;
+import io.github.kloping.MySpringTool.h1.impl.component.PackageScannerImpl;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
