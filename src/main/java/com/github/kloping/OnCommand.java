@@ -39,7 +39,7 @@ public class OnCommand {
             if (filter(event)) return;
         long gid = event.getSubject().getId();
         //判断cd
-        if (cds.containsKey(gid) && cds.get(gid) > System.currentTimeMillis()) return;
+        if (cds.containsKey(gid) && cds.get(gid) < System.currentTimeMillis()) return;
         //将消息转为 code String 可进行匹配处理
         String codeKey = event.getMessage().serializeToMiraiCode();
         //匹配 如果存在 发出
@@ -48,8 +48,9 @@ public class OnCommand {
             event.getSubject().sendMessage(message);
         }
         // cd++
-        if (Resource.conf.getCd() > 0f)
+        if (Resource.conf.getCd() > 0f) {
             cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000L));
+        }
     }
 
     private static boolean filter(MessageEvent event) {
