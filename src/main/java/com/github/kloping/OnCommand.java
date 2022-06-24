@@ -31,26 +31,21 @@ public class OnCommand {
     private static Map<Long, Entity> deleting = new ConcurrentHashMap<>();
     private static Map<Long, Long> cds = new ConcurrentHashMap<>();
 
-    //处理
-    private static void work(MessageEvent event) {
+    private synchronized static void work(MessageEvent event) {
         //如果是命令
         if (maybe(event.getSender().getId()))
             //是否可执行 如果 是 执行 否则 继续
             if (filter(event)) return;
         long gid = event.getSubject().getId();
         //判断cd
-        if (cds.containsKey(gid) && cds.get(gid) < System.currentTimeMillis()) return;
+        if (cds.containsKey(gid) && cds.get(gid) > System.currentTimeMillis()) return;
         //将消息转为 code String 可进行匹配处理
         String codeKey = event.getMessage().serializeToMiraiCode();
         //匹配 如果存在 发出
         Message message = MyUtils.getMessageByKey(codeKey);
-        if (message != null) {
-            event.getSubject().sendMessage(message);
-        }
-        // cd++
-        if (Resource.conf.getCd() > 0f) {
-            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000L));
-        }
+        if (message != null) event.getSubject().sendMessage(message);
+        if (Resource.conf.getCd() > 0f)
+            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000));
     }
 
     private static boolean filter(MessageEvent event) {
