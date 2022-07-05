@@ -2,6 +2,7 @@ package com.github.kloping
 
 import com.github.kloping.Resource.conf
 import com.github.kloping.Resource.loadIllegals
+import com.github.kloping.cron.Work
 import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
@@ -59,7 +60,30 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     @Description("删除一个定时任务")
     @SubCommand("deleteA")
     suspend fun CommandSender.deleteA(@Name("序号") s: Int) {
-        sendMessage(Resource.deleteA(s-1))
+        sendMessage(Resource.deleteA(s - 1))
+    }
+
+    @Description("cron定时任务的添加")
+    @SubCommand("cronAdd")
+    suspend fun CommandSender.cronAdd(
+        @Name("ID") id: String,
+        @Name("内容miraicode") code: String,
+        @Name("cron表达式") vararg cron: String
+    ) {
+       val cron0 = cron.joinToString(" ")
+        sendMessage(Work.add(cron0.trim(), id, code))
+    }
+
+    @Description("cron定时任务的删除")
+    @SubCommand("cronDelete")
+    suspend fun CommandSender.cronDelete(@Name("list中的序号id") cron: Int) {
+        sendMessage(Work.delete(cron))
+    }
+
+    @Description("cron定时任务的列表")
+    @SubCommand("cronList")
+    suspend fun CommandSender.cronList() {
+        sendMessage(Work.list())
     }
 
 

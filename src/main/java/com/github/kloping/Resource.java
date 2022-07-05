@@ -42,6 +42,7 @@ public class Resource {
         loadIllegals();
         initUuid();
         Starter.main(new String[]{});
+        com.github.kloping.cron.Work.work();
     }
 
     private static void loadAlarmClocks() {
@@ -65,7 +66,6 @@ public class Resource {
         FileInitializeValue.putValues(p0, ALARM_CLOCKS, true);
     }
 
-
     public static String addA(String t, String qid, String content) {
         try {
             String[] ss = t.split(":");
@@ -81,7 +81,6 @@ public class Resource {
         }
         return "ok";
     }
-
 
     public static void loadIllegals() {
         illegalKeys.clear();
