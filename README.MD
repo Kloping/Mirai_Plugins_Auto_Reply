@@ -94,7 +94,7 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 其中添加了相应的管理界面 在管理页面右上角
 
-### cron表达式的任务
+### [cron表达式](https://help.aliyun.com/document_detail/64769.html) 的任务
 
     /autoReply cronAdd <ID> <内容miraicode> <cron表达式>    # cron定时任务的添加
     /autoReply cronDelete <list中的序号id>    # cron定时任务的删除
