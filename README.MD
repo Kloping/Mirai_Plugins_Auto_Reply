@@ -1,4 +1,4 @@
-# Mirai_Plugins_Auto_Reply V 0.3
+# Mirai_Plugins_Auto_Reply V 0.6
 
 ## [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
 
@@ -68,7 +68,39 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 目前仅可 搜索 与 修改 示例:
 ![img_1.png](img_1.png)
-    #权重: 权重越大触发概率也就越大 [算法](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/src/main/java/com/github/kloping/MyUtils.java#L47)
+
+### 权重:
+
+权重越大触发概率也就越大 [算法](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/src/main/java/com/github/kloping/MyUtils.java#L47)
 
 当存在大量数据时 可能会出现未知异常
 
+
+
+###定时任务 命令
+  
+  
+    /autoReply addA <时间> \<ID> <内容>    # 添加一个定时任务
+    /autoReply deleteA <序号>    # 删除一个定时任务 
+    /autoReply listA # 列出所有定时任务
+
+其中 添加示例
+
+    /autoReply addA 11:23 u3474006766 中午好
+    #意思为 在11:23给好友3474006766发送中午好
+    
+    /autoReply addA 00:01 g278681553 签到
+    #意思为 在 00:01给群聊278681553发送签到
+
+其中添加了相应的管理界面 在管理页面右上角
+
+### cron表达式的任务
+
+    /autoReply cronAdd <ID> <内容miraicode> <cron表达式>    # cron定时任务的添加
+    /autoReply cronDelete <list中的序号id>    # cron定时任务的删除
+    /autoReply cronList    # cron定时任务的列表
+
+例如:
+
+    /autoReply cronAdd u3474006766 测试消息 * * 17 * * ?
+    /autoReply cronDelete 1
