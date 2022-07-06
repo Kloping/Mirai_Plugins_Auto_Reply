@@ -82,6 +82,7 @@ public class Work {
                 entity.getCron().equals(cron);
                 entityIterator.remove();
             }
+            FileInitializeValue.putValues(work.file.getAbsolutePath(), work.entities, true);
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();
