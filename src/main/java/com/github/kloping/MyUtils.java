@@ -33,7 +33,7 @@ public class MyUtils {
                 try {
                     if (key.matches(s)) {
                         tempMap.put(key, entity);
-                        return (Entity) Resource.entityMap.get(s);
+                        return (Entity)  Resource.entityMap.get(s);
                     }
                 } catch (Exception e) {
                     continue;

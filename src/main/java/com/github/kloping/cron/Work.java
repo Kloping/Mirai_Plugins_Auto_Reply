@@ -79,8 +79,8 @@ public class Work {
             Iterator<CronEntity> entityIterator = work.entities.iterator();
             while (entityIterator.hasNext()) {
                 CronEntity entity = entityIterator.next();
-                entity.getCron().equals(cron);
-                entityIterator.remove();
+                if (entity.getCron().equals(cron))
+                    entityIterator.remove();
             }
             FileInitializeValue.putValues(work.file.getAbsolutePath(), work.entities, true);
             return "ok";
