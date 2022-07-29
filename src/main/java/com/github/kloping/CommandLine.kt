@@ -16,6 +16,20 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         sendMessage("当前host=" + conf.host)
     }
 
+    @Description("设置CD(单位秒)")
+    @SubCommand("setCd")
+    suspend fun CommandSender.autoReplySetCd(cd: Float) {
+        conf.setCd(cd).apply()
+        sendMessage("当前cd=${conf.cd}秒")
+    }
+
+    @Description("改变自定义回复私信开关状态")
+    @SubCommand("changePk")
+    suspend fun CommandSender.autoReplyChangePk() {
+        conf.setPrivateK(!conf.isPrivateK).apply()
+        sendMessage("当前私信回复属于" + (if (conf.isPrivateK) "开启状态" else "关闭状态"))
+    }
+
     @Description("添加follower")
     @SubCommand("addF")
     suspend fun CommandSender.autoReplyM2(qs: String) {
@@ -70,7 +84,7 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         @Name("内容miraicode") code: String,
         @Name("cron表达式") vararg cron: String
     ) {
-       val cron0 = cron.joinToString(" ")
+        val cron0 = cron.joinToString(" ")
         sendMessage(Work.add(cron0.trim(), id, code))
     }
 
@@ -85,7 +99,6 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     suspend fun CommandSender.cronList() {
         sendMessage(Work.list())
     }
-
 
     init {
         description = "AutoReply 命令"

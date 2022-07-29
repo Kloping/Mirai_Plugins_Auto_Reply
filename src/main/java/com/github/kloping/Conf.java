@@ -127,8 +127,8 @@ public class Conf {
         return cd;
     }
 
-    public void setCd(float cd) {
-        this.cd = cd;
+    public Conf setCd(float cd) {
+        this.cd = cd;return this;
     }
 
     public String getOneComSplit() {
@@ -151,8 +151,8 @@ public class Conf {
         return privateK;
     }
 
-    public void setPrivateK(boolean privateK) {
-        this.privateK = privateK;
+    public Conf setPrivateK(boolean privateK) {
+        this.privateK = privateK;return this;
     }
 
     public int getPort() {
