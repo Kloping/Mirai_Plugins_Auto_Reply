@@ -49,16 +49,9 @@ public class Resource {
         List<AlarmClock> als = new ArrayList<AlarmClock>();
         String p0 = new File(new File(conf.getDataPath()).getParentFile().getAbsolutePath(), "alarms.json").getAbsolutePath();
         als = FileInitializeValue.getValue(p0, als, true);
-        for (Object o : als) {
-            AlarmClock ac = null;
-            if (o instanceof AlarmClock) {
-                ac = (AlarmClock) o;
-            } else if (o instanceof JSONObject) {
-                ac = ((JSONObject) o).toJavaObject(AlarmClock.class);
-            }
-            if (ac != null)
-                ALARM_CLOCKS.add(ac);
-        }
+        FileInitializeValue.objs2list(als, AlarmClock.class);
+        ALARM_CLOCKS.clear();
+        ALARM_CLOCKS.addAll(als);
     }
 
     public static void saveAlarmClocks() {

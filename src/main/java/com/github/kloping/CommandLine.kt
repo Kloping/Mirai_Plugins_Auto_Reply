@@ -8,6 +8,10 @@ import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
 
 class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INSTANCE, "autoReply") {
+    companion object {
+        @JvmField
+        val INSTANCE = CommandLine()
+    }
 
     @Description("设置主人")
     @SubCommand("setHost")
@@ -46,17 +50,28 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         sendMessage("当前 delete=\n" + (conf.deletes))
     }
 
+    @Description("移除follower")
+    @SubCommand("removeF")
+    suspend fun CommandSender.autoReplyRemoveF(qs: String) {
+        val q = java.lang.Long.parseLong(NumberUtils.findNumberFromString(qs))
+        conf.removeF(q).apply()
+        sendMessage("当前 follower=\n" + conf.followers)
+    }
+
+    @Description("移除deleter")
+    @SubCommand("removeD")
+    suspend fun CommandSender.autoReplyRemoveD(qs: String) {
+        val q = java.lang.Long.parseLong(NumberUtils.findNumberFromString(qs))
+        conf.removeC(q).apply()
+        sendMessage("当前 delete=\n" + (conf.deletes))
+    }
+
     @Description("重新加载配置")
     @SubCommand("reload")
     suspend fun CommandSender.autoReplyReload() {
         conf = Conf.reload(conf)
         loadIllegals()
         sendMessage(" Reloading the complete ")
-    }
-
-    companion object {
-        @JvmField
-        val INSTANCE = CommandLine()
     }
 
     @Description("添加一个定时任务")

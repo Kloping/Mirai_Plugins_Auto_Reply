@@ -7,8 +7,10 @@
     <script src="./js/axios.js"></script>
     <script src="./js/vue.js"></script>
     <script src="./js/jq3.6.js"></script>
-    <link rel="stylesheet" href="https://jsd.compc.cc/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://jsd.compc.cc/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
     <script src="./js/poper.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous">
     </script>
@@ -147,8 +149,6 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
                 }
                 dataNow = dataNow + data + "\r\n";
                 return dataNow
-                // 并无卵用
-                // return data
             }
         }
     });
@@ -254,7 +254,7 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
         $("#append_but").click(function () {
             let key = k0.val()
             let value = v0.val()
-            let url = "/append?k=" + key + "&v=" + value
+            let url = "/append?k=" + encodeURI(key) + "&v=" + encodeURI(value)
             axios.get(url).then(function (response) {
                 vm1.data = response.data
                 tips("添加成功", 1600)

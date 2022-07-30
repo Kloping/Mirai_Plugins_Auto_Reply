@@ -37,14 +37,15 @@ public class OnCommand {
         long gid = event.getSubject().getId();
         if (sche(event, gid)) return;
         if (Resource.conf.getCd() > 0f)
-            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000));
+            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000L));
     }
 
     private static boolean sche(MessageEvent event, long gid) {
-        if (cds.containsKey(gid) && cds.get(gid) > System.currentTimeMillis()) return true;
+        long cd0 = cds.getOrDefault(gid, 0L);
+        long cd1 = System.currentTimeMillis();
+        if (cds.containsKey(gid) && cd0 > cd1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
         Message message = MyUtils.getMessageByKey(codeKey);
-
         if (message != null) event.getSubject().sendMessage(message);
         return false;
     }

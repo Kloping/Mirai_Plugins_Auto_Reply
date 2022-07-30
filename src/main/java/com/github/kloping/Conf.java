@@ -66,6 +66,16 @@ public class Conf {
         return this;
     }
 
+    public Conf removeF(long q) {
+        followers.remove(q);
+        return this;
+    }
+
+    public Conf removeC(long q) {
+        deletes.remove(q);
+        return this;
+    }
+
     public String getPassword() {
         return password;
     }
