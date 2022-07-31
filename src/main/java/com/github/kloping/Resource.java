@@ -17,8 +17,7 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.github.kloping.MyUtils.getHour;
-import static com.github.kloping.MyUtils.getMinutes;
+import static com.github.kloping.MyUtils.*;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -49,7 +48,7 @@ public class Resource {
         List<AlarmClock> als = new ArrayList<AlarmClock>();
         String p0 = new File(new File(conf.getDataPath()).getParentFile().getAbsolutePath(), "alarms.json").getAbsolutePath();
         als = FileInitializeValue.getValue(p0, als, true);
-        FileInitializeValue.objs2list(als, AlarmClock.class);
+        objs2list(als, AlarmClock.class);
         ALARM_CLOCKS.clear();
         ALARM_CLOCKS.addAll(als);
     }

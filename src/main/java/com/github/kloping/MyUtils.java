@@ -1,5 +1,7 @@
 package com.github.kloping;
 
+import com.alibaba.fastjson.JSONObject;
+import io.github.kloping.object.ObjectUtils;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
@@ -12,6 +14,21 @@ import java.util.*;
  * @author github-kloping
  */
 public class MyUtils {
+
+    public static <T> void objs2list(List list, Class<T> cla) {
+        List<T> ls = new ArrayList<>();
+        Iterator iterator = list.iterator();
+        while (iterator.hasNext()) {
+            Object o = iterator.next();
+            if (o instanceof JSONObject) {
+                ls.add(((JSONObject) o).toJavaObject(cla));
+            } else if (ObjectUtils.isSuperOrInterface(o.getClass(), cla)) {
+                ls.add((T) o);
+            }
+        }
+        list.clear();
+        list.addAll(ls);
+    }
     public static String filterMatcher(String str) {
         str = str.replaceAll("\\[mirai:", "\\\\[mirai:");
         return str;
