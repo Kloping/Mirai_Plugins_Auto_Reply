@@ -5,12 +5,43 @@ import com.github.kloping.Resource.loadIllegals
 import com.github.kloping.cron.Work
 import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
+import net.mamoe.mirai.console.command.ConsoleCommandSender
+import net.mamoe.mirai.console.command.ConsoleCommandSender.sendMessage
+import net.mamoe.mirai.console.command.FriendCommandSenderOnMessage
+import net.mamoe.mirai.console.command.MemberCommandSender
 import net.mamoe.mirai.console.command.java.JCompositeCommand
 
 class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INSTANCE, "autoReply") {
     companion object {
         @JvmField
         val INSTANCE = CommandLine()
+    }
+
+    init {
+        description = "AutoReply 命令"
+    }
+
+    @Description("改变auto_reply所处环境的开关状态")
+    @SubCommand("changeState")
+    suspend fun CommandSender.autoReplyChangeState() {
+        if (this is MemberCommandSender) {
+            val sender: MemberCommandSender = this;
+            val gid = sender.group.id
+            conf.map[gid] = !conf.map.getOrDefault(gid, false);
+            conf.apply()
+            sendMessage("该群($gid)开启状态:" + (if (conf.map[gid] == true) "开启" else "关闭"))
+        } else if (this is FriendCommandSenderOnMessage) {
+            val sender: FriendCommandSenderOnMessage = this;
+            val sid = sender.subject.id
+            conf.map[sid] = !conf.map.getOrDefault(sid, false);
+            conf.apply()
+            sendMessage("该好友($sid)开启状态:" + (if (conf.map[sid] == true) "开启" else "关闭"))
+        } else if (this is ConsoleCommandSender) {
+            val sid = -1L
+            conf.map[sid] = !conf.map.getOrDefault(sid, false);
+            conf.apply()
+            sendMessage("全局开启状态:" + (if (conf.map[sid] == true) "开启" else "关闭"))
+        }
     }
 
     @Description("设置主人")
@@ -113,9 +144,5 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     @SubCommand("cronList")
     suspend fun CommandSender.cronList() {
         sendMessage(Work.list())
-    }
-
-    init {
-        description = "AutoReply 命令"
     }
 }

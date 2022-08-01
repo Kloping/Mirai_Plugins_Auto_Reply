@@ -5,7 +5,9 @@ import io.github.kloping.initialize.FileInitializeValue;
 
 import java.io.File;
 import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * @author github-kloping
@@ -25,6 +27,7 @@ public class Conf {
     private String root = ".";
     private String dataPath = "conf/auto_reply/data.json";
     private String password = "";
+    private Map<Long, Boolean> map = new TreeMap<>();
 
     private Conf() {
     }
@@ -54,6 +57,14 @@ public class Conf {
 
     public Conf apply() {
         return FileInitializeValue.putValues(new File(this.root, "conf/auto_reply/conf.json").getAbsolutePath(), this, true);
+    }
+
+    public Map<Long, Boolean> getMap() {
+        return map;
+    }
+
+    public void setMap(Map<Long, Boolean> map) {
+        this.map = map;
     }
 
     public Conf addF(long q) {
@@ -138,7 +149,8 @@ public class Conf {
     }
 
     public Conf setCd(float cd) {
-        this.cd = cd;return this;
+        this.cd = cd;
+        return this;
     }
 
     public String getOneComSplit() {
@@ -162,7 +174,8 @@ public class Conf {
     }
 
     public Conf setPrivateK(boolean privateK) {
-        this.privateK = privateK;return this;
+        this.privateK = privateK;
+        return this;
     }
 
     public int getPort() {

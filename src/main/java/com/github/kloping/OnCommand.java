@@ -43,11 +43,21 @@ public class OnCommand {
     private static boolean sche(MessageEvent event, long gid) {
         long cd0 = cds.getOrDefault(gid, 0L);
         long cd1 = System.currentTimeMillis();
-        if (cds.containsKey(gid) && cd0 > cd1) return true;
+        boolean k1 = cds.containsKey(gid) && cd0 > cd1;
+        boolean k2 = isOpen(gid);
+        if (!k2) return true;
+        if (k1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
         Message message = MyUtils.getMessageByKey(codeKey);
         if (message != null) event.getSubject().sendMessage(message);
         return false;
+    }
+
+    private static boolean isOpen(long gid) {
+        if (Resource.conf.getMap().containsKey(-1L)) {
+            return Resource.conf.getMap().get(-1L);
+        }
+        return Resource.conf.getMap().getOrDefault(gid, true);
     }
 
     private static boolean filter(MessageEvent event) {
