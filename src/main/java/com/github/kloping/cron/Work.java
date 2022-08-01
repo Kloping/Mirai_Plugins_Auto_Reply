@@ -118,6 +118,7 @@ public class Work {
                 }
             }
         });
+        work.cron2id.put(v.getCron(), id);
     }
 
     public static String list() {
