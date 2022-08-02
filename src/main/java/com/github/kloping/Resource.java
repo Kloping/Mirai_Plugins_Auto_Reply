@@ -9,7 +9,7 @@ import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.console.MiraiConsoleImplementation;
-import net.mamoe.mirai.message.data.*;
+import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -17,6 +17,7 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
+import static com.github.kloping.Entity.Response.getString;
 import static com.github.kloping.MyUtils.*;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
@@ -119,10 +120,6 @@ public class Resource {
                 return true;
         }
         return false;
-    }
-
-    public static String getString(MessageChain c) {
-        return getString(c);
     }
 
     public static void initUuid() {
