@@ -3,6 +3,7 @@ package com.github.kloping;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.github.kloping.e0.MessagePack;
 import io.github.kloping.number.NumberUtils;
+import io.github.kloping.reg.MatcherUtils;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,8 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import static com.github.kloping.e0.MessagePack.SEND;
-import static com.github.kloping.e0.MessagePack.SLEEP;
+import static com.github.kloping.e0.MessagePack.*;
 
 /**
  * @author github-kloping
@@ -153,11 +153,11 @@ public class Entity {
                     if (datum instanceof PlainText) {
                         PlainText pt = (PlainText) datum;
                         String text = pt.contentToString();
-                        Matcher mat = MessagePack.PATTERN.matcher(text);
-                        if (mat.find()) {
-                            String s1 = mat.group();
-                            String[] sss = text.split("\\" + s1);
+                        String[] ps = MatcherUtils.matcherAll(text, PATTEN_STR);
+                        if (ps.length > 0) {
+                            String[] sss = text.split( PATTEN_STR);
                             for (int i1 = 0; i1 < sss.length - 1; i1++) {
+                                String s1 = ps[i1];
                                 pack.getData().put(i++, SEND, new PlainText(sss[i1]));
                                 String sn0 = NumberUtils.findNumberFromString(s1);
                                 if (sn0 != null && !sn0.isEmpty()) {
@@ -174,7 +174,7 @@ public class Entity {
                         builder.append(datum);
                     }
                 }
-                if (builder.size()!=0) {
+                if (builder.size() != 0) {
                     pack.getData().put(i++, SEND, builder.build());
                 }
                 return pack;
