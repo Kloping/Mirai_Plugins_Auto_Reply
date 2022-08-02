@@ -1,6 +1,7 @@
 package com.github.kloping;
 
 import com.github.kloping.e0.MessagePack;
+import io.github.kloping.common.Public;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
@@ -53,35 +54,37 @@ public class OnCommand {
         if (k1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
         MessagePack pack = MyUtils.getMessageByKey(codeKey);
-        if (pack != null) {
-            int i = 1;
-            boolean a = true;
-            while (a) {
-                if (pack.getData().containKey(i)) {
-                    Entry<String, Object> entry = pack.get(i);
-                    String step = entry.getKey();
-                    Object o = entry.getValue();
-                    switch (step) {
-                        case SEND:
-                            event.getSubject().sendMessage((Message) o);
-                            break;
-                        case SLEEP:
-                            Long l = Long.parseLong(o.toString());
-                            try {
-                                Thread.sleep(l);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                            break;
-                        default:
-                            break;
+        Public.EXECUTOR_SERVICE.submit(() -> {
+            if (pack != null) {
+                int i = 1;
+                boolean a = true;
+                while (a) {
+                    if (pack.getData().containKey(i)) {
+                        Entry<String, Object> entry = pack.get(i);
+                        String step = entry.getKey();
+                        Object o = entry.getValue();
+                        switch (step) {
+                            case SEND:
+                                event.getSubject().sendMessage((Message) o);
+                                break;
+                            case SLEEP:
+                                Long l = Long.parseLong(o.toString());
+                                try {
+                                    Thread.sleep(l);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        a = false;
                     }
-                } else {
-                    a = false;
+                    i++;
                 }
-                i++;
             }
-        }
+        });
         return false;
     }
 
