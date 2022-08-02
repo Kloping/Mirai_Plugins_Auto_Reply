@@ -1,5 +1,6 @@
 package com.github.kloping;
 
+import com.github.kloping.e0.MessagePack;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
@@ -8,9 +9,12 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.github.kloping.MyUtils.filterMatcher;
+import static com.github.kloping.e0.MessagePack.SEND;
+import static com.github.kloping.e0.MessagePack.SLEEP;
 
 /**
  * @author github-kloping
@@ -48,8 +52,36 @@ public class OnCommand {
         if (!k2) return true;
         if (k1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
-        Message message = MyUtils.getMessageByKey(codeKey);
-        if (message != null) event.getSubject().sendMessage(message);
+        MessagePack pack = MyUtils.getMessageByKey(codeKey);
+        if (pack != null) {
+            int i = 1;
+            boolean a = true;
+            while (a) {
+                if (pack.getData().containKey(i)) {
+                    Entry<String, Object> entry = pack.get(i);
+                    String step = entry.getKey();
+                    Object o = entry.getValue();
+                    switch (step) {
+                        case SEND:
+                            event.getSubject().sendMessage((Message) o);
+                            break;
+                        case SLEEP:
+                            Long l = Long.parseLong(o.toString());
+                            try {
+                                Thread.sleep(l);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                } else {
+                    a = false;
+                }
+                i++;
+            }
+        }
         return false;
     }
 

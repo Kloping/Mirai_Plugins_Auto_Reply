@@ -122,19 +122,7 @@ public class Resource {
     }
 
     public static String getString(MessageChain c) {
-        StringBuilder sb = new StringBuilder();
-        for (SingleMessage datum : c) {
-            if (datum instanceof PlainText) {
-                sb.append(((PlainText) datum).getContent());
-            } else if (datum instanceof Image) {
-                sb.append("[图片]");
-            } else if (datum instanceof At) {
-                sb.append("[At:").append(((At) datum).getTarget()).append("]");
-            } else {
-                sb.append("[其他类型消息]");
-            }
-        }
-        return sb.toString();
+        return getString(c);
     }
 
     public static void initUuid() {

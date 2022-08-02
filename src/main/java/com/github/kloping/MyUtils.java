@@ -1,9 +1,9 @@
 package com.github.kloping;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.kloping.e0.MessagePack;
 import io.github.kloping.object.ObjectUtils;
 import net.mamoe.mirai.event.events.MessageEvent;
-import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.PlainText;
 import net.mamoe.mirai.message.data.SingleMessage;
 
@@ -36,7 +36,7 @@ public class MyUtils {
 
     public static final Random RAND = new Random();
 
-    public static Message getMessageByKey(String key) {
+    public static MessagePack getMessageByKey(String key) {
         Entity entity = getEntity(key);
         if (entity != null && entity.getState() == 0) return get(entity.getVs());
         return null;
@@ -66,7 +66,7 @@ public class MyUtils {
         return null;
     }
 
-    private static Message get(Set<Entity.Response> vs) {
+    private static MessagePack get(Set<Entity.Response> vs) {
         try {
             Map<Integer, Entity.Response> m = new HashMap<>();
             int n = 0;
@@ -77,7 +77,7 @@ public class MyUtils {
             }
             if (n <= 0) return null;
             int r = RAND.nextInt(n);
-            return m.get(r).getData();
+            return m.get(r).mp();
         } finally {
             System.gc();
         }
