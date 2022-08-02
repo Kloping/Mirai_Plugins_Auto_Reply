@@ -39,6 +39,9 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         } else if (this is ConsoleCommandSender) {
             val sid = -1L
             conf.map[sid] = !conf.map.getOrDefault(sid, false);
+            if (!conf.map[sid]!!) {
+                conf.map.remove(sid);
+            }
             conf.apply()
             sendMessage("全局开启状态:" + (if (conf.map[sid] == true) "开启" else "关闭"))
         }

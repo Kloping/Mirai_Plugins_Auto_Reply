@@ -37,25 +37,25 @@ public class OnCommand {
     private static Map<Long, Long> cds = new ConcurrentHashMap<>();
 
     private synchronized static void work(MessageEvent event) {
-        if (maybe(event.getSender().getId()))
-            if (filter(event)) return;
         long gid = event.getSubject().getId();
-        if (sche(event, gid)) return;
-        if (Resource.conf.getCd() > 0f)
-            cds.put(gid, (long) (System.currentTimeMillis() + Resource.conf.getCd() * 1000L));
+        if (!isOpen(gid)) return;
+        if (maybe(event.getSender().getId())) {
+            if (filter(event)) return;
+        }
+        schedule(event, gid);
     }
 
-    private static boolean sche(MessageEvent event, long gid) {
+    private static boolean schedule(MessageEvent event, long gid) {
         long cd0 = cds.getOrDefault(gid, 0L);
         long cd1 = System.currentTimeMillis();
-        boolean k1 = cds.containsKey(gid) && cd0 > cd1;
-        boolean k2 = isOpen(gid);
-        if (!k2) return true;
-        if (k1) return true;
+        long cd2 = (long) (Resource.conf.getCd() * 1000L);
+        boolean k1 = (cd1 - cd0) > (cd2);
+        if (!k1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
         MessagePack pack = MyUtils.getMessageByKey(codeKey);
-        Public.EXECUTOR_SERVICE.submit(() -> {
-            if (pack != null) {
+        if (pack != null) {
+            cds.put(gid, System.currentTimeMillis());
+            Public.EXECUTOR_SERVICE.submit(() -> {
                 int i = 1;
                 boolean a = true;
                 while (a) {
@@ -83,8 +83,8 @@ public class OnCommand {
                     }
                     i++;
                 }
-            }
-        });
+            });
+        }
         return false;
     }
 
