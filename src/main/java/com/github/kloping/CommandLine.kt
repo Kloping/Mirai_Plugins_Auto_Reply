@@ -47,6 +47,27 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         }
     }
 
+    @Description("改变auto_reply开关状态")
+    @SubCommand("changeState0")
+    suspend fun CommandSender.autoReplyChangeState0(@Name("id") id: Long) {
+        conf.map[id] = !conf.map.getOrDefault(id, false);
+        conf.apply()
+        sendMessage("该($id)开启状态:" + (if (conf.map[id] == true) "开启" else "关闭"))
+    }
+
+    var k = false;
+
+    @Description("改变auto_reply所有开关状态")
+    @SubCommand("changeState1")
+    suspend fun CommandSender.autoReplyChangeState1() {
+        k = !k;
+        for (mutableEntry in conf.map) {
+            conf.map[mutableEntry.key] = k;
+        }
+        conf.apply()
+        sendMessage("所有环境开启状态:" + (if (k) "开启" else "关闭"))
+    }
+
     @Description("设置主人")
     @SubCommand("setHost")
     suspend fun CommandSender.autoReplyM1(q: Long) {

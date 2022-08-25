@@ -14,27 +14,36 @@
 ```json
 
 {
-  //cd 单位秒
-  "cd": 0.0,
-  "dataPath": "D:\\Projects\\OwnProjects\\MiraiPAutoRe\\conf\\auto_reply\\data.json",
-  "deleteKey": "删除词",
-  //-1 代表所有
-  "deletes": [
-    -1
-  ],
-  //-1 代表所有
-  "followers": [
-    -1
-  ],
-  "host": -1,
-  "insertKey": "开始添加",
-  "oneComInsert": "/添加",
-  "oneComSplit": " ",
-  //页面启动端口
-  "port": 20044,
-  "privateK": false,
-  "root": "D:\\Projects\\OwnProjects\\MiraiPAutoRe",
-  "selectKey": "查询词"
+  //回复cd
+  "cd":5.0,
+  //数据文件
+  "dataPath":"D:\\Projects\\OwnProjects\\MiraiPAutoRe\\conf\\auto_reply\\data.json",
+  //删除关键词
+  "deleteKey":"删除词",
+  //删除者
+  "deletes":[],
+  //添加查询者
+  "followers":[],
+  //主人(删除添加查询)
+  "host":3474006766,
+  //异步添加关键词
+  "insertKey":"开始添加",
+  //开关控制
+  "map":{},
+  //一次添加关键词
+  "oneComInsert":"/添加",
+  //一次添加关键分割词
+  "oneComSplit":" ",
+  //网页固定key
+  "password":"123456",
+  //网页固定prot
+  "port":20044,
+  //私聊开关
+  "privateK":true,
+  //根目录
+  "root":"D:\\Projects\\OwnProjects\\MiraiPAutoRe",
+  //查询词关键词
+  "selectKey":"查询词"
 }
 
 ```

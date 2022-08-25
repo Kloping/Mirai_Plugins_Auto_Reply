@@ -42,6 +42,8 @@ public class OnCommand {
         if (maybe(event.getSender().getId())) {
             if (filter(event)) return;
         }
+        if (event.getSender().getId() == event.getBot().getId())
+            return;
         schedule(event, gid);
     }
 
