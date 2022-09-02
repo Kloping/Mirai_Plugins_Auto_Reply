@@ -2,6 +2,8 @@
 
 ## [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
 
+### **使用前请检查依赖(lib-tts)是否一同添加至plugins 前往 [releases](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/releases) 查找**
+
 **自动回复插件**
 
 第一次启动后 在./conf/auto_reply下配置文件:
@@ -84,11 +86,8 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 当存在大量数据时 可能会出现未知异常
 
-
-
 ### 定时任务 命令
-  
-  
+
     /autoReply addA <时间> \<ID> <内容>    # 添加一个定时任务
     /autoReply deleteA <序号>    # 删除一个定时任务 
     /autoReply listA # 列出所有定时任务
