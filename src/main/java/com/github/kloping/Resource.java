@@ -199,7 +199,7 @@ public class Resource {
         if (!indexed) makeIndex();
         Map<String, Entity> em = new HashMap<>();
         for (char c : v.toCharArray()) {
-            for (Entity entity : indexMap.get(c)) {
+            for (Entity entity : INDEX_MAP.get(c)) {
                 em.put(entity.getTouchKey(), entity);
             }
         }
@@ -225,18 +225,18 @@ public class Resource {
         return true;
     }
 
-    public static final Map<Character, Set<Entity>> indexMap = new HashMap<>();
+    public static final Map<Character, Set<Entity>> INDEX_MAP = new HashMap<>();
 
     public synchronized static void makeIndex() {
-        indexMap.clear();
+        INDEX_MAP.clear();
         entityMap.forEach((k, v) -> {
             Entity entity = (Entity) v;
             for (char c : k.toCharArray()) {
-                append(indexMap, c, entity);
+                append(INDEX_MAP, c, entity);
             }
             for (Entity.Response r0 : entity.getVs()) {
                 for (char c : r0.toString().toCharArray()) {
-                    append(indexMap, c, entity);
+                    append(INDEX_MAP, c, entity);
                 }
             }
         });
@@ -260,18 +260,22 @@ public class Resource {
             public void run() {
                 FrameUtils.SERVICE.scheduleAtFixedRate(() -> {
                     for (AlarmClock c0 : ALARM_CLOCKS) {
-                        if (!c0.isEnable()) continue;
-                        if (!c0.enableToday()) continue;
-                        if (c0.getHour() == getHour() && c0.getMinutes() == getMinutes()) {
-                            if (c0.getBotId() > 0) {
-                                if (Bot.getInstances().contains(c0.getBotId())) {
-                                    send(Bot.getInstance(c0.getBotId()), c0);
-                                }
-                            } else {
-                                if (Bot.getInstances().size() > 0) {
-                                    send(Bot.getInstances().iterator().next(), c0);
+                        try {
+                            if (!c0.isEnable()) continue;
+                            if (!c0.enableToday()) continue;
+                            if (c0.getHour() == getHour() && c0.getMinutes() == getMinutes()) {
+                                if (c0.getBotId() > 0) {
+                                    if (Bot.getInstances().contains(c0.getBotId())) {
+                                        send(Bot.getInstance(c0.getBotId()), c0);
+                                    }
+                                } else {
+                                    if (Bot.getInstances().size() > 0) {
+                                        send(Bot.getInstances().iterator().next(), c0);
+                                    }
                                 }
                             }
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }, EVE, EVE, TimeUnit.MILLISECONDS);
@@ -279,7 +283,7 @@ public class Resource {
         }.start();
     }
 
-    private static void send(Bot bot, AlarmClock c0) {
+    private static void send(Bot bot, AlarmClock c0) throws Exception {
         switch (c0.getType()) {
             case "g":
                 bot.getGroup(c0.getTargetId()).sendMessage(c0.getContent());
