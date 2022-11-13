@@ -1,4 +1,7 @@
 # User-specific stuff
+bots
+plugin-shared-libraries
+plugin-libraries
 .idea/
 
 *.iml
@@ -126,4 +129,4 @@ conf
 config
 data
 plugins
-bots
+bots!/plugin-shared-libraries/

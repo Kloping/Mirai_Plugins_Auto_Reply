@@ -14,11 +14,11 @@
     <version>0.4</version>
     <properties>
         <kotlin.version>1.6.0-M1</kotlin.version>
-        <mirai-version>2.10.0</mirai-version>
+        <mirai-version>2.13.0</mirai-version>
     </properties>
 
     <dependencies>
-        <dependency>
+        <!--<dependency>
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-core-api-jvm</artifactId>
             <version>${mirai-version}</version>
@@ -37,7 +37,7 @@
             <groupId>net.mamoe</groupId>
             <artifactId>mirai-console-terminal</artifactId>
             <version>${mirai-version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>

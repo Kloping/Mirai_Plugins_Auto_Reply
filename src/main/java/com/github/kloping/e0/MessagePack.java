@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * @author github.kloping
  */
 public class MessagePack {
-    public static final String PATTEN_STR = "\\[NEXT\\d*]";
+    public static final String PATTEN_STR = "\\\\*\\[NEXT\\d*\\\\*]";
     public static final Pattern PATTERN = Pattern.compile(PATTEN_STR);
     public static final String SEND = "send";
     public static final String SLEEP = "sleep";
