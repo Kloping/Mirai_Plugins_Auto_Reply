@@ -155,33 +155,38 @@ public class Entity {
                         String text = pt.contentToString();
                         String[] ps = MatcherUtils.matcherAll(text, PATTEN_STR);
                         if (ps.length > 0) {
-                            String[] sss = text.split(PATTEN_STR);
-                            if (text.equals(ps[0])) {
-                                String s1 = ps[0];
-                                pack.getData().put(i++, SEND, builder.build());
-                                builder.clear();
-                                i = getI(pack, i, s1);
-                            } else if (text.endsWith(ps[0])) {
-
-                                builder.append(new PlainText(sss[0]));
-                                pack.getData().put(i++, SEND, builder.build());
-                                builder.clear();
-
-//                                pack.getData().put(i++, SEND, new PlainText(sss[0]));
-
-                                String s1 = ps[0];
-
-                                i = getI(pack, i, s1);
-                            } else {
-                                for (int i1 = 0; i1 < sss.length - 1; i1++) {
-                                    String s1 = ps[i1];
-                                    builder.append(new PlainText(sss[i1]));
+                            int n = 0;
+                            while (true) {
+                                if (text.isEmpty()) break;
+                                if (n >= ps.length) break;
+                                int i0 = text.indexOf(ps[n]);
+                                if (i0 == 0) {
+                                    if (!builder.isEmpty()) {
+                                        pack.getData().put(i++, SEND, builder.build());
+                                        builder.clear();
+                                    }
+                                    i = getI(pack, i, ps[n]);
+                                    text = text.substring(ps[n].length());
+                                } else if (i0 + ps[n].length() == text.length()) {
+                                    String t0 = text.substring(0, i0);
+                                    builder.append(t0);
                                     pack.getData().put(i++, SEND, builder.build());
                                     builder.clear();
-//                                    pack.getData().put(i++, SEND, );
-                                    i = getI(pack, i, s1);
+                                    i = getI(pack, i, ps[n]);
+                                    text = text.substring(t0.length() + ps[n].length());
+                                    break;
+                                } else {
+                                    String t0 = text.substring(0, i0);
+                                    builder.append(t0);
+                                    pack.getData().put(i++, SEND, builder.build());
+                                    builder.clear();
+                                    i = getI(pack, i, ps[n]);
+                                    text = text.substring(i0 + ps[n].length());
                                 }
-                                builder.append(new PlainText(sss[sss.length - 1]));
+                                n++;
+                            }
+                            if (!text.isEmpty()) {
+                                builder.append(text);
                             }
                         } else {
                             builder.append(datum);

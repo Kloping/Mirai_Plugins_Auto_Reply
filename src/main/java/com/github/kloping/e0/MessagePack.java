@@ -1,5 +1,6 @@
 package com.github.kloping.e0;
 
+import com.alibaba.fastjson.JSON;
 import io.github.kloping.extension.ThreeMap;
 import io.github.kloping.extension.ThreeMapImpl;
 
@@ -57,5 +58,10 @@ public class MessagePack {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }
