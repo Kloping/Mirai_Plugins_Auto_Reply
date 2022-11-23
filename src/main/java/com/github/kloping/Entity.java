@@ -169,7 +169,7 @@ public class Entity {
                                     text = text.substring(ps[n].length());
                                 } else if (i0 + ps[n].length() == text.length()) {
                                     String t0 = text.substring(0, i0);
-                                    builder.append(t0);
+                                    builder.append(new PlainText(t0));
                                     pack.getData().put(i++, SEND, builder.build());
                                     builder.clear();
                                     i = getI(pack, i, ps[n]);
@@ -177,7 +177,7 @@ public class Entity {
                                     break;
                                 } else {
                                     String t0 = text.substring(0, i0);
-                                    builder.append(t0);
+                                    builder.append(new PlainText(t0));
                                     pack.getData().put(i++, SEND, builder.build());
                                     builder.clear();
                                     i = getI(pack, i, ps[n]);
@@ -186,7 +186,7 @@ public class Entity {
                                 n++;
                             }
                             if (!text.isEmpty()) {
-                                builder.append(text);
+                                builder.append(new PlainText(text));
                             }
                         } else {
                             builder.append(datum);
