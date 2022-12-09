@@ -19,7 +19,7 @@ public class Work {
 
     private List<CronEntity> entities = new ArrayList<>();
 
-    private Map<String, Integer> cron2id = new HashMap<>();
+    private Map<String, Integer> cronUid2id = new HashMap<>();
 
     private File file;
 
@@ -48,7 +48,7 @@ public class Work {
                     }
                 }
             });
-            cron2id.put(v.getCron(), id);
+            cronUid2id.put(v.getCron() + v.getTargetId(), id);
         });
     }
 
@@ -71,10 +71,11 @@ public class Work {
 
     public static String delete(Integer st) {
         try {
-            String cron = work.entities.get(st - 1).getCron();
+            CronEntity v = work.entities.get(st - 1);
+            String cron = v.getCron();
             cron = cron.trim();
-            if (work.cron2id.containsKey(cron)) {
-                CronUtils.INSTANCE.stop(work.cron2id.get(cron));
+            if (work.cronUid2id.containsKey(cron + v.getTargetId())) {
+                CronUtils.INSTANCE.stop(work.cronUid2id.get(cron + v.getTargetId()));
             }
             Iterator<CronEntity> entityIterator = work.entities.iterator();
             while (entityIterator.hasNext()) {
@@ -118,7 +119,7 @@ public class Work {
                 }
             }
         });
-        work.cron2id.put(v.getCron(), id);
+        work.cronUid2id.put(v.getCron() + v.getTargetId(), id);
     }
 
     public static String list() {
