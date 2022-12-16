@@ -1,9 +1,12 @@
 package com.github.kloping.sp.controllers;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
 import com.github.kloping.e0.AlarmClock;
+import com.github.kloping.sp.RequestData;
+import io.github.kloping.little_web.annotations.RequestBody;
 import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
 import io.github.kloping.little_web.annotations.WebRestController;
@@ -39,10 +42,15 @@ public class RestController0 {
     }
 
     @RequestMethod("/modify")
-    public Map<String, Object> modify(@RequestParm("key") String key, @RequestParm("index") Integer index,
-                                      @RequestParm("type") Integer type, @RequestParm("value") String value,
-                                      HttpServletRequest request) {
+    public Map<String, Object> modify(
+            @RequestBody String body,
+            HttpServletRequest request) {
         if (verify(request)) {
+            RequestData data = JSON.parseObject(body, RequestData.class);
+            Integer type = data.getType();
+            Integer index = data.getIndex();
+            String key = data.getKey();
+            String value = data.getValue();
             boolean k = false;
             switch (type) {
                 case 0:
@@ -72,12 +80,14 @@ public class RestController0 {
     }
 
     @RequestMethod("/delete")
-    public Map<String, Object> delete(@RequestParm("key") String key,
-                                      @RequestParm("index") Integer index,
-                                      @RequestParm("type") Integer type,
-                                      @RequestParm("value") String value,
+    public Map<String, Object> delete(@RequestBody String body,
                                       HttpServletRequest request) {
         if (verify(request)) {
+            RequestData data = JSON.parseObject(body, RequestData.class);
+            Integer type = data.getType();
+            Integer index = data.getIndex();
+            String key = data.getKey();
+            String value = data.getValue();
             boolean k = false;
             switch (type) {
                 case 0:
@@ -115,8 +125,13 @@ public class RestController0 {
     }
 
     @RequestMethod("/append")
-    public Object append(@RequestParm("k") String k, @RequestParm("v") String v, HttpServletRequest request) {
+    public Object append(
+            @RequestBody String body,
+            HttpServletRequest request) {
         if (verify(request)) {
+            RequestData data = JSON.parseObject(body, RequestData.class);
+            String k = data.getKey();
+            String v = data.getValue();
             if ("添加完成".equals(Resource.append(k, v))) {
                 return entityMap;
             } else {

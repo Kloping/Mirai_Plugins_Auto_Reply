@@ -133,9 +133,12 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
             data: {}
         }, methods: {
             mSelect: function (k, k2, k3, str) {
-                a1 = encodeURI(k)
-                a2 = encodeURI(k2)
-                type = encodeURI(k3)
+                // a1 = encodeURI(k)
+                // a2 = encodeURI(k2)
+                // type = encodeURI(k3)
+                a1 = k
+                a2 = k2
+                type = k3
                 tips("选择")
                 $("#main_input").val(str)
             },
@@ -172,13 +175,17 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
             return
         }
         let v = $("#main_input").val()
-        v = encodeURI(v)
+        // v = encodeURI(v)
         if (v === "") return;
-        let url = "/modify?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
-        axios.get(url).then(function (response) {
+        axios.post('/modify', {
+            "key": a1,
+            "index": a2,
+            "type": type,
+            "value": v,
+        }).then(response => {
             vm1.data = response.data
-        }).catch(function (err) {
-            alert(err);
+        }, error => {
+            alert(error);
         })
     }
 
@@ -189,12 +196,16 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
         }
         let v = $("#main_input").val()
         if (v === "") return;
-        v = encodeURI(v)
-        let url = "/delete?key=" + a1 + "&index=" + a2 + "&type=" + type + "&value=" + v
-        axios.get(url).then(function (response) {
+        // v = encodeURI(v)
+        axios.post('/delete', {
+            "key": a1,
+            "index": a2,
+            "type": type,
+            "value": v,
+        }).then(response => {
             vm1.data = response.data
-        }).catch(function (err) {
-            alert(err);
+        }, error => {
+            alert(error);
         })
     }
 
@@ -254,14 +265,16 @@ taskHtml()" style="float: right" type="button" class="btn btn-primary">
         $("#append_but").click(function () {
             let key = k0.val()
             let value = v0.val()
-            let url = "/append?k=" + encodeURI(key) + "&v=" + encodeURI(value)
-            axios.get(url).then(function (response) {
+            axios.post('/append', {
+                "value": value,
+                "key": key,
+            }).then(response => {
                 vm1.data = response.data
                 tips("添加成功", 1600)
                 k0.val("")
                 v0.val("")
-            }).catch(function (err) {
-                alert(err);
+            }, error => {
+                alert(error);
             })
         })
     })
