@@ -62,12 +62,12 @@
         <dependency>
             <groupId>io.github.Kloping</groupId>
             <artifactId>SpringTool</artifactId>
-            <version>0.5.5</version>
+            <version>0.5.8</version>
         </dependency>
         <dependency>
             <groupId>io.github.Kloping</groupId>
             <artifactId>JvUtils</artifactId>
-            <version>0.4.5</version>
+            <version>0.4.7</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
