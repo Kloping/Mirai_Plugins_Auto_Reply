@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-cn">
 <head>
     <meta charset="utf-8">
-    <title>AutoReply管理界面</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="./js/axios.js"></script>
     <script src="./js/vue.js"></script>
@@ -11,281 +10,96 @@
           crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
           crossorigin="anonymous">
-    <script src="./js/poper.js" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" crossorigin="anonymous">
-    </script>
+    <script src="./js/poper.js"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css"
+          rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js"></script>
     <script src="index.js"></script>
+    <title>开关管理页面</title>
 </head>
 <body>
-
 <center>
-    <h1 style="color: aliceblue">插件交流群 794238572</h1>
-
-    <div style="width: 100%; text-align: center">
-        <button onclick="function taskHtml() {
-    location.href='/clock.html';
-}
-taskHtml()" style="" type="button" class="btn btn-primary">
-            定时任务
-        </button>
-        <button onclick="function managerHtml() {
-    location.href='/manager.html';
-}
-managerHtml()" style="" type="button" class="btn btn-primary">
-            开关管理
-        </button>
-    </div>
-    <div style="color: white;float: left " id="bot-show" v-for="" class="media" v-show="data.id>0">
-        <img :src="'https://q1.qlogo.cn/g?b=qq&nk='+data.id+'&s=2'" class="mr-3" :alt="data.id">
-        <div class="media-body">
-            <h5 v-text="data.name" class="mt-0"></h5>
-            <p v-text="data.id"></p>
-        </div>
-    </div>
-    <h5 style="color: aliceblue">遇到bug请及时反馈</h5>
-    <h5 style="color: aliceblue">单击选择要修改的对象</h5>
+    <h1 style="color: aliceblue">插件交流群 794238572</h1> <br>
+    <h5 style="color: aliceblue">开关管理页面</h5>
+    <button type="button" class="btn btn-info" onclick="change()">显示/隐藏好友</button>
 </center>
-<center>
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-        添加一个
-    </button>
-</center>
-<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
-     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="dialog_c">添加一个</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>此方式不会通过正则转换</p>
-                <div class="input-group input-group-lg">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-lg">触发词</span>
-                    </div>
-                    <textarea id="touchKey" placeholder="触发词" class="form-control" aria-label="Large"
-                              aria-describedby="inputGroup-sizing-sm"></textarea>
-                </div>
-                <br><br>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-default">回复词</span>
-                    </div>
-                    <textarea id="vs" placeholder="回复词" class="form-control" aria-label="Large"
-                              aria-describedby="inputGroup-sizing-sm"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button id="append_but" type="button" class="btn btn-primary" data-dismiss="modal">添加</button>
-                <button type="button" class="btn btn-secondary">取消</button>
-            </div>
-        </div>
+<br>
+<br>
+<div id="div0" class="row">
+    <div class="col-2"></div>
+    <div id="ac0" style="background-color: white" class="col-8">
+        <table class="table table-striped ">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ico</th>
+                <th scope="col">TargetId</th>
+                <th scope="col">name</th>
+                <th scope="col">status</th>
+            </tr>
+            </thead>
+            <tbody v-for="(e,i) in data">
+            <tr>
+                <th scope="row" v-html="i+1"></th>
+                <td class="media"><img style="width: 50px;height: 50px;" :src="e.ico" alt="头像"></td>
+                <td v-text="e.id"></td>
+                <td v-text="e.name"></td>
+                <td>
+                    <button type="button" :class="'btn '+(e.status ? 'btn-success' : 'btn-danger')"
+                            v-text="e.status?'开启':'关闭'" v-on:click="changeStateManager(e.id,i)"></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-<div class="input-group mb-3">
-    <input id="main_input" type="text" class="form-control" placeholder="内容" aria-label="内容"
-           aria-describedby="button-addon2">
-    <div class="input-group-append">
-        <button onclick="m2()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon1">
-            编制索引并搜索
-        </button>
-        <button onclick="m1()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon2">
-            修改
-        </button>
-        <button onclick="m3()" style="color: aqua" class="btn btn-outline-secondary" type="button" id="button-addon3">
-            彻底删除
-        </button>
-    </div>
-</div>
-<center>
-    <table style="opacity:0.7; color: black" id="main" class="table table-sm table-dark">
-        <thead>
-        <tr class="table-primary">
-            <th scope="col">触发词</th>
-            <th scope="col">权重</th>
-            <th scope="col">状态</th>
-            <th scope="col">回复词</th>
-        </tr>
-        </thead>
-        <tbody v-for="(value, key) in data" :key="key">
-        <tr class="table-info " v-for="(v1,index) in value.vss">
-            <td v-text="key"
-                :rowspan="value.vss.length"
-                v-show="index===0"
-                @click="mSelect(key,0,2,key)"
-            ></td>
-            <td @click="mSelect(key,index,1,v1.weight)" v-text="v1.weight"></td>
-            <td @click="mSelect(key,index,3,v1.state)" v-text="v1.state"></td>
-            <td @click="mSelect(key,index,0,getData(v1.data))" v-text="getData(v1.data)"></td>
-        </tr>
-        </tbody>
-    </table>
-</center>
 <script>
-    let a1 = null
-    let a2 = 0
-    let type = 0
-    let maxLength = 40;
     let vm1 = new Vue({
-        el: "#main",
+        el: "#div0",
         created: function () {
-            axios.get("/get_all").then(function (response) {
-                vm1.data = response.data
+            axios.get("/getManagerData").then(function (response) {
+                vm1.data = response.data;
             }).catch(function (err) {
                 alert(err);
             })
         }, data: {
-            data: {}
+            data: []
         }, methods: {
-            mSelect: function (k, k2, k3, str) {
-                // a1 = encodeURI(k)
-                // a2 = encodeURI(k2)
-                // type = encodeURI(k3)
-                a1 = k
-                a2 = k2
-                type = k3
-                tips("选择")
-                $("#main_input").val(str)
-            },
-            getData: function (data) {
-                let dataNow = "";
-                if (data.length > maxLength) {
-                    while (data.length > maxLength) {
-                        dataNow = dataNow + data.substr(0, maxLength) + "\r\n";
-                        data = data.substr(maxLength)
+            changeStateManager: function (id, i) {
+                axios.get("/changeManager?id=" + id).then(function (response) {
+                    if (response.data === "ok") {
+                        vm1.data[i].status = !vm1.data[i].status
+                    } else {
+                        alert(response.data)
                     }
-                }
-                dataNow = dataNow + data + "\r\n";
-                return dataNow
+                }).catch(function (err) {
+                    alert(err);
+                })
             }
         }
     });
 
-    let vm2 = new Vue({
-        el: "#bot-show",
-        created: function () {
-            axios.get("/getBotId").then(function (response) {
-                vm2.data = response.data
+    let k = false
+
+    function change() {
+        if (!k) {
+            vm1.data = vm1.data.filter(function (item) {
+                let v = item.id.charAt(0);
+                return v !== "u";
+            });
+            k = true
+        } else {
+            axios.get("/getManagerData").then(function (response) {
+                vm1.data = response.data;
             }).catch(function (err) {
                 alert(err);
             })
-        }, data: {
-            data: {}
-        }, methods: {}
-    });
-
-    function m1() {
-        if (a1 == null) {
-            alert("未选择任何,单击元素以选择")
-            return
+            k = false
         }
-        let v = $("#main_input").val()
-        // v = encodeURI(v)
-        if (v === "") return;
-        axios.post('/modify', {
-            "key": a1,
-            "index": a2,
-            "type": type,
-            "value": v,
-        }).then(response => {
-            vm1.data = response.data
-        }, error => {
-            alert(error);
-        })
     }
-
-    function m3() {
-        if (a1 == null) {
-            alert("未选择任何,单击元素以选择")
-            return
-        }
-        let v = $("#main_input").val()
-        if (v === "") return;
-        // v = encodeURI(v)
-        axios.post('/delete', {
-            "key": a1,
-            "index": a2,
-            "type": type,
-            "value": v,
-        }).then(response => {
-            vm1.data = response.data
-        }, error => {
-            alert(error);
-        })
-    }
-
-    function m2() {
-        let v = $("#main_input").val()
-        if (v === "") return;
-        v = encodeURI(v)
-        let url = "/search?value=" + v
-        axios.get(url).then(function (response) {
-            vm1.data = response.data
-        }).catch(function (err) {
-            alert(err);
-        })
-    }
-
-    function tips(mess) {
-        let hidvalue_str = mess;
-        let divWidth = 100;
-        let divHeight = 100;
-        let iLeft = ($(window).width() - divWidth) / 2;
-        let iTop = ($(window).height() - divHeight) / 2 + $(document).scrollTop();
-        let divhtml = $("<h1>" + hidvalue_str + "</h1>").css({
-            position: 'absolute',
-            top: iTop + 'px',
-            left: iLeft + 'px',
-            display: 'none',
-            width: divWidth + 'px',
-            height: divHeight + 'px',
-            color: 'red',
-        });
-        divhtml.appendTo('body').fadeIn();
-        divhtml.appendTo('body').fadeOut(1500);
-    }
-
-    function tips(mess, t) {
-        let hidvalue_str = mess;
-        let divWidth = 100;
-        let divHeight = 100;
-        let iLeft = ($(window).width() - divWidth) / 2;
-        let iTop = ($(window).height() - divHeight) / 2 + $(document).scrollTop();
-        let divhtml = $("<h1>" + hidvalue_str + "</h1>").css({
-            position: 'absolute',
-            top: iTop + 'px',
-            left: iLeft + 'px',
-            display: 'none',
-            width: divWidth + 'px',
-            height: divHeight + 'px',
-            color: 'red',
-        });
-        divhtml.appendTo('body').fadeIn();
-        divhtml.appendTo('body').fadeOut(t);
-    }
-
-    $(document).ready(function () {
-        let k0 = $("#touchKey")
-        let v0 = $("#vs")
-        $("#append_but").click(function () {
-            let key = k0.val()
-            let value = v0.val()
-            axios.post('/append', {
-                "value": value,
-                "key": key,
-            }).then(response => {
-                vm1.data = response.data
-                tips("添加成功", 1600)
-                k0.val("")
-                v0.val("")
-            }, error => {
-                alert(error);
-            })
-        })
-    })
 </script>
 </body>
 </html>
