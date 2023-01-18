@@ -1,6 +1,7 @@
 package com.github.kloping.sp.controllers;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
@@ -11,6 +12,8 @@ import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
 import io.github.kloping.little_web.annotations.WebRestController;
 import net.mamoe.mirai.Bot;
+import net.mamoe.mirai.contact.Friend;
+import net.mamoe.mirai.contact.Group;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -42,9 +45,7 @@ public class RestController0 {
     }
 
     @RequestMethod("/modify")
-    public Map<String, Object> modify(
-            @RequestBody String body,
-            HttpServletRequest request) {
+    public Map<String, Object> modify(@RequestBody String body, HttpServletRequest request) {
         if (verify(request)) {
             RequestData data = JSON.parseObject(body, RequestData.class);
             Integer type = data.getType();
@@ -80,8 +81,7 @@ public class RestController0 {
     }
 
     @RequestMethod("/delete")
-    public Map<String, Object> delete(@RequestBody String body,
-                                      HttpServletRequest request) {
+    public Map<String, Object> delete(@RequestBody String body, HttpServletRequest request) {
         if (verify(request)) {
             RequestData data = JSON.parseObject(body, RequestData.class);
             Integer type = data.getType();
@@ -125,9 +125,7 @@ public class RestController0 {
     }
 
     @RequestMethod("/append")
-    public Object append(
-            @RequestBody String body,
-            HttpServletRequest request) {
+    public Object append(@RequestBody String body, HttpServletRequest request) {
         if (verify(request)) {
             RequestData data = JSON.parseObject(body, RequestData.class);
             String k = data.getKey();
@@ -153,8 +151,7 @@ public class RestController0 {
     @RequestMethod("/favicon.ico")
     public void favicon(HttpServletResponse response) {
         try {
-            response.sendRedirect("http://q1.qlogo.cn/g?b=qq&nk=" + (Bot.getInstances().size() > 0 ?
-                    Bot.getInstances().get(0).getId() : "") + "&s=640");
+            response.sendRedirect("http://q1.qlogo.cn/g?b=qq&nk=" + (Bot.getInstances().size() > 0 ? Bot.getInstances().get(0).getId() : "") + "&s=640");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -209,10 +206,7 @@ public class RestController0 {
     }
 
     @RequestMethod("/changeWeekStateAlarmClock")
-    public List<AlarmClock> changeWeekStateAlarmClock(HttpServletRequest request,
-                                                      @RequestParm("uuid") String uuid,
-                                                      @RequestParm("st") Integer st
-    ) {
+    public List<AlarmClock> changeWeekStateAlarmClock(HttpServletRequest request, @RequestParm("uuid") String uuid, @RequestParm("st") Integer st) {
         if (verify(request)) {
             for (AlarmClock alarmClock : ALARM_CLOCKS) {
                 if (uuid.equals(alarmClock.getUuid())) {
@@ -239,5 +233,41 @@ public class RestController0 {
             integers.add(week);
         }
         return integers;
+    }
+
+    @RequestMethod("/changeManager")
+    public Object changeManager(HttpServletRequest request, @RequestParm("id") String id) {
+        if (!verify(request)) return null;
+        if (Bot.getInstances().size() <= 0) return null;
+        Boolean k = conf.getMap().getOrDefault(id, true);
+        conf.getMap().put(id, !k);
+        return getManagerData(request);
+    }
+
+    @RequestMethod("/getManagerData")
+    public Object getManagerData(HttpServletRequest request) {
+        if (!verify(request)) return null;
+        if (Bot.getInstances().size() <= 0) return null;
+        JSONArray array = new JSONArray();
+        Bot bot = Bot.getInstances().get(0);
+        for (Friend friend : bot.getFriends()) {
+            String id = "u" + friend.getId();
+            JSONObject jo = new JSONObject();
+            jo.put("ico", friend.getAvatarUrl());
+            jo.put("id", id);
+            jo.put("name", friend.getNick());
+            jo.put("status", conf.getMap().getOrDefault(id, true));
+            array.add(jo);
+        }
+        for (Group group : bot.getGroups()) {
+            String id = "g" + group.getId();
+            JSONObject jo = new JSONObject();
+            jo.put("ico", group.getAvatarUrl());
+            jo.put("id", id);
+            jo.put("name", group.getName());
+            jo.put("status", conf.getMap().getOrDefault(id, true));
+            array.add(jo);
+        }
+        return array;
     }
 }

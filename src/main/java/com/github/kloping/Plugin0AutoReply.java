@@ -9,6 +9,8 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.SimpleListenerHost;
 import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupTempMessageEvent;
+import net.mamoe.mirai.event.events.StrangerMessageEvent;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,7 +24,7 @@ public class Plugin0AutoReply extends JavaPlugin {
     public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
     private Plugin0AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.7.2")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.7.5")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")
@@ -44,12 +46,24 @@ public class Plugin0AutoReply extends JavaPlugin {
             }
 
             @EventHandler
+            public void handleMessage2(GroupTempMessageEvent event) {
+                OnCommand.onEvent(event);
+            }
+
+            @EventHandler
             public void handleMessage1(GroupMessageEvent event) {
                 OnCommand.onEvent(event);
             }
 
             @EventHandler
             public void handleMessage0(FriendMessageEvent event) {
+                if (Resource.conf.isPrivateK()) {
+                    OnCommand.onEvent(event);
+                }
+            }
+
+            @EventHandler
+            public void handleMessage0(StrangerMessageEvent event) {
                 if (Resource.conf.isPrivateK()) {
                     OnCommand.onEvent(event);
                 }

@@ -27,17 +27,17 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         if (this is MemberCommandSender) {
             val sender: MemberCommandSender = this;
             val gid = sender.group.id
-            conf.map[gid] = !conf.map.getOrDefault(gid, false);
+            conf.map["g$gid"] = !conf.map.getOrDefault("g$gid", false);
             conf.apply()
-            sendMessage("该群($gid)开启状态:" + (if (conf.map[gid] == true) "开启" else "关闭"))
+            sendMessage("该群($gid)开启状态:" + (if (conf.map["g$gid"] == true) "开启" else "关闭"))
         } else if (this is FriendCommandSenderOnMessage) {
             val sender: FriendCommandSenderOnMessage = this;
             val sid = sender.subject.id
-            conf.map[sid] = !conf.map.getOrDefault(sid, false);
+            conf.map["f$sid"] = !conf.map.getOrDefault("f$sid", false);
             conf.apply()
-            sendMessage("该好友($sid)开启状态:" + (if (conf.map[sid] == true) "开启" else "关闭"))
+            sendMessage("该好友($sid)开启状态:" + (if (conf.map["f$sid"] == true) "开启" else "关闭"))
         } else if (this is ConsoleCommandSender) {
-            val sid = -1L
+            val sid = "-1"
             conf.map[sid] = !conf.map.getOrDefault(sid, false);
             if (!conf.map[sid]!!) {
                 conf.map.remove(sid);
@@ -49,7 +49,7 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
 
     @Description("改变auto_reply开关状态")
     @SubCommand("changeState0")
-    suspend fun CommandSender.autoReplyChangeState0(@Name("id") id: Long) {
+    suspend fun CommandSender.autoReplyChangeState0(@Name("id") id: String) {
         conf.map[id] = !conf.map.getOrDefault(id, false);
         conf.apply()
         sendMessage("该($id)开启状态:" + (if (conf.map[id] == true) "开启" else "关闭"))

@@ -24,6 +24,12 @@
 taskHtml()" style="float: right" type="button" class="btn btn-primary">
     定时任务
 </button>
+<button onclick="function managerHtml() {
+    location.href='/manager.html';
+}
+managerHtml()" style="float: right" type="button" class="btn btn-primary">
+    开关管理
+</button>
 
 <div style="color: white;float: left " id="bot-show" v-for="" class="media" v-show="data.id>0">
     <img :src="'https://q1.qlogo.cn/g?b=qq&nk='+data.id+'&s=2'" class="mr-3" :alt="data.id">

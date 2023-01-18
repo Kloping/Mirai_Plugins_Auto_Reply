@@ -1,6 +1,9 @@
 package com.github.kloping;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import io.github.kloping.file.FileUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 
 import java.io.File;
@@ -27,7 +30,7 @@ public class Conf {
     private String root = ".";
     private String dataPath = "conf/auto_reply/data.json";
     private String password = "";
-    private Map<Long, Boolean> map = new TreeMap<>();
+    private Map<String, Boolean> map = new TreeMap<>();
 
     private Conf() {
     }
@@ -37,7 +40,19 @@ public class Conf {
         conf.root = root;
         conf.dataPath = new File(root, conf.dataPath).getAbsolutePath();
         try {
-            conf = FileInitializeValue.getValue(new File(conf.root, "conf/auto_reply/conf.json").getAbsolutePath(), conf, true);
+            String p0 = new File(conf.root, "conf/auto_reply/conf.json").getAbsolutePath();
+            JSONObject jo = JSON.parseObject(FileUtils.getStringFromFile(p0));
+            if (jo.containsKey("map")){
+                JSONObject j1 = jo.getJSONObject("map");
+                String s1 = j1.keySet().iterator().next();
+                try {
+                    Long l=  Long.parseLong(s1);
+                    jo.remove("map");
+                } catch (NumberFormatException e) {
+                }
+            }
+            FileUtils.putStringInFile(jo.toJSONString(), new File(p0));
+            conf = FileInitializeValue.getValue(p0, conf, true);
             return conf;
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,11 +74,11 @@ public class Conf {
         return FileInitializeValue.putValues(new File(this.root, "conf/auto_reply/conf.json").getAbsolutePath(), this, true);
     }
 
-    public Map<Long, Boolean> getMap() {
+    public Map<String, Boolean> getMap() {
         return map;
     }
 
-    public void setMap(Map<Long, Boolean> map) {
+    public void setMap(Map<String, Boolean> map) {
         this.map = map;
     }
 

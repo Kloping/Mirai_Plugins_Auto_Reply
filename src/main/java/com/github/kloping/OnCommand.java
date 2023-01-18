@@ -3,7 +3,7 @@ package com.github.kloping;
 import com.github.kloping.e0.MessagePack;
 import io.github.kloping.common.Public;
 import net.mamoe.mirai.contact.Contact;
-import net.mamoe.mirai.event.events.MessageEvent;
+import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.Message;
 import net.mamoe.mirai.message.data.MessageChain;
@@ -27,7 +27,11 @@ public class OnCommand {
         }
     }
 
-    //所有消息都会执行到这里
+    /**
+     * 所有消息都会执行到这里
+     *
+     * @param event
+     */
     public static void onEvent(MessageEvent event) {
         Resource.EXECUTOR_SERVICE.execute(() -> work(event));
     }
@@ -38,7 +42,7 @@ public class OnCommand {
 
     private synchronized static void work(MessageEvent event) {
         long gid = event.getSubject().getId();
-        if (!isOpen(gid)) return;
+        if (!isOpen(event)) return;
         if (maybe(event.getSender().getId())) {
             if (filter(event)) return;
         }
@@ -90,11 +94,22 @@ public class OnCommand {
         return false;
     }
 
-    private static boolean isOpen(long gid) {
-        if (Resource.conf.getMap().containsKey(-1L)) {
-            return Resource.conf.getMap().get(-1L);
+    private static boolean isOpen(MessageEvent event) {
+        if (event instanceof GroupMessageEvent || event instanceof GroupTempMessageEvent) {
+            String id = "g" + event.getSubject().getId();
+            if (Resource.conf.getMap().containsKey(id)) {
+                return Resource.conf.getMap().get(id);
+            }
+            return Resource.conf.getMap().getOrDefault(id, true);
+        } else if (event instanceof FriendMessageEvent || event instanceof StrangerMessageEvent) {
+            String id = "f" + event.getSubject().getId();
+            if (Resource.conf.getMap().containsKey(id)) {
+                return Resource.conf.getMap().get(id);
+            }
+            return Resource.conf.getMap().getOrDefault(id, true);
+        } else {
+            return false;
         }
-        return Resource.conf.getMap().getOrDefault(gid, true);
     }
 
     private static boolean filter(MessageEvent event) {
