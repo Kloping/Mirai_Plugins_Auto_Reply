@@ -7,6 +7,7 @@ import com.github.kloping.Plugin0AutoReply;
 import com.github.kloping.Resource;
 import com.github.kloping.e0.AlarmClock;
 import com.github.kloping.sp.RequestData;
+import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.little_web.annotations.RequestBody;
 import io.github.kloping.little_web.annotations.RequestMethod;
 import io.github.kloping.little_web.annotations.RequestParm;
@@ -18,6 +19,7 @@ import net.mamoe.mirai.contact.Group;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -239,9 +241,11 @@ public class RestController0 {
     public Object changeManager(HttpServletRequest request, @RequestParm("id") String id) {
         if (!verify(request)) return null;
         if (Bot.getInstances().size() <= 0) return null;
-        Boolean k = conf.getMap().getOrDefault(id, true);
-        conf.getMap().put(id, !k);
-        return getManagerData(request);
+        Boolean k = conf.getKv().getOrDefault(id, true);
+        conf.getKv().put(id, !k);
+        String p0 = new File(conf.getRoot(), "conf/auto_reply/conf.json").getAbsolutePath();
+        FileInitializeValue.putValues(p0, conf, true);
+        return "ok";
     }
 
     @RequestMethod("/getManagerData")
@@ -256,7 +260,7 @@ public class RestController0 {
             jo.put("ico", friend.getAvatarUrl());
             jo.put("id", id);
             jo.put("name", friend.getNick());
-            jo.put("status", conf.getMap().getOrDefault(id, true));
+            jo.put("status", conf.getKv().getOrDefault(id, true));
             array.add(jo);
         }
         for (Group group : bot.getGroups()) {
@@ -265,7 +269,7 @@ public class RestController0 {
             jo.put("ico", group.getAvatarUrl());
             jo.put("id", id);
             jo.put("name", group.getName());
-            jo.put("status", conf.getMap().getOrDefault(id, true));
+            jo.put("status", conf.getKv().getOrDefault(id, true));
             array.add(jo);
         }
         return array;

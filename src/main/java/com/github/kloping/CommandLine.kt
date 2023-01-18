@@ -27,32 +27,32 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         if (this is MemberCommandSender) {
             val sender: MemberCommandSender = this;
             val gid = sender.group.id
-            conf.map["g$gid"] = !conf.map.getOrDefault("g$gid", false);
+            conf.kv["g$gid"] = !conf.kv.getOrDefault("g$gid", false);
             conf.apply()
-            sendMessage("该群($gid)开启状态:" + (if (conf.map["g$gid"] == true) "开启" else "关闭"))
+            sendMessage("该群($gid)开启状态:" + (if (conf.kv["g$gid"] == true) "开启" else "关闭"))
         } else if (this is FriendCommandSenderOnMessage) {
             val sender: FriendCommandSenderOnMessage = this;
             val sid = sender.subject.id
-            conf.map["f$sid"] = !conf.map.getOrDefault("f$sid", false);
+            conf.kv["f$sid"] = !conf.kv.getOrDefault("f$sid", false);
             conf.apply()
-            sendMessage("该好友($sid)开启状态:" + (if (conf.map["f$sid"] == true) "开启" else "关闭"))
+            sendMessage("该好友($sid)开启状态:" + (if (conf.kv["f$sid"] == true) "开启" else "关闭"))
         } else if (this is ConsoleCommandSender) {
             val sid = "-1"
-            conf.map[sid] = !conf.map.getOrDefault(sid, false);
-            if (!conf.map[sid]!!) {
-                conf.map.remove(sid);
+            conf.kv[sid] = !conf.kv.getOrDefault(sid, false);
+            if (!conf.kv[sid]!!) {
+                conf.kv.remove(sid);
             }
             conf.apply()
-            sendMessage("全局开启状态:" + (if (conf.map[sid] == true) "开启" else "关闭"))
+            sendMessage("全局开启状态:" + (if (conf.kv[sid] == true) "开启" else "关闭"))
         }
     }
 
     @Description("改变auto_reply开关状态")
     @SubCommand("changeState0")
     suspend fun CommandSender.autoReplyChangeState0(@Name("id") id: String) {
-        conf.map[id] = !conf.map.getOrDefault(id, false);
+        conf.kv[id] = !conf.kv.getOrDefault(id, false);
         conf.apply()
-        sendMessage("该($id)开启状态:" + (if (conf.map[id] == true) "开启" else "关闭"))
+        sendMessage("该($id)开启状态:" + (if (conf.kv[id] == true) "开启" else "关闭"))
     }
 
     var k = false;
@@ -61,8 +61,8 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     @SubCommand("changeState1")
     suspend fun CommandSender.autoReplyChangeState1() {
         k = !k;
-        for (mutableEntry in conf.map) {
-            conf.map[mutableEntry.key] = k;
+        for (mutableEntry in conf.kv) {
+            conf.kv[mutableEntry.key] = k;
         }
         conf.apply()
         sendMessage("所有环境开启状态:" + (if (k) "开启" else "关闭"))

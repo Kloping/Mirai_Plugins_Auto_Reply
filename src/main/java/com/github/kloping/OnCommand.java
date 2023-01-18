@@ -97,16 +97,16 @@ public class OnCommand {
     private static boolean isOpen(MessageEvent event) {
         if (event instanceof GroupMessageEvent || event instanceof GroupTempMessageEvent) {
             String id = "g" + event.getSubject().getId();
-            if (Resource.conf.getMap().containsKey(id)) {
-                return Resource.conf.getMap().get(id);
+            if (Resource.conf.getKv().containsKey(id)) {
+                return Resource.conf.getKv().get(id);
             }
-            return Resource.conf.getMap().getOrDefault(id, true);
+            return Resource.conf.getKv().getOrDefault(id, true);
         } else if (event instanceof FriendMessageEvent || event instanceof StrangerMessageEvent) {
             String id = "f" + event.getSubject().getId();
-            if (Resource.conf.getMap().containsKey(id)) {
-                return Resource.conf.getMap().get(id);
+            if (Resource.conf.getKv().containsKey(id)) {
+                return Resource.conf.getKv().get(id);
             }
-            return Resource.conf.getMap().getOrDefault(id, true);
+            return Resource.conf.getKv().getOrDefault(id, true);
         } else {
             return false;
         }

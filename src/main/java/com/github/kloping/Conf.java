@@ -1,9 +1,6 @@
 package com.github.kloping;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import io.github.kloping.file.FileUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 
 import java.io.File;
@@ -30,7 +27,7 @@ public class Conf {
     private String root = ".";
     private String dataPath = "conf/auto_reply/data.json";
     private String password = "";
-    private Map<String, Boolean> map = new TreeMap<>();
+    private Map<String, Boolean> kv = new TreeMap<>();
 
     private Conf() {
     }
@@ -39,25 +36,25 @@ public class Conf {
         Conf conf = new Conf();
         conf.root = root;
         conf.dataPath = new File(root, conf.dataPath).getAbsolutePath();
-        try {
-            String p0 = new File(conf.root, "conf/auto_reply/conf.json").getAbsolutePath();
-            JSONObject jo = JSON.parseObject(FileUtils.getStringFromFile(p0));
-            if (jo.containsKey("map")){
-                JSONObject j1 = jo.getJSONObject("map");
-                String s1 = j1.keySet().iterator().next();
-                try {
-                    Long l=  Long.parseLong(s1);
-                    jo.remove("map");
-                } catch (NumberFormatException e) {
-                }
-            }
-            FileUtils.putStringInFile(jo.toJSONString(), new File(p0));
+        String p0 = new File(conf.root, "conf/auto_reply/conf.json").getAbsolutePath();
+//        try {
+//            JSONObject jo = JSON.parseObject(FileUtils.getStringFromFile(p0));
+//            if (jo.containsKey("map")){
+//                JSONObject j1 = jo.getJSONObject("map");
+//                String s1 = j1.keySet().iterator().next();
+//                try {
+//                    Long l=  Long.parseLong(s1);
+//                    jo.remove("map");
+//                } catch (NumberFormatException e) {
+//                }
+//            }
+//            FileUtils.putStringInFile(jo.toJSONString(), new File(p0));
             conf = FileInitializeValue.getValue(p0, conf, true);
             return conf;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return conf;
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return conf;
+//        }
     }
 
     public static Conf reload(Conf conf) {
@@ -74,12 +71,12 @@ public class Conf {
         return FileInitializeValue.putValues(new File(this.root, "conf/auto_reply/conf.json").getAbsolutePath(), this, true);
     }
 
-    public Map<String, Boolean> getMap() {
-        return map;
+    public Map<String, Boolean> getKv() {
+        return kv;
     }
 
-    public void setMap(Map<String, Boolean> map) {
-        this.map = map;
+    public void setKv(Map<String, Boolean> kv) {
+        this.kv = kv;
     }
 
     public Conf addF(long q) {
