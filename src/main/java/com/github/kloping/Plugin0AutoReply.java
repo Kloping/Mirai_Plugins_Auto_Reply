@@ -24,7 +24,7 @@ public class Plugin0AutoReply extends JavaPlugin {
     public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
     private Plugin0AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.7.5")
+        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.7.6")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")

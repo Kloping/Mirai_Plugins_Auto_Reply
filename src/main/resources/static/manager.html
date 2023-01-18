@@ -24,10 +24,10 @@
 <center>
     <h1 style="color: aliceblue">作者QQ: 3474006766</h1> <br>
     <h5 style="color: aliceblue">开关管理页面</h5>
+    <button type="button" class="btn btn-info" onclick="change()">显示/隐藏好友</button>
 </center>
 <br>
 <br>
-
 <div id="div0" class="row">
     <div class="col-2"></div>
     <div id="ac0" style="background-color: white" class="col-8">
@@ -78,6 +78,25 @@
             }
         }
     });
+
+    let k = false
+
+    function change() {
+        if (!k) {
+            vm1.data = vm1.data.filter(function (item) {
+                let v = item.id.charAt(0);
+                return v !== "u";
+            });
+            k = true
+        } else {
+            axios.get("/getManagerData").then(function (response) {
+                vm1.data = response.data;
+            }).catch(function (err) {
+                alert(err);
+            })
+            k = false
+        }
+    }
 </script>
 </body>
 </html>
