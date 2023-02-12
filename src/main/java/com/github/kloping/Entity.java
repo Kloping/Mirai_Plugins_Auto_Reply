@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.github.kloping.e0.MessagePack;
 import io.github.kloping.number.NumberUtils;
 import io.github.kloping.reg.MatcherUtils;
+import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.*;
 import org.jetbrains.annotations.NotNull;
@@ -141,7 +142,7 @@ public class Entity {
             return data;
         }
 
-        public MessagePack mp() {
+        public MessagePack mp(MessageEvent event) {
             String s0 = getString(data);
             Matcher matcher = MessagePack.PATTERN.matcher(s0);
             if (matcher.find()) {
@@ -169,7 +170,7 @@ public class Entity {
                                     text = text.substring(ps[n].length());
                                 } else if (i0 + ps[n].length() == text.length()) {
                                     String t0 = text.substring(0, i0);
-                                    builder.append(new PlainText(t0));
+                                    builder.append(Parse.getMessageChainAndFilterId(t0, event));
                                     pack.getData().put(i++, SEND, builder.build());
                                     builder.clear();
                                     i = getI(pack, i, ps[n]);
@@ -177,7 +178,7 @@ public class Entity {
                                     break;
                                 } else {
                                     String t0 = text.substring(0, i0);
-                                    builder.append(new PlainText(t0));
+                                    builder.append(Parse.getMessageChainAndFilterId(t0, event));
                                     pack.getData().put(i++, SEND, builder.build());
                                     builder.clear();
                                     i = getI(pack, i, ps[n]);
@@ -186,7 +187,7 @@ public class Entity {
                                 n++;
                             }
                             if (!text.isEmpty()) {
-                                builder.append(new PlainText(text));
+                                builder.append(Parse.getMessageChainAndFilterId(text, event));
                             }
                         } else {
                             builder.append(datum);
@@ -201,8 +202,15 @@ public class Entity {
                 }
                 return pack;
             } else {
+                MessageChainBuilder builder = new MessageChainBuilder();
+                for (SingleMessage datum : data) {
+                    if (datum instanceof PlainText) {
+                        PlainText plainText = (PlainText) datum;
+                        builder.append(Parse.getMessageChainAndFilterId(plainText.contentToString(), event));
+                    } else builder.append(datum);
+                }
                 MessagePack pack = new MessagePack();
-                pack.getData().put(1, SEND, data);
+                pack.getData().put(1, SEND, builder.build());
                 return pack;
             }
         }
@@ -230,7 +238,6 @@ public class Entity {
             Response0 response0 = new Response0();
             response0.setWeight(weight);
             String code = data.serializeToMiraiCode();
-//            code = filterMatcher(code);
             if (code.isEmpty())
                 code = MessageChain.serializeToJsonString(data);
             response0.setData(code);

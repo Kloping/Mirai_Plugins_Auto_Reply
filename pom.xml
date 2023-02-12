@@ -7,7 +7,7 @@
     <artifactId>autoReply</artifactId>
     <version>0.7.1</version>
     <properties>
-        <mirai-version>2.13.3</mirai-version>
+        <mirai-version>2.14.0</mirai-version>
     </properties>
 
     <dependencies>

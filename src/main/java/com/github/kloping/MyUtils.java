@@ -29,6 +29,7 @@ public class MyUtils {
         list.clear();
         list.addAll(ls);
     }
+
     public static String filterMatcher(String str) {
         str = str.replaceAll("\\[mirai:", "\\\\[mirai:");
         return str;
@@ -36,9 +37,9 @@ public class MyUtils {
 
     public static final Random RAND = new Random();
 
-    public static MessagePack getMessageByKey(String key) {
+    public static MessagePack getMessageByKey(String key, MessageEvent event) {
         Entity entity = getEntity(key);
-        if (entity != null && entity.getState() == 0) return get(entity.getVs());
+        if (entity != null && entity.getState() == 0) return get(entity.getVs(),event);
         return null;
     }
 
@@ -50,7 +51,7 @@ public class MyUtils {
                 try {
                     if (key.matches(s)) {
                         tempMap.put(key, entity);
-                        return (Entity)  Resource.entityMap.get(s);
+                        return (Entity) Resource.entityMap.get(s);
                     }
                 } catch (Exception e) {
                     continue;
@@ -66,7 +67,7 @@ public class MyUtils {
         return null;
     }
 
-    private static MessagePack get(Set<Entity.Response> vs) {
+    private static MessagePack get(Set<Entity.Response> vs,MessageEvent event) {
         try {
             Map<Integer, Entity.Response> m = new HashMap<>();
             int n = 0;
@@ -77,7 +78,7 @@ public class MyUtils {
             }
             if (n <= 0) return null;
             int r = RAND.nextInt(n);
-            return m.get(r).mp();
+            return m.get(r).mp(event);
         } finally {
             System.gc();
         }

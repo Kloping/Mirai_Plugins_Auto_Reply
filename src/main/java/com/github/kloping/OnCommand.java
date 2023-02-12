@@ -46,8 +46,7 @@ public class OnCommand {
         if (maybe(event.getSender().getId())) {
             if (filter(event)) return;
         }
-        if (event.getSender().getId() == event.getBot().getId())
-            return;
+        if (event.getSender().getId() == event.getBot().getId()) return;
         schedule(event, gid);
     }
 
@@ -58,7 +57,7 @@ public class OnCommand {
         boolean k1 = (cd1 - cd0) > (cd2);
         if (!k1) return true;
         String codeKey = event.getMessage().serializeToMiraiCode();
-        MessagePack pack = MyUtils.getMessageByKey(codeKey);
+        MessagePack pack = MyUtils.getMessageByKey(codeKey, event);
         if (pack != null) {
             cds.put(gid, System.currentTimeMillis());
             Public.EXECUTOR_SERVICE.submit(() -> {
@@ -226,12 +225,7 @@ public class OnCommand {
     }
 
     private static String s(String k) {
-        return k
-                .replaceAll("%", "%")
-                .replaceAll("？", "?")
-                .replaceAll("%\\?", ".{0,}")
-                .replaceAll("%\\+", ".+")
-                .replaceAll("%", ".{1,1}");
+        return k.replaceAll("%", "%").replaceAll("？", "?").replaceAll("%\\?", ".{0,}").replaceAll("%\\+", ".+").replaceAll("%", ".{1,1}");
     }
 
     public static String ss(String v, String message, Contact contact) {
@@ -250,17 +244,13 @@ public class OnCommand {
     }
 
     private static boolean cantDelete(long q) {
-        if (!Resource.conf.getDeletes().contains(-1L)
-                && !Resource.conf.getDeletes().contains(q)
-                && Resource.conf.getHost() != q)
+        if (!Resource.conf.getDeletes().contains(-1L) && !Resource.conf.getDeletes().contains(q) && Resource.conf.getHost() != q)
             return true;
         return false;
     }
 
     private static boolean cantInsert(long q) {
-        if (!Resource.conf.getFollowers().contains(-1L)
-                && !Resource.conf.getFollowers().contains(q)
-                && Resource.conf.getHost() != q)
+        if (!Resource.conf.getFollowers().contains(-1L) && !Resource.conf.getFollowers().contains(q) && Resource.conf.getHost() != q)
             return true;
         return false;
     }
