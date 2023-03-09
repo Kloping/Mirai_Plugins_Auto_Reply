@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="./js/axios.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/jq3.6.js"></script>
+    <link rel="stylesheet" href="https://jsd.compc.cc/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+    <script src="./js/poper.js"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css"
+          rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js"></script>
+    <script src="index.js"></script>
+    <title>定时任务</title>
+</head>
+<body>
+<center>
+    <h1 style="color: aliceblue">插件交流群 794238572</h1> <br>
+    <h5 style="color: aliceblue">定时任务管理面板</h5>
+</center>
+<br>
+<br>
+<div id="div0" class="row">
+    <div class="col-2"></div>
+    <div id="ac0" style="background-color: white" class="col-8">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">BotId</th>
+                <th scope="col">时间</th>
+                <th scope="col">TargetId</th>
+                <th scope="col">星期</th>
+                <th scope="col">内容</th>
+                <th scope="col">状态</th>
+            </tr>
+            </thead>
+            <tbody v-for="(e,i) in data">
+            <tr>
+                <th scope="row" v-html="i"></th>
+                <td v-text="e.botId"></td>
+                <td v-text="e.hourStr+':'+e.minutesStr"></td>
+                <td v-text="e.type+e.targetId"></td>
+                <td>
+                    <div class="btn-toolbar justify-content-between" role="toolbar"
+                         aria-label="Toolbar with button groups">
+                        <div class="btn-group" role="group" aria-label="First group">
+                            <button v-on:click="changeWeekState(e.uuid,0)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,0)?'btn-success':'btn-secondary')">日
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,1)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,1)?'btn-success':'btn-secondary')">一
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,2)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,2)?'btn-success':'btn-secondary')">二
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,3)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,3)?'btn-success':'btn-secondary')">三
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,4)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,4)?'btn-success':'btn-secondary')">四
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,5)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,5)?'btn-success':'btn-secondary')">五
+                            </button>
+                            <button v-on:click="changeWeekState(e.uuid,6)" type="button"
+                                    :class="'btn '+(getWeekEnable(e.weeks,6)?'btn-success':'btn-secondary')">六
+                            </button>
+                        </div>
+                    </div>
+                </td>
+                <td v-html="e.content"></td>
+                <td>
+                    <button type="button" :class="'btn '+(e.enable ? 'btn-success' : 'btn-danger')"
+                            v-text="e.enable?'开启':'关闭'" v-on:click="changeState(e.uuid)"></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+
+    let vm1 = new Vue({
+        el: "#div0",
+        created: function () {
+            axios.get("/getAlarms").then(function (response) {
+                vm1.data = response.data
+            }).catch(function (err) {
+                alert(err);
+            })
+        }, data: {
+            data: []
+        }, methods: {
+            changeState: function (uuid) {
+                axios.get("/changeStateAlarmClock?uuid=" + uuid).then(function (response) {
+                    vm1.data = response.data
+                }).catch(function (err) {
+                    alert(err);
+                })
+            },
+            changeWeekState: function (uuid, st) {
+                axios.get("/changeWeekStateAlarmClock?uuid=" + uuid + "&st=" + st).then(function (response) {
+                    vm1.data = response.data
+                }).catch(function (err) {
+                    alert(err);
+                })
+            },
+            getWeekEnable: function (sts, i) {
+                let k = false;
+                for (let e0 of sts) {
+                    if (parseInt(e0) === i) {
+                        k = true;
+                    }
+                }
+                return k;
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

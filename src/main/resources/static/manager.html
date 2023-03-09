@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="./js/axios.js"></script>
+    <script src="./js/vue.js"></script>
+    <script src="./js/jq3.6.js"></script>
+    <link rel="stylesheet" href="https://jsd.compc.cc/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <script src="./js/poper.js"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css"
+          rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js"></script>
+    <script src="index.js"></script>
+    <title>开关管理页面</title>
+</head>
+<body>
+<center>
+    <h1 style="color: aliceblue">插件交流群 794238572</h1> <br>
+    <h5 style="color: aliceblue">开关管理页面</h5>
+    <button type="button" class="btn btn-info" onclick="change()">显示/隐藏好友</button>
+</center>
+<br>
+<br>
+<div id="div0" class="row">
+    <div class="col-2"></div>
+    <div id="ac0" style="background-color: white" class="col-8">
+        <table class="table table-striped ">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">ico</th>
+                <th scope="col">TargetId</th>
+                <th scope="col">name</th>
+                <th scope="col">status</th>
+            </tr>
+            </thead>
+            <tbody v-for="(e,i) in data">
+            <tr>
+                <th scope="row" v-html="i+1"></th>
+                <td class="media"><img style="width: 50px;height: 50px;" :src="e.ico" alt="头像"></td>
+                <td v-text="e.id"></td>
+                <td v-text="e.name"></td>
+                <td>
+                    <button type="button" :class="'btn '+(e.status ? 'btn-success' : 'btn-danger')"
+                            v-text="e.status?'开启':'关闭'" v-on:click="changeStateManager(e.id,i)"></button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    let vm1 = new Vue({
+        el: "#div0",
+        created: function () {
+            axios.get("/getManagerData").then(function (response) {
+                vm1.data = response.data;
+            }).catch(function (err) {
+                alert(err);
+            })
+        }, data: {
+            data: []
+        }, methods: {
+            changeStateManager: function (id, i) {
+                axios.get("/changeManager?id=" + id).then(function (response) {
+                    if (response.data === "ok") {
+                        vm1.data[i].status = !vm1.data[i].status
+                    } else {
+                        alert(response.data)
+                    }
+                }).catch(function (err) {
+                    alert(err);
+                })
+            }
+        }
+    });
+
+    let k = false
+
+    function change() {
+        if (!k) {
+            vm1.data = vm1.data.filter(function (item) {
+                let v = item.id.charAt(0);
+                return v !== "u";
+            });
+            k = true
+        } else {
+            axios.get("/getManagerData").then(function (response) {
+                vm1.data = response.data;
+            }).catch(function (err) {
+                alert(err);
+            })
+            k = false
+        }
+    }
+</script>
+</body>
+</html>
