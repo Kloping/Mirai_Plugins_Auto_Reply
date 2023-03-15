@@ -1,4 +1,4 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 
 import io.github.kloping.initialize.FileInitializeValue;

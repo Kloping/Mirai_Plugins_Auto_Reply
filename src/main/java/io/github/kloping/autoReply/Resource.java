@@ -1,9 +1,10 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.kloping.e0.AlarmClock;
-import com.github.kloping.sp.Starter;
+import io.github.kloping.autoReply.e0.AlarmClock;
+import io.github.kloping.autoReply.sp.Starter;
+import io.github.kloping.autoReply.cron.Work;
 import io.github.kloping.date.FrameUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.judge.Judge;
@@ -17,8 +18,8 @@ import java.io.FileInputStream;
 import java.util.*;
 import java.util.concurrent.*;
 
-import static com.github.kloping.Entity.Response.getString;
-import static com.github.kloping.MyUtils.*;
+import static io.github.kloping.autoReply.Entity.Response.getString;
+import static io.github.kloping.autoReply.MyUtils.*;
 import static io.github.kloping.file.FileUtils.testFile;
 import static io.github.kloping.judge.Judge.isNotNull;
 
@@ -42,7 +43,7 @@ public class Resource {
         loadIllegals();
         initUuid();
         Starter.main(new String[]{});
-        com.github.kloping.cron.Work.work();
+        Work.work();
     }
 
     private static void loadAlarmClocks() {
@@ -65,8 +66,13 @@ public class Resource {
             Integer t0 = Integer.valueOf(ss[0]);
             Integer t1 = Integer.valueOf(ss[1]);
             String type = qid.substring(0, 1);
-            AlarmClock c0 = new AlarmClock().setContent(content).setTargetId(Long.parseLong(qid.substring(1)))
-                    .setType(type).setHour(t0).setMinutes(t1).setUuid(UUID.randomUUID().toString());
+            AlarmClock c0 = new AlarmClock();
+            c0.setContent(content);
+            c0.setTargetId(Long.parseLong(qid.substring(1)));
+            c0.setType(type);
+            c0.setHour(t0);
+            c0.setMinutes(t1);
+            c0.setUuid(UUID.randomUUID().toString());
             ALARM_CLOCKS.add(c0);
             saveAlarmClocks();
         } catch (NumberFormatException e) {
@@ -116,8 +122,7 @@ public class Resource {
     public static boolean isIllegal(MessageChain c) {
         String v = getString(c);
         for (String illegalKey : illegalKeys) {
-            if (v.contains(illegalKey))
-                return true;
+            if (v.contains(illegalKey)) return true;
         }
         return false;
     }
@@ -207,8 +212,7 @@ public class Resource {
     }
 
     public static boolean deleteM(String key, String v) {
-        if (entityMap.containsKey(key))
-            entityMap.remove(key);
+        if (entityMap.containsKey(key)) entityMap.remove(key);
         return true;
     }
 
@@ -301,12 +305,9 @@ public class Resource {
         StringBuilder sb = new StringBuilder();
         int i = 1;
         for (AlarmClock alarmClock : ALARM_CLOCKS) {
-            sb.append(i++).append(",").append(alarmClock.getHourStr()).append(":").append(alarmClock.getMinutesStr())
-                    .append("给").append(alarmClock.getType()).append(alarmClock.getTargetId()).append("发送:").append(alarmClock.getContent())
-                    .append("\n");
+            sb.append(i++).append(",").append(alarmClock.getHourStr()).append(":").append(alarmClock.getMinutesStr()).append("给").append(alarmClock.getType()).append(alarmClock.getTargetId()).append("发送:").append(alarmClock.getContent()).append("\n");
         }
-        if (sb.length() == 0)
-            return "暂无";
+        if (sb.length() == 0) return "暂无";
         return sb.toString().trim();
     }
 

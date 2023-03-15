@@ -1,4 +1,4 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 import kotlin.coroutines.CoroutineContext;
 import net.mamoe.mirai.console.command.CommandManager;
@@ -24,7 +24,7 @@ public class Plugin0AutoReply extends JavaPlugin {
     public static final Plugin0AutoReply INSTANCE = new Plugin0AutoReply();
 
     private Plugin0AutoReply() {
-        super(new JvmPluginDescriptionBuilder("com.hrs.kloping.AutoReply", "0.8.0")
+        super(new JvmPluginDescriptionBuilder("io.github.kloping.autoReply.Plugin0AutoReply", "1.0")
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")

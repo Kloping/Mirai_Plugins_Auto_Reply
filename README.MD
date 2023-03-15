@@ -2,8 +2,6 @@
 
 ## [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
 
-### **使用前请检查依赖(lib-tts)是否一同添加至plugins 前往 [releases](https://github.com/gdpl2112/lib-tts/) 查找**
-
 **自动回复插件**
 
 第一次启动后 在./conf/auto_reply下配置文件:

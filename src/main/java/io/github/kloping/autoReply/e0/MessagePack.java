@@ -1,4 +1,4 @@
-package com.github.kloping.e0;
+package io.github.kloping.autoReply.e0;
 
 import com.alibaba.fastjson.JSON;
 import io.github.kloping.extension.ThreeMap;

@@ -1,12 +1,12 @@
-package com.github.kloping.sp.controllers;
+package io.github.kloping.autoReply.sp.controllers;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.github.kloping.Plugin0AutoReply;
-import com.github.kloping.Resource;
-import com.github.kloping.e0.AlarmClock;
-import com.github.kloping.sp.RequestData;
+import io.github.kloping.autoReply.Plugin0AutoReply;
+import io.github.kloping.autoReply.Resource;
+import io.github.kloping.autoReply.e0.AlarmClock;
+import io.github.kloping.autoReply.sp.RequestData;
 import io.github.kloping.initialize.FileInitializeValue;
 import io.github.kloping.little_web.annotations.RequestBody;
 import io.github.kloping.little_web.annotations.RequestMethod;
@@ -25,8 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.github.kloping.Resource.*;
-
 /**
  * @author github.kloping
  */
@@ -38,7 +36,7 @@ public class RestController0 {
         }
         for (Cookie cookie : request.getCookies()) {
             if ("key".equals(cookie.getName())) {
-                if (cookie.getValue().equals(uuid)) {
+                if (cookie.getValue().equals(Resource.uuid)) {
                     return true;
                 }
             }
@@ -57,27 +55,27 @@ public class RestController0 {
             boolean k = false;
             switch (type) {
                 case 0:
-                    k = modifyData(key, index, value);
+                    k = Resource.modifyData(key, index, value);
                     break;
                 case 1:
-                    k = modifyWeight(key, index, Integer.valueOf(value));
+                    k = Resource.modifyWeight(key, index, Integer.valueOf(value));
                     break;
                 case 2:
-                    k = modifyKey(key, index, value);
+                    k = Resource.modifyKey(key, index, value);
                     break;
                 case 3:
-                    k = modifyState(key, index, Integer.valueOf(value));
+                    k = Resource.modifyState(key, index, Integer.valueOf(value));
                     break;
                 default:
                     break;
             }
             if (k) {
-                sourceMap();
+                Resource.sourceMap();
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("succeeded in modifying one(%s,%s,%s,%s)", key, index, type, value));
             } else {
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("failed in modifying one(%s,%s,%s,%s)", key, index, type, value));
             }
-            return entityMap;
+            return Resource.entityMap;
         }
         return null;
     }
@@ -93,23 +91,23 @@ public class RestController0 {
             boolean k = false;
             switch (type) {
                 case 0:
-                    k = deleteData(key, index, value);
+                    k = Resource.deleteData(key, index, value);
                     break;
                 case 1:
                 case 2:
                 case 3:
-                    k = deleteM(key, value);
+                    k = Resource.deleteM(key, value);
                     break;
                 default:
                     break;
             }
             if (k) {
-                sourceMap();
+                Resource.sourceMap();
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("succeeded in deleted one(%s,%s,%s,%s)", key, index, type, value));
             } else {
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("failed in deleted one(%s,%s,%s,%s)", key, index, type, value));
             }
-            return entityMap;
+            return Resource.entityMap;
         }
         return null;
     }
@@ -118,7 +116,7 @@ public class RestController0 {
     public Object search(@RequestParm("value") String value, HttpServletRequest request) {
         if (verify(request)) {
             try {
-                return trySearch(value);
+                return Resource.trySearch(value);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -133,7 +131,7 @@ public class RestController0 {
             String k = data.getKey();
             String v = data.getValue();
             if ("添加完成".equals(Resource.append(k, v))) {
-                return entityMap;
+                return Resource.entityMap;
             } else {
                 Plugin0AutoReply.INSTANCE.getLogger().debug(String.format("failed in append one(%s,%s)", k, v));
             }
@@ -144,7 +142,7 @@ public class RestController0 {
     @RequestMethod("/get_all")
     public Object all(HttpServletRequest request) {
         if (verify(request)) {
-            return entityMap;
+            return Resource.entityMap;
         } else {
             return null;
         }
@@ -161,7 +159,7 @@ public class RestController0 {
 
     @RequestMethod("/")
     public void index(@RequestParm("key") String key, HttpServletResponse response) throws IOException {
-        if (key != null && key.equals(uuid)) {
+        if (key != null && key.equals(Resource.uuid)) {
             Cookie cookie = new Cookie("key", key);
             response.addCookie(cookie);
             response.sendRedirect("/index.html");
@@ -186,7 +184,7 @@ public class RestController0 {
     @RequestMethod("/getAlarms")
     public List<AlarmClock> getAlarmClocks(HttpServletRequest request) {
         if (verify(request)) {
-            return ALARM_CLOCKS;
+            return Resource.ALARM_CLOCKS;
         } else {
             return null;
         }
@@ -195,13 +193,13 @@ public class RestController0 {
     @RequestMethod("/changeStateAlarmClock")
     public List<AlarmClock> changeStateAlarmClock(HttpServletRequest request, @RequestParm("uuid") String uuid) {
         if (verify(request)) {
-            for (AlarmClock alarmClock : ALARM_CLOCKS) {
+            for (AlarmClock alarmClock : Resource.ALARM_CLOCKS) {
                 if (uuid.equals(alarmClock.getUuid())) {
                     alarmClock.setEnable(!alarmClock.isEnable());
                 }
             }
-            saveAlarmClocks();
-            return ALARM_CLOCKS;
+            Resource.saveAlarmClocks();
+            return Resource.ALARM_CLOCKS;
         } else {
             return null;
         }
@@ -210,7 +208,7 @@ public class RestController0 {
     @RequestMethod("/changeWeekStateAlarmClock")
     public List<AlarmClock> changeWeekStateAlarmClock(HttpServletRequest request, @RequestParm("uuid") String uuid, @RequestParm("st") Integer st) {
         if (verify(request)) {
-            for (AlarmClock alarmClock : ALARM_CLOCKS) {
+            for (AlarmClock alarmClock : Resource.ALARM_CLOCKS) {
                 if (uuid.equals(alarmClock.getUuid())) {
                     List<Integer> list = asList(alarmClock.getWeeks());
                     if (list.contains(st)) {
@@ -222,8 +220,8 @@ public class RestController0 {
                     System.out.println(list);
                 }
             }
-            saveAlarmClocks();
-            return ALARM_CLOCKS;
+            Resource.saveAlarmClocks();
+            return Resource.ALARM_CLOCKS;
         } else {
             return null;
         }
@@ -241,10 +239,10 @@ public class RestController0 {
     public Object changeManager(HttpServletRequest request, @RequestParm("id") String id) {
         if (!verify(request)) return null;
         if (Bot.getInstances().size() <= 0) return null;
-        Boolean k = conf.getKv().getOrDefault(id, true);
-        conf.getKv().put(id, !k);
-        String p0 = new File(conf.getRoot(), "conf/auto_reply/conf.json").getAbsolutePath();
-        FileInitializeValue.putValues(p0, conf, true);
+        Boolean k = Resource.conf.getKv().getOrDefault(id, true);
+        Resource.conf.getKv().put(id, !k);
+        String p0 = new File(Resource.conf.getRoot(), "conf/auto_reply/conf.json").getAbsolutePath();
+        FileInitializeValue.putValues(p0, Resource.conf, true);
         return "ok";
     }
 
@@ -260,7 +258,7 @@ public class RestController0 {
             jo.put("ico", friend.getAvatarUrl());
             jo.put("id", id);
             jo.put("name", friend.getNick());
-            jo.put("status", conf.getKv().getOrDefault(id, true));
+            jo.put("status", Resource.conf.getKv().getOrDefault(id, true));
             array.add(jo);
         }
         for (Group group : bot.getGroups()) {
@@ -269,7 +267,7 @@ public class RestController0 {
             jo.put("ico", group.getAvatarUrl());
             jo.put("id", id);
             jo.put("name", group.getName());
-            jo.put("status", conf.getKv().getOrDefault(id, true));
+            jo.put("status", Resource.conf.getKv().getOrDefault(id, true));
             array.add(jo);
         }
         return array;

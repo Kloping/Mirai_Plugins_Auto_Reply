@@ -1,4 +1,4 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 import com.alibaba.fastjson.JSON;
 import io.github.kloping.io.ReadUtils;

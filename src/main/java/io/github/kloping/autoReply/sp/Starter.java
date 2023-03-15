@@ -1,12 +1,10 @@
-package com.github.kloping.sp;
+package io.github.kloping.autoReply.sp;
 
-import com.github.kloping.Plugin0AutoReply;
-import com.github.kloping.Resource;
+import io.github.kloping.autoReply.Plugin0AutoReply;
+import io.github.kloping.autoReply.Resource;
 import io.github.kloping.MySpringTool.StarterObjectApplication;
 import io.github.kloping.MySpringTool.annotations.CommentScan;
 import io.github.kloping.little_web.conf.TomcatConfig;
-
-import static com.github.kloping.Resource.uuid;
 
 /**
  * @author github.kloping
@@ -25,7 +23,7 @@ public class Starter {
             });
             application.SCAN_LOADER = Plugin0AutoReply.class.getClassLoader();
             application.run0(Starter.class);
-            Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + Resource.conf.getPort() + "?key=" + uuid);
+            Plugin0AutoReply.INSTANCE.getLogger().info("AutoReply 服务启动成功 address: http://localhost:" + Resource.conf.getPort() + "?key=" + Resource.uuid);
         } catch (Throwable e) {
             System.err.println("AutoReply服务启动异常(请检查端口是否被占用)");
             e.printStackTrace();

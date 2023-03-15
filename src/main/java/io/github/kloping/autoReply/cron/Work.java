@@ -1,7 +1,7 @@
-package com.github.kloping.cron;
+package io.github.kloping.autoReply.cron;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.kloping.Resource;
+import io.github.kloping.autoReply.Resource;
 import io.github.kloping.date.CronUtils;
 import io.github.kloping.initialize.FileInitializeValue;
 import net.mamoe.mirai.Bot;
@@ -96,7 +96,10 @@ public class Work {
             String type = targetId.substring(0, 1);
             String id = targetId.substring(1);
             CronEntity entity = new CronEntity();
-            entity.setCode(code).setType(type).setTargetId(Long.valueOf(id)).setCron(cron);
+            entity.setCode(code);
+            entity.setType(type);
+            entity.setTargetId(Long.valueOf(id));
+            entity.setCron(cron);
             work.entities.add(entity);
             work.toStart(entity);
             FileInitializeValue.putValues(work.file.getAbsolutePath(), work.entities, true);

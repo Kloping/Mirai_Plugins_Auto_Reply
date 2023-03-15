@@ -1,7 +1,7 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.kloping.e0.MessagePack;
+import io.github.kloping.autoReply.e0.MessagePack;
 import io.github.kloping.object.ObjectUtils;
 import net.mamoe.mirai.event.events.MessageEvent;
 import net.mamoe.mirai.message.data.PlainText;

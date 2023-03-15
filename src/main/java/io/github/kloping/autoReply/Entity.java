@@ -1,7 +1,7 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
 import com.alibaba.fastjson.annotation.JSONField;
-import com.github.kloping.e0.MessagePack;
+import io.github.kloping.autoReply.e0.MessagePack;
 import io.github.kloping.number.NumberUtils;
 import io.github.kloping.reg.MatcherUtils;
 import net.mamoe.mirai.event.events.MessageEvent;
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import static com.github.kloping.e0.MessagePack.*;
+import static io.github.kloping.autoReply.e0.MessagePack.*;
 
 /**
  * @author github-kloping

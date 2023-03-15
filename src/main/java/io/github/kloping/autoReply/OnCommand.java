@@ -1,6 +1,6 @@
-package com.github.kloping;
+package io.github.kloping.autoReply;
 
-import com.github.kloping.e0.MessagePack;
+import io.github.kloping.autoReply.e0.MessagePack;
 import io.github.kloping.common.Public;
 import net.mamoe.mirai.contact.Contact;
 import net.mamoe.mirai.event.events.*;
@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.github.kloping.MyUtils.filterMatcher;
-import static com.github.kloping.e0.MessagePack.SEND;
-import static com.github.kloping.e0.MessagePack.SLEEP;
+import static io.github.kloping.autoReply.MyUtils.filterMatcher;
+import static io.github.kloping.autoReply.e0.MessagePack.SEND;
+import static io.github.kloping.autoReply.e0.MessagePack.SLEEP;
 
 /**
  * @author github-kloping

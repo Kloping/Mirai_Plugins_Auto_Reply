@@ -1,8 +1,8 @@
-package com.github.kloping
+package io.github.kloping.autoReply
 
-import com.github.kloping.Resource.conf
-import com.github.kloping.Resource.loadIllegals
-import com.github.kloping.cron.Work
+import io.github.kloping.autoReply.Resource.conf
+import io.github.kloping.autoReply.Resource.loadIllegals
+import io.github.kloping.autoReply.cron.Work
 import io.github.kloping.number.NumberUtils
 import net.mamoe.mirai.console.command.CommandSender
 import net.mamoe.mirai.console.command.ConsoleCommandSender
