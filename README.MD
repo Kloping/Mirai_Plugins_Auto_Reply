@@ -1,6 +1,8 @@
 # Mirai_Plugins_Auto_Reply V 0.6
 
-## [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
+### [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
+
+### 插件依赖于插件[lib-tts](https://github.com/gdpl2112/lib-tts/releases/)
 
 **自动回复插件**
 

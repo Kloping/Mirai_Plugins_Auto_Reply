@@ -28,6 +28,7 @@ public class Plugin0AutoReply extends JavaPlugin {
                 .name("Custom Reply")
                 .info("Custom Reply")
                 .author("HRS")
+                .dependsOn("io.github.gdpl2112.lib-tts",  true)
                 .build());
         System.getProperties().setProperty("file.encoding", "utf-8");
     }
