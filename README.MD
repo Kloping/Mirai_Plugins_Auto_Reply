@@ -1,4 +1,4 @@
-# Mirai_Plugins_Auto_Reply V 0.6
+## Mirai_Plugins_Auto_Reply V 1.0
 
 ### [不兼容旧的数据](https://github.com/Kloping/Mirai_Plugins_Auto_Reply/blob/master/old_README.md)
 
