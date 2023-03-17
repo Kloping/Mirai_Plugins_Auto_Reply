@@ -9,10 +9,12 @@ import io.github.kloping.little_web.conf.TomcatConfig;
 /**
  * @author github.kloping
  */
-@CommentScan(path = "com.github.kloping.sp.controllers")
+@CommentScan(path = "io.github.kloping.autoReply.sp")
 public class Starter {
     public static void main(String[] args) {
         try {
+            Class c0 = Starter.class.getClassLoader().loadClass("io.github.kloping.little_web.WebExtension");
+            System.out.println();
             TomcatConfig config = new TomcatConfig();
             config.setPort(Resource.conf.getPort());
             config.setName("autoReply-web");

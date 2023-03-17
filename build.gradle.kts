@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "io.github.kloping"
-version = "1.0"
+version = "1.1"
 
 repositories {
     maven("https://repo1.maven.org/maven2/")
@@ -27,7 +27,7 @@ dependencies {
     implementation(platform("org.slf4j:slf4j-parent:2.0.6"))
     testImplementation("org.slf4j:slf4j-simple")
 
-    implementation("io.github.Kloping:SpringTool:0.5.8")
+    compileOnly("io.github.Kloping:SpringTool:0.5.8")
     compileOnly("io.github.Kloping:spt-web:0.2.0")
 }
 
