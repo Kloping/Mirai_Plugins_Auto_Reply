@@ -9,9 +9,7 @@ import net.mamoe.mirai.message.code.MiraiCode;
 import net.mamoe.mirai.message.data.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 
 import static io.github.kloping.autoReply.e0.MessagePack.*;
@@ -26,12 +24,25 @@ public class Entity {
     @JSONField(serialize = false, deserialize = false)
     private Set<Response> vs = new LinkedHashSet<>();
     private Set<Response0> vss = new LinkedHashSet<>();
+    private List<Long> points = new ArrayList<>();
 
     public Entity() {
     }
 
     public Entity(Number q) {
         this.gid = q;
+    }
+
+    public void setVs(Set<Response> vs) {
+        this.vs = vs;
+    }
+
+    public List<Long> getPoints() {
+        return points;
+    }
+
+    public void setPoints(List<Long> points) {
+        this.points = points;
     }
 
     public int getState() {

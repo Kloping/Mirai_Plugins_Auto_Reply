@@ -39,7 +39,11 @@ public class MyUtils {
 
     public static MessagePack getMessageByKey(String key, MessageEvent event) {
         Entity entity = getEntity(key);
-        if (entity != null && entity.getState() == 0) return get(entity.getVs(),event);
+        if (!entity.getPoints().isEmpty()) {
+            if (!entity.getPoints().contains(event.getSubject().getId()))
+                return null;
+        }
+        if (entity != null && entity.getState() == 0) return get(entity.getVs(), event);
         return null;
     }
 
@@ -67,7 +71,7 @@ public class MyUtils {
         return null;
     }
 
-    private static MessagePack get(Set<Entity.Response> vs,MessageEvent event) {
+    private static MessagePack get(Set<Entity.Response> vs, MessageEvent event) {
         try {
             Map<Integer, Entity.Response> m = new HashMap<>();
             int n = 0;
