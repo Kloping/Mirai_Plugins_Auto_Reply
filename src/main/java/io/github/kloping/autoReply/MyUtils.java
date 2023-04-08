@@ -39,11 +39,12 @@ public class MyUtils {
 
     public static MessagePack getMessageByKey(String key, MessageEvent event) {
         Entity entity = getEntity(key);
-        if (!entity.getPoints().isEmpty()) {
+        if (entity == null) return null;
+        if (entity.getPoints() != null && !entity.getPoints().isEmpty()) {
             if (!entity.getPoints().contains(event.getSubject().getId()))
                 return null;
         }
-        if (entity != null && entity.getState() == 0) return get(entity.getVs(), event);
+        if (entity.getState() == 0) return get(entity.getVs(), event);
         return null;
     }
 

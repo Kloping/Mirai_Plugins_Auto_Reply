@@ -112,3 +112,13 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
     /autoReply cronAdd u3474006766 测试消息 * * 17 * * ?
     /autoReply cronDelete 1
+
+
+### 指定id触发
+    
+    /autoReply point <触发词> <id>    #指定触发
+    /autoReply unPoint <触发词> <id>
+
+当point指定为空[]时则 全部群/好友里都可触发
+
+当point 不为空时则 仅指定的群/好友id可触发

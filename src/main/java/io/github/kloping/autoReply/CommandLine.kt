@@ -129,6 +129,8 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
         sendMessage(" Reloading the complete ")
     }
 
+    //===============
+
     @Description("添加一个定时任务")
     @SubCommand("addA")
     suspend fun CommandSender.addA(@Name("时间") t: String, @Name("ID") qid: String, @Name("内容") content: String) {
@@ -146,6 +148,8 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     suspend fun CommandSender.deleteA(@Name("序号") s: Int) {
         sendMessage(Resource.deleteA(s - 1))
     }
+
+    //===================
 
     @Description("cron定时任务的添加")
     @SubCommand("cronAdd")
@@ -169,4 +173,24 @@ class CommandLine private constructor() : JCompositeCommand(Plugin0AutoReply.INS
     suspend fun CommandSender.cronList() {
         sendMessage(Work.list())
     }
+
+    //=============
+    @Description("消息触发指定")
+    @SubCommand("point")
+    suspend fun CommandSender.point(@Name("触发词") t: String, @Name("指定id") id: Long) {
+        val e0 = MyUtils.getMessageByWord(t);
+        e0.points.add(id)
+        Resource.sourceMap()
+        sendMessage(e0.points.toString())
+    }
+
+    @Description("取消消息触发指定")
+    @SubCommand("unPoint")
+    suspend fun CommandSender.unPoint(@Name("触发词") t: String, @Name("指定id") id: Long) {
+        val e0 = MyUtils.getMessageByWord(t);
+        e0.points.add(id)
+        Resource.sourceMap()
+        sendMessage(e0.points.toString())
+    }
+
 }

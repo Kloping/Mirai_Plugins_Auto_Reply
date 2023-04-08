@@ -26,8 +26,8 @@
     </div>
 </div>
 <center>
-    <h1 style="color: aliceblue">插件交流群 794238572</h1>
-    <div style="text-align: center">
+    <h1 style="color: aliceblue;margin-right: 135px">插件交流群 794238572</h1>
+    <div style="margin-right: 172px">
         <button onclick="function taskHtml() {
     location.href='/clock.html';
 }
@@ -104,6 +104,7 @@ managerHtml()" style="" type="button" class="btn btn-primary">
         <thead>
         <tr class="table-primary">
             <th scope="col">触发词</th>
+            <th scope="col">指向</th>
             <th scope="col">权重</th>
             <th scope="col">状态</th>
             <th scope="col">回复词</th>
@@ -116,6 +117,7 @@ managerHtml()" style="" type="button" class="btn btn-primary">
                 v-show="index===0"
                 @click="mSelect(key,0,2,key)"
             ></td>
+            <td @click="" v-text="listToString(value.points)"></td>
             <td @click="mSelect(key,index,1,v1.weight)" v-text="v1.weight"></td>
             <td @click="mSelect(key,index,3,v1.state)" v-text="v1.state"></td>
             <td @click="mSelect(key,index,0,getData(v1.data))" v-text="getData(v1.data)"></td>
@@ -139,6 +141,13 @@ managerHtml()" style="" type="button" class="btn btn-primary">
         }, data: {
             data: {}
         }, methods: {
+            listToString: function (arr) {
+                let str = ""
+                for (let i = 0; i < arr.length; i++) {
+                    str = str + "," + arr[i];
+                }
+                return str;
+            },
             mSelect: function (k, k2, k3, str) {
                 // a1 = encodeURI(k)
                 // a2 = encodeURI(k2)
