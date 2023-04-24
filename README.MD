@@ -4,6 +4,12 @@
 
 ### 插件依赖于插件[lib-tts](https://github.com/gdpl2112/lib-tts/releases/)
 
+<p align="center">
+  <a href="https://github.com/Kloping/Mirai_Plugins_Auto_Reply">
+    <img src="https://api.star-history.com/svg?repos=kloping/Mirai_Plugins_Auto_Reply&type=Date" alt="Star History Chart">
+  </a>
+</p>
+
 **自动回复插件**
 
 第一次启动后 在./conf/auto_reply下配置文件:
@@ -122,3 +128,5 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 当point指定为空[]时则 全部群/好友里都可触发
 
 当point 不为空时则 仅指定的群/好友id可触发
+
+
