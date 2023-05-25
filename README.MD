@@ -92,6 +92,8 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 当存在大量数据时 可能会出现未知异常
 
+<hr>
+
 ### 定时任务 命令
 
     /autoReply addA <时间> \<ID> <内容>    # 添加一个定时任务
@@ -108,6 +110,8 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 
 其中添加了相应的管理界面 在管理页面右上角
 
+<hr>
+
 ### [cron表达式](https://help.aliyun.com/document_detail/64769.html) 的任务
 
     /autoReply cronAdd <ID> <内容miraicode> <cron表达式>    # cron定时任务的添加
@@ -119,6 +123,7 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
     /autoReply cronAdd u3474006766 测试消息 * * 17 * * ?
     /autoReply cronDelete 1
 
+<hr>
 
 ### 指定id触发
     
@@ -128,5 +133,9 @@ _**illegalKeys: 不允许添加的词 (敏感词汇) 以空格分割**_
 当point指定为空[]时则 全部群/好友里都可触发
 
 当point 不为空时则 仅指定的群/好友id可触发
+<hr>
+v 1.0 插件构建工具替换
+### 插件依赖于插件[lib-tts](https://github.com/gdpl2112/lib-tts/releases/)
+
 
 
